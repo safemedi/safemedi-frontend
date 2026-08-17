@@ -30,7 +30,7 @@ interface WireMedicationRecordSummary {
 }
 
 interface WireDailyMedicationRecordItem {
-  readonly recordId: number;
+  readonly recordIds: readonly number[];
   readonly prescriptionTitle: string;
   readonly medicationNames?: readonly string[];
   readonly scheduledTime: string;
@@ -39,7 +39,7 @@ interface WireDailyMedicationRecordItem {
 }
 
 interface WirePeriodMedicationRecordItem {
-  readonly recordId: number;
+  readonly recordIds: readonly number[];
   readonly prescriptionTitle: string;
   readonly scheduledTime: string;
   readonly status: string;
@@ -120,7 +120,7 @@ function normalizeRecordStatus(status: string): MedicationRecordStatus {
 
 function normalizeDailyRecordItem(item: WireDailyMedicationRecordItem): MedicationRecordItem {
   return {
-    recordId: item.recordId,
+    recordIds: item.recordIds,
     prescriptionTitle: item.prescriptionTitle,
     medicationNames: item.medicationNames ?? [],
     scheduledTime: item.scheduledTime,
@@ -131,7 +131,7 @@ function normalizeDailyRecordItem(item: WireDailyMedicationRecordItem): Medicati
 
 function normalizePeriodRecordItem(item: WirePeriodMedicationRecordItem): MedicationRecordItem {
   return {
-    recordId: item.recordId,
+    recordIds: item.recordIds,
     prescriptionTitle: item.prescriptionTitle,
     medicationNames: [],
     scheduledTime: item.scheduledTime,

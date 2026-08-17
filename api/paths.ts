@@ -25,7 +25,6 @@ export const apiPaths = {
 
   medicationRecords: "/api/v1/medication-records",
   medicationRecordsToday: "/api/v1/medication-records/today",
-  medicationRecord: (recordId: number | string) => `/api/v1/medication-records/${recordId}`,
 
   medicationsStatistics: "/api/v1/medication-records/statistics",
 
