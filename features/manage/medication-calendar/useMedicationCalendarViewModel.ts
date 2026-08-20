@@ -147,7 +147,7 @@ function resolveSummaryReferenceDate(viewMonth: Date, today: Date, monthEndDate:
 
 function buildRecordItem(record: MedicationRecordItem): MedicationCalendarRecordItem {
   return {
-    id: String(record.recordId),
+    id: record.recordIds.join("-"),
     medicationName: record.medicationNames[0] ?? record.prescriptionTitle,
     scheduledTime: record.scheduledTime,
     status: record.status,

@@ -51,6 +51,16 @@ const PRESENTATION_BY_TYPE: Partial<Record<NotificationType, NotificationPresent
     gradientColors: [palette.green, palette.opal],
     showActionBadge: false,
   },
+  FAMILY_CONNECTED: {
+    iconName: "person-add-outline",
+    gradientColors: [palette.green, palette.opal],
+    showActionBadge: false,
+  },
+  FAMILY_DISCONNECTED: {
+    iconName: "person-remove-outline",
+    gradientColors: [palette.orange, palette.red_medium],
+    showActionBadge: false,
+  },
   SYSTEM_NOTICE: {
     iconName: "information-circle-outline",
     gradientColors: [palette.blue, palette.blue_strong],

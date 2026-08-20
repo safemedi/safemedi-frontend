@@ -254,18 +254,7 @@ export function useDashboardViewModel(): DashboardViewModel {
     void markMedicationRecordsMutation
       .mutateAsync({
         recordIds: prescription.recordIds,
-        body: { status: "SUCCESS" },
-      })
-      .then((results) => {
-        const fulfilledCount = results.filter((result) => result.status === "fulfilled").length;
-        const rejectedCount = results.length - fulfilledCount;
-
-        if (rejectedCount > 0) {
-          Alert.alert(
-            "복약 처리 일부 실패",
-            `${results.length}건 중 ${fulfilledCount}건은 완료되었으나 ${rejectedCount}건에서 오류가 발생했습니다.`,
-          );
-        }
+        status: "SUCCESS",
       })
       .catch(async (error) => {
         const message = await getApiErrorMessage(error, "복약 완료 처리 중 오류가 발생했습니다.");

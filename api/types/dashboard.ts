@@ -35,14 +35,18 @@ export interface TodayMedicationSchedulesResponse {
   readonly schedules: readonly TodayMedicationScheduleItem[];
 }
 
+export type MedicationRecordUpdateStatus = "SUCCESS" | "SKIP" | "PENDING";
+
 export interface UpdateMedicationRecordRequest {
-  readonly status: "SUCCESS" | "SKIP";
+  readonly recordIds: readonly number[];
+  readonly status: MedicationRecordUpdateStatus;
 }
 
 export interface UpdateMedicationRecordResponse {
-  readonly recordId: number;
+  readonly recordIds: readonly number[];
   readonly prescriptionId: number;
   readonly scheduledAt: string;
+  readonly drugNames: readonly string[];
   readonly takenAt: string | null;
-  readonly status: TodayMedicationScheduleStatus;
+  readonly status: MedicationRecordUpdateStatus;
 }

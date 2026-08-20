@@ -38,7 +38,7 @@ const mockDailyRecords = {
   },
   records: [
     {
-      recordId: 500,
+      recordIds: [499],
       prescriptionTitle: "신장내과 처방전",
       medicationNames: ["타이레놀정 500mg"],
       scheduledTime: "08:00",
@@ -46,7 +46,7 @@ const mockDailyRecords = {
       status: "SUCCESS" as const,
     },
     {
-      recordId: 501,
+      recordIds: [500, 501],
       prescriptionTitle: "신장내과 처방전",
       medicationNames: ["오메프라졸캡슐 20mg"],
       scheduledTime: "08:00",
@@ -54,7 +54,7 @@ const mockDailyRecords = {
       status: "SUCCESS" as const,
     },
     {
-      recordId: 502,
+      recordIds: [502],
       prescriptionTitle: "심장내과 처방전",
       medicationNames: ["암로디핀정 5mg"],
       scheduledTime: "14:00",
@@ -254,7 +254,7 @@ describe("useMedicationCalendarViewModel", () => {
           complianceRate: 50,
         },
         records: mockDailyRecords.records.slice(0, 2).concat({
-          recordId: 504,
+          recordIds: [504],
           prescriptionTitle: "감기약",
           medicationNames: ["플루티카손"],
           scheduledTime: "20:00",

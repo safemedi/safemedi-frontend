@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { getApiErrorMessage } from "@/api/error";
 import { useNearbyMedicalFacilitiesQuery } from "@/api/queries/map";
 import { resolveMapLocation } from "./resolveMapLocation";
 import type { MapCoordinate, MapRegion, MedicalFacility, MedicalFacilityCategory } from "./types";
@@ -115,6 +116,29 @@ export function useMapViewModel(): MapViewModel {
     [nearbyFacilitiesQuery.data?.facilities],
   );
 
+  const [facilitiesErrorMessage, setFacilitiesErrorMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    const queryError = nearbyFacilitiesQuery.error;
+    if (!queryError) {
+      setFacilitiesErrorMessage(null);
+      return;
+    }
+
+    let cancelled = false;
+    void getApiErrorMessage(queryError, "주변 의료기관 정보를 불러오지 못했습니다.").then(
+      (message) => {
+        if (!cancelled) {
+          setFacilitiesErrorMessage(message);
+        }
+      },
+    );
+
+    return () => {
+      cancelled = true;
+    };
+  }, [nearbyFacilitiesQuery.error]);
+
   useEffect(() => {
     if (facilities.length === 0) {
       setSelectedFacilityId(null);
@@ -138,8 +162,7 @@ export function useMapViewModel(): MapViewModel {
     isLoadingFacilities: nearbyFacilitiesQuery.isLoading,
     isRefreshingFacilities: nearbyFacilitiesQuery.isRefetching,
     locationError: locationState.locationError,
-    facilitiesError:
-      nearbyFacilitiesQuery.error instanceof Error ? nearbyFacilitiesQuery.error.message : null,
+    facilitiesError: facilitiesErrorMessage,
     source: nearbyFacilitiesQuery.data?.source ?? "mock",
     currentAddress: locationState.currentAddress,
     currentCoordinate: locationState.currentCoordinate,

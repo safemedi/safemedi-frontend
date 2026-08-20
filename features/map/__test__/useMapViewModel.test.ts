@@ -3,6 +3,7 @@ import { useMapViewModel } from "../useMapViewModel";
 
 const mockResolveMapLocation = jest.fn();
 const mockUseNearbyMedicalFacilitiesQuery = jest.fn();
+const mockGetApiErrorMessage = jest.fn();
 
 jest.mock("../resolveMapLocation", () => ({
   resolveMapLocation: () => mockResolveMapLocation(),
@@ -12,6 +13,11 @@ jest.mock("@/api/queries/map", () => ({
   useNearbyMedicalFacilitiesQuery: (params: unknown) => mockUseNearbyMedicalFacilitiesQuery(params),
 }));
 
+jest.mock("@/api/error", () => ({
+  getApiErrorMessage: (error: unknown, fallbackMessage: string) =>
+    mockGetApiErrorMessage(error, fallbackMessage),
+}));
+
 describe("useMapViewModel", () => {
   afterEach(() => {
     jest.useRealTimers();
@@ -19,6 +25,7 @@ describe("useMapViewModel", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetApiErrorMessage.mockResolvedValue("주변 의료기관 정보를 불러오지 못했습니다.");
     mockResolveMapLocation.mockResolvedValue({
       currentCoordinate: { latitude: 37.5, longitude: 127.0 },
       currentAddress: "서울 강남구 역삼동 테헤란로",
@@ -57,6 +64,28 @@ describe("useMapViewModel", () => {
       category: "all",
       keyword: "",
     });
+  });
+
+  it("시설 조회가 실패하면 백엔드 에러 메시지를 facilitiesError에 반영한다", async () => {
+    const queryError = new Error("VAL_020");
+    mockUseNearbyMedicalFacilitiesQuery.mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      isRefetching: false,
+      error: queryError,
+      refetch: jest.fn(async () => ({})),
+    });
+
+    const { result } = renderHook(() => useMapViewModel());
+
+    await waitFor(() => {
+      expect(result.current.facilitiesError).toBe("주변 의료기관 정보를 불러오지 못했습니다.");
+    });
+
+    expect(mockGetApiErrorMessage).toHaveBeenCalledWith(
+      queryError,
+      "주변 의료기관 정보를 불러오지 못했습니다.",
+    );
   });
 
   it("위치 조회 실패 시 에러 상태를 세팅한다", async () => {
