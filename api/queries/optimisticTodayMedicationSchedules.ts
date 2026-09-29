@@ -1,9 +1,13 @@
 import type {
+  MedicationRecordUpdateStatus,
   TodayMedicationScheduleItem,
   TodayMedicationScheduleStatus,
   TodayMedicationSchedulesResponse,
-  UpdateMedicationRecordRequest,
 } from "@/api/types/dashboard";
+
+interface MedicationRecordStatusUpdate {
+  readonly status: MedicationRecordUpdateStatus;
+}
 
 function getScheduleStatus(schedule: TodayMedicationScheduleItem): TodayMedicationScheduleStatus {
   return schedule.displayStatus ?? schedule.status ?? "WAITING";
@@ -13,8 +17,8 @@ function isCompletedStatus(status: TodayMedicationScheduleStatus): boolean {
   return status === "SUCCESS" || status === "SKIP";
 }
 
-function resolveNextStatus(body: UpdateMedicationRecordRequest): TodayMedicationScheduleStatus {
-  return body.status;
+function resolveNextStatus(body: MedicationRecordStatusUpdate): TodayMedicationScheduleStatus {
+  return body.status === "PENDING" ? "WAITING" : body.status;
 }
 
 function buildUpdatedSummary(
@@ -36,7 +40,7 @@ function buildUpdatedSummary(
 export function applyOptimisticMedicationRecordUpdate(
   data: TodayMedicationSchedulesResponse,
   recordId: number,
-  body: UpdateMedicationRecordRequest,
+  body: MedicationRecordStatusUpdate,
 ): TodayMedicationSchedulesResponse {
   const nextStatus = resolveNextStatus(body);
   let completedDelta = 0;
@@ -73,7 +77,7 @@ export function applyOptimisticMedicationRecordUpdate(
 export function applyOptimisticMedicationRecordsUpdate(
   data: TodayMedicationSchedulesResponse,
   recordIds: readonly number[],
-  body: UpdateMedicationRecordRequest,
+  body: MedicationRecordStatusUpdate,
 ): TodayMedicationSchedulesResponse {
   return recordIds.reduce(
     (currentData, recordId) => applyOptimisticMedicationRecordUpdate(currentData, recordId, body),

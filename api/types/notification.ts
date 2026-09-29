@@ -7,6 +7,8 @@ export type NotificationType =
   | "PRESCRIPTION_ENDING"
   | "REPORT_READY"
   | "FAMILY_MEDICATION_REMINDER"
+  | "FAMILY_CONNECTED"
+  | "FAMILY_DISCONNECTED"
   | "SYSTEM_NOTICE";
 
 /** 알림 이동 대상 유형 */

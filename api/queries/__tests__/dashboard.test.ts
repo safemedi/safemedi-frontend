@@ -7,7 +7,7 @@ import {
 } from "../dashboard";
 
 const mockFetchTodayMedicationSchedules = jest.fn<Promise<unknown>, []>(async () => ({}));
-const mockUpdateMedicationRecord = jest.fn<Promise<unknown>, [number, unknown]>(async () => ({}));
+const mockUpdateMedicationRecords = jest.fn<Promise<unknown>, [unknown]>(async () => ({}));
 const mockCancelQueries = jest.fn(async () => undefined);
 const mockInvalidateQueries = jest.fn(async () => undefined);
 const mockGetQueryData = jest.fn<TodayMedicationSchedulesResponse | undefined, [unknown]>(
@@ -30,8 +30,7 @@ jest.mock("@tanstack/react-query", () => ({
 
 jest.mock("@/api/endpoints/dashboard", () => ({
   fetchTodayMedicationSchedules: () => mockFetchTodayMedicationSchedules(),
-  updateMedicationRecord: (recordId: number, body: unknown) =>
-    mockUpdateMedicationRecord(recordId, body),
+  updateMedicationRecords: (body: unknown) => mockUpdateMedicationRecords(body),
 }));
 
 jest.mock("@/stores/sessionStore", () => ({
@@ -83,48 +82,33 @@ describe("api/queries/dashboard", () => {
     expect(mockFetchTodayMedicationSchedules).toHaveBeenCalledTimes(1);
   });
 
-  it("복수 recordId mutation은 onMutate에서 일괄 낙관적 업데이트하고 부분 실패 시 성공분만 유지한다", async () => {
-    mockUpdateMedicationRecord
-      .mockResolvedValueOnce({})
-      .mockRejectedValueOnce(new Error("network error"));
+  it("복수 recordId mutation은 하나의 요청으로 처리하고 onMutate에서 일괄 낙관적 업데이트한다", async () => {
+    mockUpdateMedicationRecords.mockResolvedValueOnce({
+      recordIds: [1, 2],
+      status: "SUCCESS",
+    });
 
     const { result } = renderHook(() => useMarkMedicationRecordsMutation());
     const mutation = result.current as unknown as {
-      mutationFn: (params: {
-        recordIds: readonly number[];
-        body: { status: "SUCCESS" };
-      }) => Promise<PromiseSettledResult<unknown>[]>;
+      mutationFn: (params: { recordIds: readonly number[]; status: "SUCCESS" }) => Promise<unknown>;
       onMutate: (params: {
         recordIds: readonly number[];
-        body: { status: "SUCCESS" };
+        status: "SUCCESS";
       }) => Promise<{ previousData: TodayMedicationSchedulesResponse | undefined }>;
-      onSuccess: (
-        results: PromiseSettledResult<unknown>[],
-        params: { recordIds: readonly number[]; body: { status: "SUCCESS" } },
-        context: { previousData: TodayMedicationSchedulesResponse | undefined },
-      ) => void;
       onSettled: () => Promise<void>;
     };
 
-    const results = await mutation.mutationFn({
+    await mutation.mutationFn({ recordIds: [1, 2], status: "SUCCESS" });
+    expect(mockUpdateMedicationRecords).toHaveBeenCalledWith({
       recordIds: [1, 2],
-      body: { status: "SUCCESS" },
+      status: "SUCCESS",
     });
-    expect(results).toHaveLength(2);
 
-    const context = await mutation.onMutate({ recordIds: [1, 2], body: { status: "SUCCESS" } });
+    await mutation.onMutate({ recordIds: [1, 2], status: "SUCCESS" });
     expect(mockSetQueryData).toHaveBeenCalledWith(
       queryKeys.dashboard.todayMedicationSchedules,
       expect.objectContaining({
         summary: expect.objectContaining({ completedCount: 2 }),
-      }),
-    );
-
-    mutation.onSuccess(results, { recordIds: [1, 2], body: { status: "SUCCESS" } }, context);
-    expect(mockSetQueryData).toHaveBeenLastCalledWith(
-      queryKeys.dashboard.todayMedicationSchedules,
-      expect.objectContaining({
-        summary: expect.objectContaining({ completedCount: 1 }),
       }),
     );
 
@@ -137,37 +121,30 @@ describe("api/queries/dashboard", () => {
     });
   });
 
-  it("복수 recordId mutation은 전부 실패하면 onError에서 롤백한다", async () => {
-    mockUpdateMedicationRecord.mockRejectedValue(new Error("network error"));
+  it("mutation이 실패하면 onError에서 낙관적 업데이트를 롤백한다", async () => {
+    mockUpdateMedicationRecords.mockRejectedValue(new Error("network error"));
 
     const { result } = renderHook(() => useMarkMedicationRecordsMutation());
     const mutation = result.current as unknown as {
-      mutationFn: (params: {
-        recordIds: readonly number[];
-        body: { status: "SUCCESS" };
-      }) => Promise<unknown>;
+      mutationFn: (params: { recordIds: readonly number[]; status: "SUCCESS" }) => Promise<unknown>;
       onMutate: (params: {
         recordIds: readonly number[];
-        body: { status: "SUCCESS" };
+        status: "SUCCESS";
       }) => Promise<{ previousData: TodayMedicationSchedulesResponse | undefined }>;
       onError: (
         error: unknown,
-        params: { recordIds: readonly number[]; body: { status: "SUCCESS" } },
+        params: { recordIds: readonly number[]; status: "SUCCESS" },
         context: { previousData: TodayMedicationSchedulesResponse | undefined },
       ) => void;
     };
 
-    const context = await mutation.onMutate({ recordIds: [1, 2], body: { status: "SUCCESS" } });
+    const context = await mutation.onMutate({ recordIds: [1, 2], status: "SUCCESS" });
 
-    await expect(
-      mutation.mutationFn({ recordIds: [1, 2], body: { status: "SUCCESS" } }),
-    ).rejects.toThrow("network error");
-
-    mutation.onError(
-      new Error("network error"),
-      { recordIds: [1, 2], body: { status: "SUCCESS" } },
-      context,
+    await expect(mutation.mutationFn({ recordIds: [1, 2], status: "SUCCESS" })).rejects.toThrow(
+      "network error",
     );
+
+    mutation.onError(new Error("network error"), { recordIds: [1, 2], status: "SUCCESS" }, context);
     expect(mockSetQueryData).toHaveBeenLastCalledWith(
       queryKeys.dashboard.todayMedicationSchedules,
       todaySchedulesData,

@@ -10,7 +10,7 @@ export interface MedicationRecordsSummary {
 }
 
 export interface MedicationRecordItem {
-  readonly recordId: number;
+  readonly recordIds: readonly number[];
   readonly prescriptionTitle: string;
   readonly medicationNames: readonly string[];
   readonly scheduledTime: string;

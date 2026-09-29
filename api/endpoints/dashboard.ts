@@ -10,11 +10,10 @@ export async function fetchTodayMedicationSchedules(): Promise<TodayMedicationSc
   return api.get(apiPaths.medicationRecordsToday).json<TodayMedicationSchedulesResponse>();
 }
 
-export async function updateMedicationRecord(
-  recordId: number,
+export async function updateMedicationRecords(
   body: UpdateMedicationRecordRequest,
 ): Promise<UpdateMedicationRecordResponse> {
   return api
-    .patch(apiPaths.medicationRecord(recordId), { json: body })
+    .patch(apiPaths.medicationRecords, { json: body })
     .json<UpdateMedicationRecordResponse>();
 }
