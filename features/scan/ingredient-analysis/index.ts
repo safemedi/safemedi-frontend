@@ -1,0 +1,1 @@
+export { IngredientAnalysisScreen } from "./IngredientAnalysisScreen";

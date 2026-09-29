@@ -4,22 +4,42 @@
     "slug": "safeMedi",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/android/android-icon.png",
     "scheme": "safemedi",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "icon": "./assets/ios/ios-icon.png",
+      "supportsTablet": true,
+      "bundleIdentifier": "com.safemedi",
+      "infoPlist": {
+        "NSCameraUsageDescription": "처방전을 촬영하려면 카메라 접근 권한이 필요합니다.",
+        "NSPhotoLibraryUsageDescription": "처방전 이미지를 선택하려면 사진 접근 권한이 필요합니다."
+      }
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+        "backgroundColor": "#6FAFBD",
+        "foregroundImage": "./assets/android/android-icon-foreground.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "permissions": ["android.permission.RECORD_AUDIO", "android.permission.POST_NOTIFICATIONS"],
+      "package": "com.safemedi",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "35.223.15.211.nip.io",
+              "pathPrefix": "/invite"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
     },
     "web": {
       "output": "static",
@@ -28,21 +48,40 @@
     "plugins": [
       "expo-router",
       [
+        "expo-image-picker",
+        {
+          "photosPermission": "처방전 이미지를 선택하려면 사진 접근 권한이 필요합니다.",
+          "cameraPermission": "처방전을 촬영하려면 카메라 접근 권한이 필요합니다."
+        }
+      ],
+      [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
+          "image": "./assets/android/android-splash-logo.png",
+          "imageWidth": 140,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff",
-          "dark": {
-            "backgroundColor": "#000000"
-          }
+          "backgroundColor": "#ffffff"
         }
-      ]
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/android/android-notification-icon.png",
+          "color": "#00C950"
+        }
+      ],
+      "expo-build-properties"
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "39c34ca4-00cd-426d-b1d3-f1c56850f305"
+      }
+    },
+    "owner": "gunhee.jo"
   }
 }

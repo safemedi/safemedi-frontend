@@ -1,0 +1,30 @@
+---
+description: Jest·Testing Library 테스트 규칙
+globs: "**/*.{test,spec}.{ts,tsx}"
+alwaysApply: false
+---
+
+# 테스트
+
+- 러너: Jest (`jest-expo`), `@testing-library/react-native`
+- 설명·it 이름: **한국어** (`"데이터가 없으면 기본값을 반환한다"`)
+- co-locate: `__tests__/` 또는 `*.test.ts(x)`를 대상 코드 옆에
+
+## ViewModel / hook 테스트
+
+- `@/api/queries/*` 등은 `jest.mock`으로 격리
+- mock 반환 타입: `as unknown as ReturnType<typeof hook>` 패턴 사용 (기존 테스트와 동일)
+
+## Screen 테스트
+
+- 네비게이션·store·query는 mock 후 UI·상호작용·분기 검증
+
+## 커버리지
+
+- `jest.config.js` global threshold 60% (lines, statements, functions, branches)
+- mock-only 폴더(`api/mock/`) 등은 collectCoverageFrom에서 제외됨
+
+## 작성 원칙
+
+- 의미 있는 동작만 검증. 구현 디테일·스냅샷 남용 지양
+- 사용자가 테스트 추가를 요청하지 않으면, 버그 수정 시 관련 최소 테스트만 추가

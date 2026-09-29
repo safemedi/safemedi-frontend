@@ -1,0 +1,106 @@
+name: EAS Preview Build
+
+on:
+  push:
+    branches:
+      - "release/**"
+  workflow_dispatch:
+
+concurrency:
+  group: eas-preview-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-android-preview:
+    name: Android preview APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+    environment:
+      name: preview
+      url: ${{ steps.eas_build.outputs.install_url }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: yarn
+
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Run lint
+        run: yarn lint
+
+      - name: Run tests
+        run: yarn test
+
+      - name: Build Android preview
+        id: eas_build
+        run: |
+          eas build --platform android --profile preview --non-interactive --json > eas-build.json
+
+          node <<'NODE' >> "$GITHUB_OUTPUT"
+          const fs = require("node:fs");
+          const { execFileSync } = require("node:child_process");
+
+          const raw = fs.readFileSync("eas-build.json", "utf8");
+          const parsed = JSON.parse(raw);
+          let build = Array.isArray(parsed) ? parsed[0] : parsed;
+
+          if (build?.id) {
+            try {
+              const detailsRaw = execFileSync("eas", ["build:view", build.id, "--json"], {
+                encoding: "utf8",
+              });
+              build = JSON.parse(detailsRaw);
+            } catch (error) {
+              console.error("Failed to fetch EAS build details", error);
+            }
+          }
+
+          const artifacts = build?.artifacts ?? {};
+          const installUrl =
+            artifacts.buildUrl ??
+            artifacts.applicationArchiveUrl ??
+            build?.applicationArchiveUrl ??
+            build?.buildUrl ??
+            "";
+          const owner = build?.project?.ownerAccount?.name;
+          const projectName = build?.project?.name;
+          const detailsUrl =
+            build?.buildDetailsPageUrl ??
+            build?.expoBuildUrl ??
+            (owner && projectName && build?.id
+              ? `https://expo.dev/accounts/${owner}/projects/${projectName}/builds/${build.id}`
+              : "");
+
+          console.log(`install_url=${installUrl}`);
+          console.log(`details_url=${detailsUrl}`);
+          NODE
+
+      - name: Send deployment status to Discord
+        if: success()
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          title: "SafeMedi EAS Preview 배포 성공"
+          description: |
+            설치 URL: ${{ steps.eas_build.outputs.install_url }}
+            빌드 상세: ${{ steps.eas_build.outputs.details_url }}
+            커밋: ${{ github.sha }}
+            작성자: ${{ github.actor }}
+          color: 0x00FF00

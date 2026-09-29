@@ -1,0 +1,1 @@
+export { MedicationManagementTab } from "./MedicationManagementTab";

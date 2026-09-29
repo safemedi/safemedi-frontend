@@ -1,15 +1,16 @@
 import { defaultConfig } from "@tamagui/config/v5";
+import { animationsReanimated } from "@tamagui/config/v5-reanimated";
 import { createTamagui } from "tamagui";
-
 import { palette } from "./constants/design-tokens";
 
-function semanticTheme(mode: "light" | "dark") {
-  const p = palette[mode];
+function semanticTheme() {
+  const p = palette;
   return {
     background: p.background,
     backgroundHover: p.background,
     backgroundPress: p.background,
     backgroundFocus: p.background,
+    backgroundGreen: p.green,
     color: p.text,
     color12: p.text,
     accentBackground: p.tint,
@@ -22,15 +23,16 @@ function semanticTheme(mode: "light" | "dark") {
 
 export const tamaguiConfig = createTamagui({
   ...defaultConfig,
+  animations: animationsReanimated,
   themes: {
     ...defaultConfig.themes,
     light: {
       ...defaultConfig.themes.light,
-      ...semanticTheme("light"),
+      ...semanticTheme(),
     },
     dark: {
       ...defaultConfig.themes.dark,
-      ...semanticTheme("dark"),
+      ...semanticTheme(),
     },
   },
 });

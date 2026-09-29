@@ -1,0 +1,1 @@
+export { InviteAcceptScreen } from "./InviteAcceptScreen";

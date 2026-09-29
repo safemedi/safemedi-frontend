@@ -26068,8 +26068,8 @@
     },
     "themes": {
       "dark": {
-        "accentBackground": "#ffffff",
-        "accentColor": "#ffffff",
+        "accentBackground": "#0a7ea4",
+        "accentColor": "#0a7ea4",
         "background0": "hsla(0, 0%, 4%, 0)",
         "background02": "hsla(0, 0%, 8%, 0.2)",
         "background04": "hsla(0, 0%, 8%, 0.4)",
@@ -26086,26 +26086,26 @@
         "color9": "hsla(0, 0%, 52%, 1)",
         "color10": "hsla(0, 0%, 67%, 1)",
         "color11": "hsla(0, 0%, 80%, 1)",
-        "color12": "#ECEDEE",
+        "color12": "#11181C",
         "color0": "hsla(0, 0%, 100%, 0)",
         "color02": "hsla(0, 0%, 100%, 0.2)",
         "color04": "hsla(0, 0%, 100%, 0.4)",
         "color06": "hsla(0, 0%, 100%, 0.6)",
         "color08": "hsla(0, 0%, 100%, 0.8)",
-        "color": "#ECEDEE",
+        "color": "#11181C",
         "colorHover": "hsla(0, 0%, 100%, 0.8)",
         "colorPress": "hsla(0, 0%, 100%, 1)",
         "colorFocus": "hsla(0, 0%, 80%, 1)",
-        "background": "#151718",
-        "backgroundHover": "#151718",
-        "backgroundPress": "#151718",
-        "backgroundFocus": "#151718",
+        "background": "#ffffff",
+        "backgroundHover": "#ffffff",
+        "backgroundPress": "#ffffff",
+        "backgroundFocus": "#ffffff",
         "backgroundActive": "hsla(0, 0%, 8%, 1)",
-        "borderColor": "#9BA1A6",
-        "borderColorHover": "#9BA1A6",
+        "borderColor": "#4A5565",
+        "borderColorHover": "#4A5565",
         "borderColorFocus": "hsla(0, 0%, 14%, 1)",
         "borderColorPress": "hsla(0, 0%, 10%, 1)",
-        "placeholderColor": "#9BA1A6",
+        "placeholderColor": "#4A5565",
         "colorTransparent": "hsla(0, 0%, 100%, 0)",
         "black1": "#090909",
         "black2": "#151515",
@@ -26305,11 +26305,12 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark"
       },
       "dark_Button": {
-        "accentBackground": "#ffffff",
-        "accentColor": "#ffffff",
+        "accentBackground": "#0a7ea4",
+        "accentColor": "#0a7ea4",
         "background0": "hsla(0, 0%, 4%, 0)",
         "background02": "hsla(0, 0%, 8%, 0.2)",
         "background04": "hsla(0, 0%, 8%, 0.4)",
@@ -26326,7 +26327,7 @@
         "color9": "hsla(0, 0%, 52%, 1)",
         "color10": "hsla(0, 0%, 67%, 1)",
         "color11": "hsla(0, 0%, 80%, 1)",
-        "color12": "#ECEDEE",
+        "color12": "#11181C",
         "color0": "hsla(0, 0%, 100%, 0)",
         "color02": "hsla(0, 0%, 100%, 0.2)",
         "color04": "hsla(0, 0%, 100%, 0.4)",
@@ -26345,7 +26346,7 @@
         "borderColorHover": "hsla(0, 0%, 40%, 1)",
         "borderColorFocus": "hsla(0, 0%, 27%, 1)",
         "borderColorPress": "hsla(0, 0%, 20%, 1)",
-        "placeholderColor": "#9BA1A6",
+        "placeholderColor": "#4A5565",
         "colorTransparent": "hsla(0, 0%, 100%, 0)",
         "black1": "#090909",
         "black2": "#151515",
@@ -26545,11 +26546,12 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_Button"
       },
       "dark_SliderThumb": {
-        "accentBackground": "#ffffff",
-        "accentColor": "#ffffff",
+        "accentBackground": "#0a7ea4",
+        "accentColor": "#0a7ea4",
         "background0": "hsla(0, 0%, 4%, 0)",
         "background02": "hsla(0, 0%, 8%, 0.2)",
         "background04": "hsla(0, 0%, 8%, 0.4)",
@@ -26566,7 +26568,7 @@
         "color9": "hsla(0, 0%, 52%, 1)",
         "color10": "hsla(0, 0%, 67%, 1)",
         "color11": "hsla(0, 0%, 80%, 1)",
-        "color12": "#ECEDEE",
+        "color12": "#11181C",
         "color0": "hsla(0, 0%, 100%, 0)",
         "color02": "hsla(0, 0%, 100%, 0.2)",
         "color04": "hsla(0, 0%, 100%, 0.4)",
@@ -26585,7 +26587,7 @@
         "borderColorHover": "hsla(0, 0%, 40%, 1)",
         "borderColorFocus": "hsla(0, 0%, 27%, 1)",
         "borderColorPress": "hsla(0, 0%, 20%, 1)",
-        "placeholderColor": "#9BA1A6",
+        "placeholderColor": "#4A5565",
         "colorTransparent": "hsla(0, 0%, 100%, 0)",
         "black1": "#090909",
         "black2": "#151515",
@@ -26785,11 +26787,12 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_SliderThumb"
       },
       "dark_Switch": {
-        "accentBackground": "#ffffff",
-        "accentColor": "#ffffff",
+        "accentBackground": "#0a7ea4",
+        "accentColor": "#0a7ea4",
         "background0": "hsla(0, 0%, 4%, 0)",
         "background02": "hsla(0, 0%, 8%, 0.2)",
         "background04": "hsla(0, 0%, 8%, 0.4)",
@@ -26806,7 +26809,7 @@
         "color9": "hsla(0, 0%, 52%, 1)",
         "color10": "hsla(0, 0%, 67%, 1)",
         "color11": "hsla(0, 0%, 80%, 1)",
-        "color12": "#ECEDEE",
+        "color12": "#11181C",
         "color0": "hsla(0, 0%, 100%, 0)",
         "color02": "hsla(0, 0%, 100%, 0.2)",
         "color04": "hsla(0, 0%, 100%, 0.4)",
@@ -26825,7 +26828,7 @@
         "borderColorHover": "hsla(0, 0%, 40%, 1)",
         "borderColorFocus": "hsla(0, 0%, 27%, 1)",
         "borderColorPress": "hsla(0, 0%, 20%, 1)",
-        "placeholderColor": "#9BA1A6",
+        "placeholderColor": "#4A5565",
         "colorTransparent": "hsla(0, 0%, 100%, 0)",
         "black1": "#090909",
         "black2": "#151515",
@@ -27025,6 +27028,7 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_Switch"
       },
       "dark_black_Button": {
@@ -27265,6 +27269,7 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_black_Button"
       },
       "dark_black_SliderThumb": {
@@ -27505,6 +27510,7 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_black_SliderThumb"
       },
       "dark_black_Switch": {
@@ -27745,6 +27751,7 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_black_Switch"
       },
       "dark_black_surface2": {
@@ -27985,11 +27992,12 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_black_surface2"
       },
       "dark_surface2": {
-        "accentBackground": "#ffffff",
-        "accentColor": "#ffffff",
+        "accentBackground": "#0a7ea4",
+        "accentColor": "#0a7ea4",
         "background0": "hsla(0, 0%, 4%, 0)",
         "background02": "hsla(0, 0%, 8%, 0.2)",
         "background04": "hsla(0, 0%, 8%, 0.4)",
@@ -28006,7 +28014,7 @@
         "color9": "hsla(0, 0%, 52%, 1)",
         "color10": "hsla(0, 0%, 67%, 1)",
         "color11": "hsla(0, 0%, 80%, 1)",
-        "color12": "#ECEDEE",
+        "color12": "#11181C",
         "color0": "hsla(0, 0%, 100%, 0)",
         "color02": "hsla(0, 0%, 100%, 0.2)",
         "color04": "hsla(0, 0%, 100%, 0.4)",
@@ -28025,7 +28033,7 @@
         "borderColorHover": "hsla(0, 0%, 40%, 1)",
         "borderColorFocus": "hsla(0, 0%, 27%, 1)",
         "borderColorPress": "hsla(0, 0%, 20%, 1)",
-        "placeholderColor": "#9BA1A6",
+        "placeholderColor": "#4A5565",
         "colorTransparent": "hsla(0, 0%, 100%, 0)",
         "black1": "#090909",
         "black2": "#151515",
@@ -28225,11 +28233,12 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_surface2"
       },
       "dark_Input": {
-        "accentBackground": "#ffffff",
-        "accentColor": "#ffffff",
+        "accentBackground": "#0a7ea4",
+        "accentColor": "#0a7ea4",
         "background0": "hsla(0, 0%, 4%, 0)",
         "background02": "hsla(0, 0%, 8%, 0.2)",
         "background04": "hsla(0, 0%, 8%, 0.4)",
@@ -28246,7 +28255,7 @@
         "color9": "hsla(0, 0%, 52%, 1)",
         "color10": "hsla(0, 0%, 67%, 1)",
         "color11": "hsla(0, 0%, 80%, 1)",
-        "color12": "#ECEDEE",
+        "color12": "#11181C",
         "color0": "hsla(0, 0%, 100%, 0)",
         "color02": "hsla(0, 0%, 100%, 0.2)",
         "color04": "hsla(0, 0%, 100%, 0.4)",
@@ -28265,7 +28274,7 @@
         "borderColorHover": "hsla(0, 0%, 27%, 1)",
         "borderColorFocus": "hsla(0, 0%, 20%, 1)",
         "borderColorPress": "hsla(0, 0%, 14%, 1)",
-        "placeholderColor": "#9BA1A6",
+        "placeholderColor": "#4A5565",
         "colorTransparent": "hsla(0, 0%, 100%, 0)",
         "black1": "#090909",
         "black2": "#151515",
@@ -28465,11 +28474,12 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_Input"
       },
       "dark_Progress": {
-        "accentBackground": "#ffffff",
-        "accentColor": "#ffffff",
+        "accentBackground": "#0a7ea4",
+        "accentColor": "#0a7ea4",
         "background0": "hsla(0, 0%, 4%, 0)",
         "background02": "hsla(0, 0%, 8%, 0.2)",
         "background04": "hsla(0, 0%, 8%, 0.4)",
@@ -28486,7 +28496,7 @@
         "color9": "hsla(0, 0%, 52%, 1)",
         "color10": "hsla(0, 0%, 67%, 1)",
         "color11": "hsla(0, 0%, 80%, 1)",
-        "color12": "#ECEDEE",
+        "color12": "#11181C",
         "color0": "hsla(0, 0%, 100%, 0)",
         "color02": "hsla(0, 0%, 100%, 0.2)",
         "color04": "hsla(0, 0%, 100%, 0.4)",
@@ -28505,7 +28515,7 @@
         "borderColorHover": "hsla(0, 0%, 27%, 1)",
         "borderColorFocus": "hsla(0, 0%, 20%, 1)",
         "borderColorPress": "hsla(0, 0%, 14%, 1)",
-        "placeholderColor": "#9BA1A6",
+        "placeholderColor": "#4A5565",
         "colorTransparent": "hsla(0, 0%, 100%, 0)",
         "black1": "#090909",
         "black2": "#151515",
@@ -28705,11 +28715,12 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_Progress"
       },
       "dark_Slider": {
-        "accentBackground": "#ffffff",
-        "accentColor": "#ffffff",
+        "accentBackground": "#0a7ea4",
+        "accentColor": "#0a7ea4",
         "background0": "hsla(0, 0%, 4%, 0)",
         "background02": "hsla(0, 0%, 8%, 0.2)",
         "background04": "hsla(0, 0%, 8%, 0.4)",
@@ -28726,7 +28737,7 @@
         "color9": "hsla(0, 0%, 52%, 1)",
         "color10": "hsla(0, 0%, 67%, 1)",
         "color11": "hsla(0, 0%, 80%, 1)",
-        "color12": "#ECEDEE",
+        "color12": "#11181C",
         "color0": "hsla(0, 0%, 100%, 0)",
         "color02": "hsla(0, 0%, 100%, 0.2)",
         "color04": "hsla(0, 0%, 100%, 0.4)",
@@ -28745,7 +28756,7 @@
         "borderColorHover": "hsla(0, 0%, 27%, 1)",
         "borderColorFocus": "hsla(0, 0%, 20%, 1)",
         "borderColorPress": "hsla(0, 0%, 14%, 1)",
-        "placeholderColor": "#9BA1A6",
+        "placeholderColor": "#4A5565",
         "colorTransparent": "hsla(0, 0%, 100%, 0)",
         "black1": "#090909",
         "black2": "#151515",
@@ -28945,11 +28956,12 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_Slider"
       },
       "dark_TextArea": {
-        "accentBackground": "#ffffff",
-        "accentColor": "#ffffff",
+        "accentBackground": "#0a7ea4",
+        "accentColor": "#0a7ea4",
         "background0": "hsla(0, 0%, 4%, 0)",
         "background02": "hsla(0, 0%, 8%, 0.2)",
         "background04": "hsla(0, 0%, 8%, 0.4)",
@@ -28966,7 +28978,7 @@
         "color9": "hsla(0, 0%, 52%, 1)",
         "color10": "hsla(0, 0%, 67%, 1)",
         "color11": "hsla(0, 0%, 80%, 1)",
-        "color12": "#ECEDEE",
+        "color12": "#11181C",
         "color0": "hsla(0, 0%, 100%, 0)",
         "color02": "hsla(0, 0%, 100%, 0.2)",
         "color04": "hsla(0, 0%, 100%, 0.4)",
@@ -28985,7 +28997,7 @@
         "borderColorHover": "hsla(0, 0%, 27%, 1)",
         "borderColorFocus": "hsla(0, 0%, 20%, 1)",
         "borderColorPress": "hsla(0, 0%, 14%, 1)",
-        "placeholderColor": "#9BA1A6",
+        "placeholderColor": "#4A5565",
         "colorTransparent": "hsla(0, 0%, 100%, 0)",
         "black1": "#090909",
         "black2": "#151515",
@@ -29185,6 +29197,7 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_TextArea"
       },
       "dark_black_Input": {
@@ -29425,6 +29438,7 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_black_Input"
       },
       "dark_black_Progress": {
@@ -29665,6 +29679,7 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_black_Progress"
       },
       "dark_black_Slider": {
@@ -29905,6 +29920,7 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_black_Slider"
       },
       "dark_black_TextArea": {
@@ -30145,6 +30161,7 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_black_TextArea"
       },
       "dark_black_surface1": {
@@ -30385,11 +30402,12 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_black_surface1"
       },
       "dark_surface1": {
-        "accentBackground": "#ffffff",
-        "accentColor": "#ffffff",
+        "accentBackground": "#0a7ea4",
+        "accentColor": "#0a7ea4",
         "background0": "hsla(0, 0%, 4%, 0)",
         "background02": "hsla(0, 0%, 8%, 0.2)",
         "background04": "hsla(0, 0%, 8%, 0.4)",
@@ -30406,7 +30424,7 @@
         "color9": "hsla(0, 0%, 52%, 1)",
         "color10": "hsla(0, 0%, 67%, 1)",
         "color11": "hsla(0, 0%, 80%, 1)",
-        "color12": "#ECEDEE",
+        "color12": "#11181C",
         "color0": "hsla(0, 0%, 100%, 0)",
         "color02": "hsla(0, 0%, 100%, 0.2)",
         "color04": "hsla(0, 0%, 100%, 0.4)",
@@ -30425,7 +30443,7 @@
         "borderColorHover": "hsla(0, 0%, 27%, 1)",
         "borderColorFocus": "hsla(0, 0%, 20%, 1)",
         "borderColorPress": "hsla(0, 0%, 14%, 1)",
-        "placeholderColor": "#9BA1A6",
+        "placeholderColor": "#4A5565",
         "colorTransparent": "hsla(0, 0%, 100%, 0)",
         "black1": "#090909",
         "black2": "#151515",
@@ -30625,11 +30643,12 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_surface1"
       },
       "dark_ProgressIndicator": {
-        "accentBackground": "#ffffff",
-        "accentColor": "#ffffff",
+        "accentBackground": "#0a7ea4",
+        "accentColor": "#0a7ea4",
         "background0": "hsla(0, 0%, 4%, 0)",
         "background02": "hsla(0, 0%, 8%, 0.2)",
         "background04": "hsla(0, 0%, 8%, 0.4)",
@@ -30646,7 +30665,7 @@
         "color9": "hsla(0, 0%, 52%, 1)",
         "color10": "hsla(0, 0%, 67%, 1)",
         "color11": "hsla(0, 0%, 80%, 1)",
-        "color12": "#ECEDEE",
+        "color12": "#11181C",
         "color0": "hsla(0, 0%, 100%, 0)",
         "color02": "hsla(0, 0%, 100%, 0.2)",
         "color04": "hsla(0, 0%, 100%, 0.4)",
@@ -30665,7 +30684,7 @@
         "borderColorHover": "hsla(0, 0%, 52%, 1)",
         "borderColorFocus": "hsla(0, 0%, 47%, 1)",
         "borderColorPress": "hsla(0, 0%, 40%, 1)",
-        "placeholderColor": "#9BA1A6",
+        "placeholderColor": "#4A5565",
         "colorTransparent": "hsla(0, 0%, 100%, 0)",
         "black1": "#090909",
         "black2": "#151515",
@@ -30865,11 +30884,12 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_ProgressIndicator"
       },
       "dark_SliderActive": {
-        "accentBackground": "#ffffff",
-        "accentColor": "#ffffff",
+        "accentBackground": "#0a7ea4",
+        "accentColor": "#0a7ea4",
         "background0": "hsla(0, 0%, 4%, 0)",
         "background02": "hsla(0, 0%, 8%, 0.2)",
         "background04": "hsla(0, 0%, 8%, 0.4)",
@@ -30886,7 +30906,7 @@
         "color9": "hsla(0, 0%, 52%, 1)",
         "color10": "hsla(0, 0%, 67%, 1)",
         "color11": "hsla(0, 0%, 80%, 1)",
-        "color12": "#ECEDEE",
+        "color12": "#11181C",
         "color0": "hsla(0, 0%, 100%, 0)",
         "color02": "hsla(0, 0%, 100%, 0.2)",
         "color04": "hsla(0, 0%, 100%, 0.4)",
@@ -30905,7 +30925,7 @@
         "borderColorHover": "hsla(0, 0%, 52%, 1)",
         "borderColorFocus": "hsla(0, 0%, 47%, 1)",
         "borderColorPress": "hsla(0, 0%, 40%, 1)",
-        "placeholderColor": "#9BA1A6",
+        "placeholderColor": "#4A5565",
         "colorTransparent": "hsla(0, 0%, 100%, 0)",
         "black1": "#090909",
         "black2": "#151515",
@@ -31105,6 +31125,7 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_SliderActive"
       },
       "dark_black_ProgressIndicator": {
@@ -31345,6 +31366,7 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_black_ProgressIndicator"
       },
       "dark_black_SliderActive": {
@@ -31585,6 +31607,7 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_black_SliderActive"
       },
       "dark_SwitchThumb": {
@@ -31825,6 +31848,7 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_SwitchThumb"
       },
       "dark_Tooltip": {
@@ -32065,6 +32089,7 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_Tooltip"
       },
       "dark_black_SwitchThumb": {
@@ -32305,6 +32330,7 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_black_SwitchThumb"
       },
       "dark_black_Tooltip": {
@@ -32545,6 +32571,7 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_black_Tooltip"
       },
       "dark_black_accent": {
@@ -32785,6 +32812,7 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_black_accent"
       },
       "dark_accent": {
@@ -33025,6 +33053,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_accent"
       },
       "dark_black": {
@@ -33265,6 +33294,7 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_black"
       },
       "dark_blue": {
@@ -33505,6 +33535,7 @@
         "background002": "hsla(218, 39%, 11%, 0.02)",
         "background001": "hsla(218, 39%, 11%, 0.01)",
         "outlineColor": "hsla(209, 79%, 30%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_blue"
       },
       "dark_blue_Button": {
@@ -33745,6 +33776,7 @@
         "background002": "hsla(218, 39%, 11%, 0.02)",
         "background001": "hsla(218, 39%, 11%, 0.01)",
         "outlineColor": "hsla(209, 79%, 30%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_blue_Button"
       },
       "dark_blue_SliderThumb": {
@@ -33985,6 +34017,7 @@
         "background002": "hsla(218, 39%, 11%, 0.02)",
         "background001": "hsla(218, 39%, 11%, 0.01)",
         "outlineColor": "hsla(209, 79%, 30%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_blue_SliderThumb"
       },
       "dark_blue_Switch": {
@@ -34225,6 +34258,7 @@
         "background002": "hsla(218, 39%, 11%, 0.02)",
         "background001": "hsla(218, 39%, 11%, 0.01)",
         "outlineColor": "hsla(209, 79%, 30%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_blue_Switch"
       },
       "dark_blue_surface2": {
@@ -34465,6 +34499,7 @@
         "background002": "hsla(218, 39%, 11%, 0.02)",
         "background001": "hsla(218, 39%, 11%, 0.01)",
         "outlineColor": "hsla(209, 79%, 30%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_blue_surface2"
       },
       "dark_blue_Input": {
@@ -34705,6 +34740,7 @@
         "background002": "hsla(218, 39%, 11%, 0.02)",
         "background001": "hsla(218, 39%, 11%, 0.01)",
         "outlineColor": "hsla(209, 79%, 30%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_blue_Input"
       },
       "dark_blue_Progress": {
@@ -34945,6 +34981,7 @@
         "background002": "hsla(218, 39%, 11%, 0.02)",
         "background001": "hsla(218, 39%, 11%, 0.01)",
         "outlineColor": "hsla(209, 79%, 30%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_blue_Progress"
       },
       "dark_blue_Slider": {
@@ -35185,6 +35222,7 @@
         "background002": "hsla(218, 39%, 11%, 0.02)",
         "background001": "hsla(218, 39%, 11%, 0.01)",
         "outlineColor": "hsla(209, 79%, 30%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_blue_Slider"
       },
       "dark_blue_TextArea": {
@@ -35425,6 +35463,7 @@
         "background002": "hsla(218, 39%, 11%, 0.02)",
         "background001": "hsla(218, 39%, 11%, 0.01)",
         "outlineColor": "hsla(209, 79%, 30%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_blue_TextArea"
       },
       "dark_blue_surface1": {
@@ -35665,6 +35704,7 @@
         "background002": "hsla(218, 39%, 11%, 0.02)",
         "background001": "hsla(218, 39%, 11%, 0.01)",
         "outlineColor": "hsla(209, 79%, 30%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_blue_surface1"
       },
       "dark_blue_ProgressIndicator": {
@@ -35905,6 +35945,7 @@
         "background002": "hsla(218, 39%, 11%, 0.02)",
         "background001": "hsla(218, 39%, 11%, 0.01)",
         "outlineColor": "hsla(209, 79%, 30%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_blue_ProgressIndicator"
       },
       "dark_blue_SliderActive": {
@@ -36145,6 +36186,7 @@
         "background002": "hsla(218, 39%, 11%, 0.02)",
         "background001": "hsla(218, 39%, 11%, 0.01)",
         "outlineColor": "hsla(209, 79%, 30%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_blue_SliderActive"
       },
       "dark_blue_SwitchThumb": {
@@ -36385,6 +36427,7 @@
         "background002": "hsla(218, 39%, 11%, 0.02)",
         "background001": "hsla(218, 39%, 11%, 0.01)",
         "outlineColor": "hsla(209, 79%, 30%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_blue_SwitchThumb"
       },
       "dark_blue_Tooltip": {
@@ -36625,6 +36668,7 @@
         "background002": "hsla(218, 39%, 11%, 0.02)",
         "background001": "hsla(218, 39%, 11%, 0.01)",
         "outlineColor": "hsla(209, 79%, 30%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_blue_Tooltip"
       },
       "dark_blue_accent": {
@@ -36865,6 +36909,7 @@
         "background002": "hsla(218, 39%, 11%, 0.02)",
         "background001": "hsla(218, 39%, 11%, 0.01)",
         "outlineColor": "hsla(209, 79%, 30%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_blue_accent"
       },
       "dark_gray": {
@@ -37105,6 +37150,7 @@
         "background002": "hsla(0, 0%, 10%, 0.02)",
         "background001": "hsla(0, 0%, 10%, 0.01)",
         "outlineColor": "hsla(0, 0%, 23%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_gray"
       },
       "dark_gray_Button": {
@@ -37345,6 +37391,7 @@
         "background002": "hsla(0, 0%, 10%, 0.02)",
         "background001": "hsla(0, 0%, 10%, 0.01)",
         "outlineColor": "hsla(0, 0%, 23%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_gray_Button"
       },
       "dark_gray_SliderThumb": {
@@ -37585,6 +37632,7 @@
         "background002": "hsla(0, 0%, 10%, 0.02)",
         "background001": "hsla(0, 0%, 10%, 0.01)",
         "outlineColor": "hsla(0, 0%, 23%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_gray_SliderThumb"
       },
       "dark_gray_Switch": {
@@ -37825,6 +37873,7 @@
         "background002": "hsla(0, 0%, 10%, 0.02)",
         "background001": "hsla(0, 0%, 10%, 0.01)",
         "outlineColor": "hsla(0, 0%, 23%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_gray_Switch"
       },
       "dark_gray_surface2": {
@@ -38065,6 +38114,7 @@
         "background002": "hsla(0, 0%, 10%, 0.02)",
         "background001": "hsla(0, 0%, 10%, 0.01)",
         "outlineColor": "hsla(0, 0%, 23%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_gray_surface2"
       },
       "dark_gray_Input": {
@@ -38305,6 +38355,7 @@
         "background002": "hsla(0, 0%, 10%, 0.02)",
         "background001": "hsla(0, 0%, 10%, 0.01)",
         "outlineColor": "hsla(0, 0%, 23%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_gray_Input"
       },
       "dark_gray_Progress": {
@@ -38545,6 +38596,7 @@
         "background002": "hsla(0, 0%, 10%, 0.02)",
         "background001": "hsla(0, 0%, 10%, 0.01)",
         "outlineColor": "hsla(0, 0%, 23%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_gray_Progress"
       },
       "dark_gray_Slider": {
@@ -38785,6 +38837,7 @@
         "background002": "hsla(0, 0%, 10%, 0.02)",
         "background001": "hsla(0, 0%, 10%, 0.01)",
         "outlineColor": "hsla(0, 0%, 23%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_gray_Slider"
       },
       "dark_gray_TextArea": {
@@ -39025,6 +39078,7 @@
         "background002": "hsla(0, 0%, 10%, 0.02)",
         "background001": "hsla(0, 0%, 10%, 0.01)",
         "outlineColor": "hsla(0, 0%, 23%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_gray_TextArea"
       },
       "dark_gray_surface1": {
@@ -39265,6 +39319,7 @@
         "background002": "hsla(0, 0%, 10%, 0.02)",
         "background001": "hsla(0, 0%, 10%, 0.01)",
         "outlineColor": "hsla(0, 0%, 23%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_gray_surface1"
       },
       "dark_gray_ProgressIndicator": {
@@ -39505,6 +39560,7 @@
         "background002": "hsla(0, 0%, 10%, 0.02)",
         "background001": "hsla(0, 0%, 10%, 0.01)",
         "outlineColor": "hsla(0, 0%, 23%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_gray_ProgressIndicator"
       },
       "dark_gray_SliderActive": {
@@ -39745,6 +39801,7 @@
         "background002": "hsla(0, 0%, 10%, 0.02)",
         "background001": "hsla(0, 0%, 10%, 0.01)",
         "outlineColor": "hsla(0, 0%, 23%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_gray_SliderActive"
       },
       "dark_gray_SwitchThumb": {
@@ -39985,6 +40042,7 @@
         "background002": "hsla(0, 0%, 10%, 0.02)",
         "background001": "hsla(0, 0%, 10%, 0.01)",
         "outlineColor": "hsla(0, 0%, 23%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_gray_SwitchThumb"
       },
       "dark_gray_Tooltip": {
@@ -40225,6 +40283,7 @@
         "background002": "hsla(0, 0%, 10%, 0.02)",
         "background001": "hsla(0, 0%, 10%, 0.01)",
         "outlineColor": "hsla(0, 0%, 23%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_gray_Tooltip"
       },
       "dark_gray_accent": {
@@ -40465,6 +40524,7 @@
         "background002": "hsla(0, 0%, 10%, 0.02)",
         "background001": "hsla(0, 0%, 10%, 0.01)",
         "outlineColor": "hsla(0, 0%, 23%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_gray_accent"
       },
       "dark_green": {
@@ -40705,6 +40765,7 @@
         "background002": "hsla(153, 20%, 9%, 0.02)",
         "background001": "hsla(153, 20%, 9%, 0.01)",
         "outlineColor": "hsla(153, 46%, 23%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_green"
       },
       "dark_green_Button": {
@@ -40945,6 +41006,7 @@
         "background002": "hsla(153, 20%, 9%, 0.02)",
         "background001": "hsla(153, 20%, 9%, 0.01)",
         "outlineColor": "hsla(153, 46%, 23%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_green_Button"
       },
       "dark_green_SliderThumb": {
@@ -41185,6 +41247,7 @@
         "background002": "hsla(153, 20%, 9%, 0.02)",
         "background001": "hsla(153, 20%, 9%, 0.01)",
         "outlineColor": "hsla(153, 46%, 23%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_green_SliderThumb"
       },
       "dark_green_Switch": {
@@ -41425,6 +41488,7 @@
         "background002": "hsla(153, 20%, 9%, 0.02)",
         "background001": "hsla(153, 20%, 9%, 0.01)",
         "outlineColor": "hsla(153, 46%, 23%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_green_Switch"
       },
       "dark_green_surface2": {
@@ -41665,6 +41729,7 @@
         "background002": "hsla(153, 20%, 9%, 0.02)",
         "background001": "hsla(153, 20%, 9%, 0.01)",
         "outlineColor": "hsla(153, 46%, 23%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_green_surface2"
       },
       "dark_green_Input": {
@@ -41905,6 +41970,7 @@
         "background002": "hsla(153, 20%, 9%, 0.02)",
         "background001": "hsla(153, 20%, 9%, 0.01)",
         "outlineColor": "hsla(153, 46%, 23%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_green_Input"
       },
       "dark_green_Progress": {
@@ -42145,6 +42211,7 @@
         "background002": "hsla(153, 20%, 9%, 0.02)",
         "background001": "hsla(153, 20%, 9%, 0.01)",
         "outlineColor": "hsla(153, 46%, 23%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_green_Progress"
       },
       "dark_green_Slider": {
@@ -42385,6 +42452,7 @@
         "background002": "hsla(153, 20%, 9%, 0.02)",
         "background001": "hsla(153, 20%, 9%, 0.01)",
         "outlineColor": "hsla(153, 46%, 23%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_green_Slider"
       },
       "dark_green_TextArea": {
@@ -42625,6 +42693,7 @@
         "background002": "hsla(153, 20%, 9%, 0.02)",
         "background001": "hsla(153, 20%, 9%, 0.01)",
         "outlineColor": "hsla(153, 46%, 23%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_green_TextArea"
       },
       "dark_green_surface1": {
@@ -42865,6 +42934,7 @@
         "background002": "hsla(153, 20%, 9%, 0.02)",
         "background001": "hsla(153, 20%, 9%, 0.01)",
         "outlineColor": "hsla(153, 46%, 23%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_green_surface1"
       },
       "dark_green_ProgressIndicator": {
@@ -43105,6 +43175,7 @@
         "background002": "hsla(153, 20%, 9%, 0.02)",
         "background001": "hsla(153, 20%, 9%, 0.01)",
         "outlineColor": "hsla(153, 46%, 23%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_green_ProgressIndicator"
       },
       "dark_green_SliderActive": {
@@ -43345,6 +43416,7 @@
         "background002": "hsla(153, 20%, 9%, 0.02)",
         "background001": "hsla(153, 20%, 9%, 0.01)",
         "outlineColor": "hsla(153, 46%, 23%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_green_SliderActive"
       },
       "dark_green_SwitchThumb": {
@@ -43585,6 +43657,7 @@
         "background002": "hsla(153, 20%, 9%, 0.02)",
         "background001": "hsla(153, 20%, 9%, 0.01)",
         "outlineColor": "hsla(153, 46%, 23%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_green_SwitchThumb"
       },
       "dark_green_Tooltip": {
@@ -43825,6 +43898,7 @@
         "background002": "hsla(153, 20%, 9%, 0.02)",
         "background001": "hsla(153, 20%, 9%, 0.01)",
         "outlineColor": "hsla(153, 46%, 23%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_green_Tooltip"
       },
       "dark_green_accent": {
@@ -44065,6 +44139,7 @@
         "background002": "hsla(153, 20%, 9%, 0.02)",
         "background001": "hsla(153, 20%, 9%, 0.01)",
         "outlineColor": "hsla(153, 46%, 23%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_green_accent"
       },
       "dark_neutral": {
@@ -44305,6 +44380,7 @@
         "background002": "hsla(0, 0%, 65%, 0.02)",
         "background001": "hsla(0, 0%, 65%, 0.01)",
         "outlineColor": "hsla(0, 0%, 53%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_neutral"
       },
       "dark_neutral_Button": {
@@ -44545,6 +44621,7 @@
         "background002": "hsla(0, 0%, 65%, 0.02)",
         "background001": "hsla(0, 0%, 65%, 0.01)",
         "outlineColor": "hsla(0, 0%, 53%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_neutral_Button"
       },
       "dark_neutral_SliderThumb": {
@@ -44785,6 +44862,7 @@
         "background002": "hsla(0, 0%, 65%, 0.02)",
         "background001": "hsla(0, 0%, 65%, 0.01)",
         "outlineColor": "hsla(0, 0%, 53%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_neutral_SliderThumb"
       },
       "dark_neutral_Switch": {
@@ -45025,6 +45103,7 @@
         "background002": "hsla(0, 0%, 65%, 0.02)",
         "background001": "hsla(0, 0%, 65%, 0.01)",
         "outlineColor": "hsla(0, 0%, 53%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_neutral_Switch"
       },
       "dark_neutral_surface2": {
@@ -45265,6 +45344,7 @@
         "background002": "hsla(0, 0%, 65%, 0.02)",
         "background001": "hsla(0, 0%, 65%, 0.01)",
         "outlineColor": "hsla(0, 0%, 53%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_neutral_surface2"
       },
       "dark_neutral_Input": {
@@ -45505,6 +45585,7 @@
         "background002": "hsla(0, 0%, 65%, 0.02)",
         "background001": "hsla(0, 0%, 65%, 0.01)",
         "outlineColor": "hsla(0, 0%, 53%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_neutral_Input"
       },
       "dark_neutral_Progress": {
@@ -45745,6 +45826,7 @@
         "background002": "hsla(0, 0%, 65%, 0.02)",
         "background001": "hsla(0, 0%, 65%, 0.01)",
         "outlineColor": "hsla(0, 0%, 53%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_neutral_Progress"
       },
       "dark_neutral_Slider": {
@@ -45985,6 +46067,7 @@
         "background002": "hsla(0, 0%, 65%, 0.02)",
         "background001": "hsla(0, 0%, 65%, 0.01)",
         "outlineColor": "hsla(0, 0%, 53%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_neutral_Slider"
       },
       "dark_neutral_TextArea": {
@@ -46225,6 +46308,7 @@
         "background002": "hsla(0, 0%, 65%, 0.02)",
         "background001": "hsla(0, 0%, 65%, 0.01)",
         "outlineColor": "hsla(0, 0%, 53%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_neutral_TextArea"
       },
       "dark_neutral_surface1": {
@@ -46465,6 +46549,7 @@
         "background002": "hsla(0, 0%, 65%, 0.02)",
         "background001": "hsla(0, 0%, 65%, 0.01)",
         "outlineColor": "hsla(0, 0%, 53%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_neutral_surface1"
       },
       "dark_neutral_ProgressIndicator": {
@@ -46705,6 +46790,7 @@
         "background002": "hsla(0, 0%, 65%, 0.02)",
         "background001": "hsla(0, 0%, 65%, 0.01)",
         "outlineColor": "hsla(0, 0%, 53%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_neutral_ProgressIndicator"
       },
       "dark_neutral_SliderActive": {
@@ -46945,6 +47031,7 @@
         "background002": "hsla(0, 0%, 65%, 0.02)",
         "background001": "hsla(0, 0%, 65%, 0.01)",
         "outlineColor": "hsla(0, 0%, 53%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_neutral_SliderActive"
       },
       "dark_neutral_SwitchThumb": {
@@ -47185,6 +47272,7 @@
         "background002": "hsla(0, 0%, 65%, 0.02)",
         "background001": "hsla(0, 0%, 65%, 0.01)",
         "outlineColor": "hsla(0, 0%, 53%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_neutral_SwitchThumb"
       },
       "dark_neutral_Tooltip": {
@@ -47425,6 +47513,7 @@
         "background002": "hsla(0, 0%, 65%, 0.02)",
         "background001": "hsla(0, 0%, 65%, 0.01)",
         "outlineColor": "hsla(0, 0%, 53%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_neutral_Tooltip"
       },
       "dark_neutral_accent": {
@@ -47665,6 +47754,7 @@
         "background002": "hsla(0, 0%, 65%, 0.02)",
         "background001": "hsla(0, 0%, 65%, 0.01)",
         "outlineColor": "hsla(0, 0%, 53%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_neutral_accent"
       },
       "dark_orange": {
@@ -47905,6 +47995,7 @@
         "background002": "hsla(28, 33%, 9%, 0.02)",
         "background001": "hsla(28, 33%, 9%, 0.01)",
         "outlineColor": "hsla(27, 79%, 22%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_orange"
       },
       "dark_orange_Button": {
@@ -48145,6 +48236,7 @@
         "background002": "hsla(28, 33%, 9%, 0.02)",
         "background001": "hsla(28, 33%, 9%, 0.01)",
         "outlineColor": "hsla(27, 79%, 22%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_orange_Button"
       },
       "dark_orange_SliderThumb": {
@@ -48385,6 +48477,7 @@
         "background002": "hsla(28, 33%, 9%, 0.02)",
         "background001": "hsla(28, 33%, 9%, 0.01)",
         "outlineColor": "hsla(27, 79%, 22%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_orange_SliderThumb"
       },
       "dark_orange_Switch": {
@@ -48625,6 +48718,7 @@
         "background002": "hsla(28, 33%, 9%, 0.02)",
         "background001": "hsla(28, 33%, 9%, 0.01)",
         "outlineColor": "hsla(27, 79%, 22%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_orange_Switch"
       },
       "dark_orange_surface2": {
@@ -48865,6 +48959,7 @@
         "background002": "hsla(28, 33%, 9%, 0.02)",
         "background001": "hsla(28, 33%, 9%, 0.01)",
         "outlineColor": "hsla(27, 79%, 22%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_orange_surface2"
       },
       "dark_orange_Input": {
@@ -49105,6 +49200,7 @@
         "background002": "hsla(28, 33%, 9%, 0.02)",
         "background001": "hsla(28, 33%, 9%, 0.01)",
         "outlineColor": "hsla(27, 79%, 22%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_orange_Input"
       },
       "dark_orange_Progress": {
@@ -49345,6 +49441,7 @@
         "background002": "hsla(28, 33%, 9%, 0.02)",
         "background001": "hsla(28, 33%, 9%, 0.01)",
         "outlineColor": "hsla(27, 79%, 22%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_orange_Progress"
       },
       "dark_orange_Slider": {
@@ -49585,6 +49682,7 @@
         "background002": "hsla(28, 33%, 9%, 0.02)",
         "background001": "hsla(28, 33%, 9%, 0.01)",
         "outlineColor": "hsla(27, 79%, 22%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_orange_Slider"
       },
       "dark_orange_TextArea": {
@@ -49825,6 +49923,7 @@
         "background002": "hsla(28, 33%, 9%, 0.02)",
         "background001": "hsla(28, 33%, 9%, 0.01)",
         "outlineColor": "hsla(27, 79%, 22%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_orange_TextArea"
       },
       "dark_orange_surface1": {
@@ -50065,6 +50164,7 @@
         "background002": "hsla(28, 33%, 9%, 0.02)",
         "background001": "hsla(28, 33%, 9%, 0.01)",
         "outlineColor": "hsla(27, 79%, 22%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_orange_surface1"
       },
       "dark_orange_ProgressIndicator": {
@@ -50305,6 +50405,7 @@
         "background002": "hsla(28, 33%, 9%, 0.02)",
         "background001": "hsla(28, 33%, 9%, 0.01)",
         "outlineColor": "hsla(27, 79%, 22%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_orange_ProgressIndicator"
       },
       "dark_orange_SliderActive": {
@@ -50545,6 +50646,7 @@
         "background002": "hsla(28, 33%, 9%, 0.02)",
         "background001": "hsla(28, 33%, 9%, 0.01)",
         "outlineColor": "hsla(27, 79%, 22%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_orange_SliderActive"
       },
       "dark_orange_SwitchThumb": {
@@ -50785,6 +50887,7 @@
         "background002": "hsla(28, 33%, 9%, 0.02)",
         "background001": "hsla(28, 33%, 9%, 0.01)",
         "outlineColor": "hsla(27, 79%, 22%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_orange_SwitchThumb"
       },
       "dark_orange_Tooltip": {
@@ -51025,6 +51128,7 @@
         "background002": "hsla(28, 33%, 9%, 0.02)",
         "background001": "hsla(28, 33%, 9%, 0.01)",
         "outlineColor": "hsla(27, 79%, 22%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_orange_Tooltip"
       },
       "dark_orange_accent": {
@@ -51265,6 +51369,7 @@
         "background002": "hsla(28, 33%, 9%, 0.02)",
         "background001": "hsla(28, 33%, 9%, 0.01)",
         "outlineColor": "hsla(27, 79%, 22%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_orange_accent"
       },
       "dark_pink": {
@@ -51505,6 +51610,7 @@
         "background002": "hsla(316, 29%, 10%, 0.02)",
         "background001": "hsla(316, 29%, 10%, 0.01)",
         "outlineColor": "hsla(319, 44%, 29%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_pink"
       },
       "dark_pink_Button": {
@@ -51745,6 +51851,7 @@
         "background002": "hsla(316, 29%, 10%, 0.02)",
         "background001": "hsla(316, 29%, 10%, 0.01)",
         "outlineColor": "hsla(319, 44%, 29%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_pink_Button"
       },
       "dark_pink_SliderThumb": {
@@ -51985,6 +52092,7 @@
         "background002": "hsla(316, 29%, 10%, 0.02)",
         "background001": "hsla(316, 29%, 10%, 0.01)",
         "outlineColor": "hsla(319, 44%, 29%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_pink_SliderThumb"
       },
       "dark_pink_Switch": {
@@ -52225,6 +52333,7 @@
         "background002": "hsla(316, 29%, 10%, 0.02)",
         "background001": "hsla(316, 29%, 10%, 0.01)",
         "outlineColor": "hsla(319, 44%, 29%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_pink_Switch"
       },
       "dark_pink_surface2": {
@@ -52465,6 +52574,7 @@
         "background002": "hsla(316, 29%, 10%, 0.02)",
         "background001": "hsla(316, 29%, 10%, 0.01)",
         "outlineColor": "hsla(319, 44%, 29%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_pink_surface2"
       },
       "dark_pink_Input": {
@@ -52705,6 +52815,7 @@
         "background002": "hsla(316, 29%, 10%, 0.02)",
         "background001": "hsla(316, 29%, 10%, 0.01)",
         "outlineColor": "hsla(319, 44%, 29%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_pink_Input"
       },
       "dark_pink_Progress": {
@@ -52945,6 +53056,7 @@
         "background002": "hsla(316, 29%, 10%, 0.02)",
         "background001": "hsla(316, 29%, 10%, 0.01)",
         "outlineColor": "hsla(319, 44%, 29%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_pink_Progress"
       },
       "dark_pink_Slider": {
@@ -53185,6 +53297,7 @@
         "background002": "hsla(316, 29%, 10%, 0.02)",
         "background001": "hsla(316, 29%, 10%, 0.01)",
         "outlineColor": "hsla(319, 44%, 29%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_pink_Slider"
       },
       "dark_pink_TextArea": {
@@ -53425,6 +53538,7 @@
         "background002": "hsla(316, 29%, 10%, 0.02)",
         "background001": "hsla(316, 29%, 10%, 0.01)",
         "outlineColor": "hsla(319, 44%, 29%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_pink_TextArea"
       },
       "dark_pink_surface1": {
@@ -53665,6 +53779,7 @@
         "background002": "hsla(316, 29%, 10%, 0.02)",
         "background001": "hsla(316, 29%, 10%, 0.01)",
         "outlineColor": "hsla(319, 44%, 29%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_pink_surface1"
       },
       "dark_pink_ProgressIndicator": {
@@ -53905,6 +54020,7 @@
         "background002": "hsla(316, 29%, 10%, 0.02)",
         "background001": "hsla(316, 29%, 10%, 0.01)",
         "outlineColor": "hsla(319, 44%, 29%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_pink_ProgressIndicator"
       },
       "dark_pink_SliderActive": {
@@ -54145,6 +54261,7 @@
         "background002": "hsla(316, 29%, 10%, 0.02)",
         "background001": "hsla(316, 29%, 10%, 0.01)",
         "outlineColor": "hsla(319, 44%, 29%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_pink_SliderActive"
       },
       "dark_pink_SwitchThumb": {
@@ -54385,6 +54502,7 @@
         "background002": "hsla(316, 29%, 10%, 0.02)",
         "background001": "hsla(316, 29%, 10%, 0.01)",
         "outlineColor": "hsla(319, 44%, 29%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_pink_SwitchThumb"
       },
       "dark_pink_Tooltip": {
@@ -54625,6 +54743,7 @@
         "background002": "hsla(316, 29%, 10%, 0.02)",
         "background001": "hsla(316, 29%, 10%, 0.01)",
         "outlineColor": "hsla(319, 44%, 29%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_pink_Tooltip"
       },
       "dark_pink_accent": {
@@ -54865,6 +54984,7 @@
         "background002": "hsla(316, 29%, 10%, 0.02)",
         "background001": "hsla(316, 29%, 10%, 0.01)",
         "outlineColor": "hsla(319, 44%, 29%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_pink_accent"
       },
       "dark_purple": {
@@ -55105,6 +55225,7 @@
         "background002": "hsla(279, 25%, 11%, 0.02)",
         "background001": "hsla(279, 25%, 11%, 0.01)",
         "outlineColor": "hsla(275, 35%, 31%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_purple"
       },
       "dark_purple_Button": {
@@ -55345,6 +55466,7 @@
         "background002": "hsla(279, 25%, 11%, 0.02)",
         "background001": "hsla(279, 25%, 11%, 0.01)",
         "outlineColor": "hsla(275, 35%, 31%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_purple_Button"
       },
       "dark_purple_SliderThumb": {
@@ -55585,6 +55707,7 @@
         "background002": "hsla(279, 25%, 11%, 0.02)",
         "background001": "hsla(279, 25%, 11%, 0.01)",
         "outlineColor": "hsla(275, 35%, 31%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_purple_SliderThumb"
       },
       "dark_purple_Switch": {
@@ -55825,6 +55948,7 @@
         "background002": "hsla(279, 25%, 11%, 0.02)",
         "background001": "hsla(279, 25%, 11%, 0.01)",
         "outlineColor": "hsla(275, 35%, 31%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_purple_Switch"
       },
       "dark_purple_surface2": {
@@ -56065,6 +56189,7 @@
         "background002": "hsla(279, 25%, 11%, 0.02)",
         "background001": "hsla(279, 25%, 11%, 0.01)",
         "outlineColor": "hsla(275, 35%, 31%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_purple_surface2"
       },
       "dark_purple_Input": {
@@ -56305,6 +56430,7 @@
         "background002": "hsla(279, 25%, 11%, 0.02)",
         "background001": "hsla(279, 25%, 11%, 0.01)",
         "outlineColor": "hsla(275, 35%, 31%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_purple_Input"
       },
       "dark_purple_Progress": {
@@ -56545,6 +56671,7 @@
         "background002": "hsla(279, 25%, 11%, 0.02)",
         "background001": "hsla(279, 25%, 11%, 0.01)",
         "outlineColor": "hsla(275, 35%, 31%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_purple_Progress"
       },
       "dark_purple_Slider": {
@@ -56785,6 +56912,7 @@
         "background002": "hsla(279, 25%, 11%, 0.02)",
         "background001": "hsla(279, 25%, 11%, 0.01)",
         "outlineColor": "hsla(275, 35%, 31%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_purple_Slider"
       },
       "dark_purple_TextArea": {
@@ -57025,6 +57153,7 @@
         "background002": "hsla(279, 25%, 11%, 0.02)",
         "background001": "hsla(279, 25%, 11%, 0.01)",
         "outlineColor": "hsla(275, 35%, 31%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_purple_TextArea"
       },
       "dark_purple_surface1": {
@@ -57265,6 +57394,7 @@
         "background002": "hsla(279, 25%, 11%, 0.02)",
         "background001": "hsla(279, 25%, 11%, 0.01)",
         "outlineColor": "hsla(275, 35%, 31%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_purple_surface1"
       },
       "dark_purple_ProgressIndicator": {
@@ -57505,6 +57635,7 @@
         "background002": "hsla(279, 25%, 11%, 0.02)",
         "background001": "hsla(279, 25%, 11%, 0.01)",
         "outlineColor": "hsla(275, 35%, 31%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_purple_ProgressIndicator"
       },
       "dark_purple_SliderActive": {
@@ -57745,6 +57876,7 @@
         "background002": "hsla(279, 25%, 11%, 0.02)",
         "background001": "hsla(279, 25%, 11%, 0.01)",
         "outlineColor": "hsla(275, 35%, 31%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_purple_SliderActive"
       },
       "dark_purple_SwitchThumb": {
@@ -57985,6 +58117,7 @@
         "background002": "hsla(279, 25%, 11%, 0.02)",
         "background001": "hsla(279, 25%, 11%, 0.01)",
         "outlineColor": "hsla(275, 35%, 31%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_purple_SwitchThumb"
       },
       "dark_purple_Tooltip": {
@@ -58225,6 +58358,7 @@
         "background002": "hsla(279, 25%, 11%, 0.02)",
         "background001": "hsla(279, 25%, 11%, 0.01)",
         "outlineColor": "hsla(275, 35%, 31%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_purple_Tooltip"
       },
       "dark_purple_accent": {
@@ -58465,6 +58599,7 @@
         "background002": "hsla(279, 25%, 11%, 0.02)",
         "background001": "hsla(279, 25%, 11%, 0.01)",
         "outlineColor": "hsla(275, 35%, 31%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_purple_accent"
       },
       "dark_red": {
@@ -58705,6 +58840,7 @@
         "background002": "hsla(355, 25%, 10%, 0.02)",
         "background001": "hsla(355, 25%, 10%, 0.01)",
         "outlineColor": "hsla(352, 53%, 29%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_red"
       },
       "dark_red_Button": {
@@ -58945,6 +59081,7 @@
         "background002": "hsla(355, 25%, 10%, 0.02)",
         "background001": "hsla(355, 25%, 10%, 0.01)",
         "outlineColor": "hsla(352, 53%, 29%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_red_Button"
       },
       "dark_red_SliderThumb": {
@@ -59185,6 +59322,7 @@
         "background002": "hsla(355, 25%, 10%, 0.02)",
         "background001": "hsla(355, 25%, 10%, 0.01)",
         "outlineColor": "hsla(352, 53%, 29%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_red_SliderThumb"
       },
       "dark_red_Switch": {
@@ -59425,6 +59563,7 @@
         "background002": "hsla(355, 25%, 10%, 0.02)",
         "background001": "hsla(355, 25%, 10%, 0.01)",
         "outlineColor": "hsla(352, 53%, 29%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_red_Switch"
       },
       "dark_red_surface2": {
@@ -59665,6 +59804,7 @@
         "background002": "hsla(355, 25%, 10%, 0.02)",
         "background001": "hsla(355, 25%, 10%, 0.01)",
         "outlineColor": "hsla(352, 53%, 29%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_red_surface2"
       },
       "dark_red_Input": {
@@ -59905,6 +60045,7 @@
         "background002": "hsla(355, 25%, 10%, 0.02)",
         "background001": "hsla(355, 25%, 10%, 0.01)",
         "outlineColor": "hsla(352, 53%, 29%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_red_Input"
       },
       "dark_red_Progress": {
@@ -60145,6 +60286,7 @@
         "background002": "hsla(355, 25%, 10%, 0.02)",
         "background001": "hsla(355, 25%, 10%, 0.01)",
         "outlineColor": "hsla(352, 53%, 29%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_red_Progress"
       },
       "dark_red_Slider": {
@@ -60385,6 +60527,7 @@
         "background002": "hsla(355, 25%, 10%, 0.02)",
         "background001": "hsla(355, 25%, 10%, 0.01)",
         "outlineColor": "hsla(352, 53%, 29%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_red_Slider"
       },
       "dark_red_TextArea": {
@@ -60625,6 +60768,7 @@
         "background002": "hsla(355, 25%, 10%, 0.02)",
         "background001": "hsla(355, 25%, 10%, 0.01)",
         "outlineColor": "hsla(352, 53%, 29%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_red_TextArea"
       },
       "dark_red_surface1": {
@@ -60865,6 +61009,7 @@
         "background002": "hsla(355, 25%, 10%, 0.02)",
         "background001": "hsla(355, 25%, 10%, 0.01)",
         "outlineColor": "hsla(352, 53%, 29%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_red_surface1"
       },
       "dark_red_ProgressIndicator": {
@@ -61105,6 +61250,7 @@
         "background002": "hsla(355, 25%, 10%, 0.02)",
         "background001": "hsla(355, 25%, 10%, 0.01)",
         "outlineColor": "hsla(352, 53%, 29%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_red_ProgressIndicator"
       },
       "dark_red_SliderActive": {
@@ -61345,6 +61491,7 @@
         "background002": "hsla(355, 25%, 10%, 0.02)",
         "background001": "hsla(355, 25%, 10%, 0.01)",
         "outlineColor": "hsla(352, 53%, 29%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_red_SliderActive"
       },
       "dark_red_SwitchThumb": {
@@ -61585,6 +61732,7 @@
         "background002": "hsla(355, 25%, 10%, 0.02)",
         "background001": "hsla(355, 25%, 10%, 0.01)",
         "outlineColor": "hsla(352, 53%, 29%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_red_SwitchThumb"
       },
       "dark_red_Tooltip": {
@@ -61825,6 +61973,7 @@
         "background002": "hsla(355, 25%, 10%, 0.02)",
         "background001": "hsla(355, 25%, 10%, 0.01)",
         "outlineColor": "hsla(352, 53%, 29%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_red_Tooltip"
       },
       "dark_red_accent": {
@@ -62065,6 +62214,7 @@
         "background002": "hsla(355, 25%, 10%, 0.02)",
         "background001": "hsla(355, 25%, 10%, 0.01)",
         "outlineColor": "hsla(352, 53%, 29%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_red_accent"
       },
       "dark_teal": {
@@ -62305,6 +62455,7 @@
         "background002": "hsla(175, 24%, 9%, 0.02)",
         "background001": "hsla(175, 24%, 9%, 0.01)",
         "outlineColor": "hsla(174, 63%, 21%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_teal"
       },
       "dark_teal_Button": {
@@ -62545,6 +62696,7 @@
         "background002": "hsla(175, 24%, 9%, 0.02)",
         "background001": "hsla(175, 24%, 9%, 0.01)",
         "outlineColor": "hsla(174, 63%, 21%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_teal_Button"
       },
       "dark_teal_SliderThumb": {
@@ -62785,6 +62937,7 @@
         "background002": "hsla(175, 24%, 9%, 0.02)",
         "background001": "hsla(175, 24%, 9%, 0.01)",
         "outlineColor": "hsla(174, 63%, 21%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_teal_SliderThumb"
       },
       "dark_teal_Switch": {
@@ -63025,6 +63178,7 @@
         "background002": "hsla(175, 24%, 9%, 0.02)",
         "background001": "hsla(175, 24%, 9%, 0.01)",
         "outlineColor": "hsla(174, 63%, 21%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_teal_Switch"
       },
       "dark_teal_surface2": {
@@ -63265,6 +63419,7 @@
         "background002": "hsla(175, 24%, 9%, 0.02)",
         "background001": "hsla(175, 24%, 9%, 0.01)",
         "outlineColor": "hsla(174, 63%, 21%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_teal_surface2"
       },
       "dark_teal_Input": {
@@ -63505,6 +63660,7 @@
         "background002": "hsla(175, 24%, 9%, 0.02)",
         "background001": "hsla(175, 24%, 9%, 0.01)",
         "outlineColor": "hsla(174, 63%, 21%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_teal_Input"
       },
       "dark_teal_Progress": {
@@ -63745,6 +63901,7 @@
         "background002": "hsla(175, 24%, 9%, 0.02)",
         "background001": "hsla(175, 24%, 9%, 0.01)",
         "outlineColor": "hsla(174, 63%, 21%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_teal_Progress"
       },
       "dark_teal_Slider": {
@@ -63985,6 +64142,7 @@
         "background002": "hsla(175, 24%, 9%, 0.02)",
         "background001": "hsla(175, 24%, 9%, 0.01)",
         "outlineColor": "hsla(174, 63%, 21%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_teal_Slider"
       },
       "dark_teal_TextArea": {
@@ -64225,6 +64383,7 @@
         "background002": "hsla(175, 24%, 9%, 0.02)",
         "background001": "hsla(175, 24%, 9%, 0.01)",
         "outlineColor": "hsla(174, 63%, 21%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_teal_TextArea"
       },
       "dark_teal_surface1": {
@@ -64465,6 +64624,7 @@
         "background002": "hsla(175, 24%, 9%, 0.02)",
         "background001": "hsla(175, 24%, 9%, 0.01)",
         "outlineColor": "hsla(174, 63%, 21%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_teal_surface1"
       },
       "dark_teal_ProgressIndicator": {
@@ -64705,6 +64865,7 @@
         "background002": "hsla(175, 24%, 9%, 0.02)",
         "background001": "hsla(175, 24%, 9%, 0.01)",
         "outlineColor": "hsla(174, 63%, 21%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_teal_ProgressIndicator"
       },
       "dark_teal_SliderActive": {
@@ -64945,6 +65106,7 @@
         "background002": "hsla(175, 24%, 9%, 0.02)",
         "background001": "hsla(175, 24%, 9%, 0.01)",
         "outlineColor": "hsla(174, 63%, 21%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_teal_SliderActive"
       },
       "dark_teal_SwitchThumb": {
@@ -65185,6 +65347,7 @@
         "background002": "hsla(175, 24%, 9%, 0.02)",
         "background001": "hsla(175, 24%, 9%, 0.01)",
         "outlineColor": "hsla(174, 63%, 21%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_teal_SwitchThumb"
       },
       "dark_teal_Tooltip": {
@@ -65425,6 +65588,7 @@
         "background002": "hsla(175, 24%, 9%, 0.02)",
         "background001": "hsla(175, 24%, 9%, 0.01)",
         "outlineColor": "hsla(174, 63%, 21%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_teal_Tooltip"
       },
       "dark_teal_accent": {
@@ -65665,6 +65829,7 @@
         "background002": "hsla(175, 24%, 9%, 0.02)",
         "background001": "hsla(175, 24%, 9%, 0.01)",
         "outlineColor": "hsla(174, 63%, 21%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_teal_accent"
       },
       "dark_white": {
@@ -65905,6 +66070,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_white"
       },
       "dark_white_Button": {
@@ -66145,6 +66311,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_white_Button"
       },
       "dark_white_SliderThumb": {
@@ -66385,6 +66552,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_white_SliderThumb"
       },
       "dark_white_Switch": {
@@ -66625,6 +66793,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_white_Switch"
       },
       "dark_white_surface2": {
@@ -66865,6 +67034,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_white_surface2"
       },
       "dark_white_Input": {
@@ -67105,6 +67275,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_white_Input"
       },
       "dark_white_Progress": {
@@ -67345,6 +67516,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_white_Progress"
       },
       "dark_white_Slider": {
@@ -67585,6 +67757,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_white_Slider"
       },
       "dark_white_TextArea": {
@@ -67825,6 +67998,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_white_TextArea"
       },
       "dark_white_surface1": {
@@ -68065,6 +68239,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_white_surface1"
       },
       "dark_white_ProgressIndicator": {
@@ -68305,6 +68480,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_white_ProgressIndicator"
       },
       "dark_white_SliderActive": {
@@ -68545,6 +68721,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_white_SliderActive"
       },
       "dark_white_SwitchThumb": {
@@ -68785,6 +68962,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_white_SwitchThumb"
       },
       "dark_white_Tooltip": {
@@ -69025,6 +69203,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_white_Tooltip"
       },
       "dark_white_accent": {
@@ -69265,6 +69444,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_white_accent"
       },
       "dark_yellow": {
@@ -69505,6 +69685,7 @@
         "background002": "hsla(45, 29%, 8%, 0.02)",
         "background001": "hsla(45, 29%, 8%, 0.01)",
         "outlineColor": "hsla(48, 95%, 16%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_yellow"
       },
       "dark_yellow_Button": {
@@ -69745,6 +69926,7 @@
         "background002": "hsla(45, 29%, 8%, 0.02)",
         "background001": "hsla(45, 29%, 8%, 0.01)",
         "outlineColor": "hsla(48, 95%, 16%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_yellow_Button"
       },
       "dark_yellow_SliderThumb": {
@@ -69985,6 +70167,7 @@
         "background002": "hsla(45, 29%, 8%, 0.02)",
         "background001": "hsla(45, 29%, 8%, 0.01)",
         "outlineColor": "hsla(48, 95%, 16%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_yellow_SliderThumb"
       },
       "dark_yellow_Switch": {
@@ -70225,6 +70408,7 @@
         "background002": "hsla(45, 29%, 8%, 0.02)",
         "background001": "hsla(45, 29%, 8%, 0.01)",
         "outlineColor": "hsla(48, 95%, 16%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_yellow_Switch"
       },
       "dark_yellow_surface2": {
@@ -70465,6 +70649,7 @@
         "background002": "hsla(45, 29%, 8%, 0.02)",
         "background001": "hsla(45, 29%, 8%, 0.01)",
         "outlineColor": "hsla(48, 95%, 16%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_yellow_surface2"
       },
       "dark_yellow_Input": {
@@ -70705,6 +70890,7 @@
         "background002": "hsla(45, 29%, 8%, 0.02)",
         "background001": "hsla(45, 29%, 8%, 0.01)",
         "outlineColor": "hsla(48, 95%, 16%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_yellow_Input"
       },
       "dark_yellow_Progress": {
@@ -70945,6 +71131,7 @@
         "background002": "hsla(45, 29%, 8%, 0.02)",
         "background001": "hsla(45, 29%, 8%, 0.01)",
         "outlineColor": "hsla(48, 95%, 16%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_yellow_Progress"
       },
       "dark_yellow_Slider": {
@@ -71185,6 +71372,7 @@
         "background002": "hsla(45, 29%, 8%, 0.02)",
         "background001": "hsla(45, 29%, 8%, 0.01)",
         "outlineColor": "hsla(48, 95%, 16%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_yellow_Slider"
       },
       "dark_yellow_TextArea": {
@@ -71425,6 +71613,7 @@
         "background002": "hsla(45, 29%, 8%, 0.02)",
         "background001": "hsla(45, 29%, 8%, 0.01)",
         "outlineColor": "hsla(48, 95%, 16%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_yellow_TextArea"
       },
       "dark_yellow_surface1": {
@@ -71665,6 +71854,7 @@
         "background002": "hsla(45, 29%, 8%, 0.02)",
         "background001": "hsla(45, 29%, 8%, 0.01)",
         "outlineColor": "hsla(48, 95%, 16%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_yellow_surface1"
       },
       "dark_yellow_ProgressIndicator": {
@@ -71905,6 +72095,7 @@
         "background002": "hsla(45, 29%, 8%, 0.02)",
         "background001": "hsla(45, 29%, 8%, 0.01)",
         "outlineColor": "hsla(48, 95%, 16%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_yellow_ProgressIndicator"
       },
       "dark_yellow_SliderActive": {
@@ -72145,6 +72336,7 @@
         "background002": "hsla(45, 29%, 8%, 0.02)",
         "background001": "hsla(45, 29%, 8%, 0.01)",
         "outlineColor": "hsla(48, 95%, 16%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_yellow_SliderActive"
       },
       "dark_yellow_SwitchThumb": {
@@ -72385,6 +72577,7 @@
         "background002": "hsla(45, 29%, 8%, 0.02)",
         "background001": "hsla(45, 29%, 8%, 0.01)",
         "outlineColor": "hsla(48, 95%, 16%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_yellow_SwitchThumb"
       },
       "dark_yellow_Tooltip": {
@@ -72625,6 +72818,7 @@
         "background002": "hsla(45, 29%, 8%, 0.02)",
         "background001": "hsla(45, 29%, 8%, 0.01)",
         "outlineColor": "hsla(48, 95%, 16%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_yellow_Tooltip"
       },
       "dark_yellow_accent": {
@@ -72865,6 +73059,7 @@
         "background002": "hsla(45, 29%, 8%, 0.02)",
         "background001": "hsla(45, 29%, 8%, 0.01)",
         "outlineColor": "hsla(48, 95%, 16%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "dark_yellow_accent"
       },
       "light": {
@@ -72901,11 +73096,11 @@
         "backgroundPress": "#ffffff",
         "backgroundFocus": "#ffffff",
         "backgroundActive": "hsla(0, 0%, 97%, 1)",
-        "borderColor": "#687076",
-        "borderColorHover": "#687076",
+        "borderColor": "#4A5565",
+        "borderColorHover": "#4A5565",
         "borderColorFocus": "hsla(0, 0%, 85%, 1)",
         "borderColorPress": "hsla(0, 0%, 80%, 1)",
-        "placeholderColor": "#687076",
+        "placeholderColor": "#4A5565",
         "colorTransparent": "hsla(0, 0%, 2%, 0)",
         "black1": "#090909",
         "black2": "#151515",
@@ -73105,6 +73300,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light"
       },
       "light_Button": {
@@ -73145,7 +73341,7 @@
         "borderColorHover": "hsla(0, 0%, 80%, 1)",
         "borderColorFocus": "hsla(0, 0%, 70%, 1)",
         "borderColorPress": "hsla(0, 0%, 59%, 1)",
-        "placeholderColor": "#687076",
+        "placeholderColor": "#4A5565",
         "colorTransparent": "hsla(0, 0%, 2%, 0)",
         "black1": "#090909",
         "black2": "#151515",
@@ -73345,6 +73541,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_Button"
       },
       "light_SliderThumb": {
@@ -73385,7 +73582,7 @@
         "borderColorHover": "hsla(0, 0%, 80%, 1)",
         "borderColorFocus": "hsla(0, 0%, 70%, 1)",
         "borderColorPress": "hsla(0, 0%, 59%, 1)",
-        "placeholderColor": "#687076",
+        "placeholderColor": "#4A5565",
         "colorTransparent": "hsla(0, 0%, 2%, 0)",
         "black1": "#090909",
         "black2": "#151515",
@@ -73585,6 +73782,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_SliderThumb"
       },
       "light_Switch": {
@@ -73625,7 +73823,7 @@
         "borderColorHover": "hsla(0, 0%, 80%, 1)",
         "borderColorFocus": "hsla(0, 0%, 70%, 1)",
         "borderColorPress": "hsla(0, 0%, 59%, 1)",
-        "placeholderColor": "#687076",
+        "placeholderColor": "#4A5565",
         "colorTransparent": "hsla(0, 0%, 2%, 0)",
         "black1": "#090909",
         "black2": "#151515",
@@ -73825,6 +74023,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_Switch"
       },
       "light_surface2": {
@@ -73865,7 +74064,7 @@
         "borderColorHover": "hsla(0, 0%, 80%, 1)",
         "borderColorFocus": "hsla(0, 0%, 70%, 1)",
         "borderColorPress": "hsla(0, 0%, 59%, 1)",
-        "placeholderColor": "#687076",
+        "placeholderColor": "#4A5565",
         "colorTransparent": "hsla(0, 0%, 2%, 0)",
         "black1": "#090909",
         "black2": "#151515",
@@ -74065,6 +74264,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_surface2"
       },
       "light_white_Button": {
@@ -74305,6 +74505,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_white_Button"
       },
       "light_white_SliderThumb": {
@@ -74545,6 +74746,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_white_SliderThumb"
       },
       "light_white_Switch": {
@@ -74785,6 +74987,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_white_Switch"
       },
       "light_white_surface2": {
@@ -75025,6 +75228,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_white_surface2"
       },
       "light_Input": {
@@ -75065,7 +75269,7 @@
         "borderColorHover": "hsla(0, 0%, 85%, 1)",
         "borderColorFocus": "hsla(0, 0%, 80%, 1)",
         "borderColorPress": "hsla(0, 0%, 70%, 1)",
-        "placeholderColor": "#687076",
+        "placeholderColor": "#4A5565",
         "colorTransparent": "hsla(0, 0%, 2%, 0)",
         "black1": "#090909",
         "black2": "#151515",
@@ -75265,6 +75469,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_Input"
       },
       "light_Progress": {
@@ -75305,7 +75510,7 @@
         "borderColorHover": "hsla(0, 0%, 85%, 1)",
         "borderColorFocus": "hsla(0, 0%, 80%, 1)",
         "borderColorPress": "hsla(0, 0%, 70%, 1)",
-        "placeholderColor": "#687076",
+        "placeholderColor": "#4A5565",
         "colorTransparent": "hsla(0, 0%, 2%, 0)",
         "black1": "#090909",
         "black2": "#151515",
@@ -75505,6 +75710,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_Progress"
       },
       "light_Slider": {
@@ -75545,7 +75751,7 @@
         "borderColorHover": "hsla(0, 0%, 85%, 1)",
         "borderColorFocus": "hsla(0, 0%, 80%, 1)",
         "borderColorPress": "hsla(0, 0%, 70%, 1)",
-        "placeholderColor": "#687076",
+        "placeholderColor": "#4A5565",
         "colorTransparent": "hsla(0, 0%, 2%, 0)",
         "black1": "#090909",
         "black2": "#151515",
@@ -75745,6 +75951,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_Slider"
       },
       "light_TextArea": {
@@ -75785,7 +75992,7 @@
         "borderColorHover": "hsla(0, 0%, 85%, 1)",
         "borderColorFocus": "hsla(0, 0%, 80%, 1)",
         "borderColorPress": "hsla(0, 0%, 70%, 1)",
-        "placeholderColor": "#687076",
+        "placeholderColor": "#4A5565",
         "colorTransparent": "hsla(0, 0%, 2%, 0)",
         "black1": "#090909",
         "black2": "#151515",
@@ -75985,6 +76192,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_TextArea"
       },
       "light_surface1": {
@@ -76025,7 +76233,7 @@
         "borderColorHover": "hsla(0, 0%, 85%, 1)",
         "borderColorFocus": "hsla(0, 0%, 80%, 1)",
         "borderColorPress": "hsla(0, 0%, 70%, 1)",
-        "placeholderColor": "#687076",
+        "placeholderColor": "#4A5565",
         "colorTransparent": "hsla(0, 0%, 2%, 0)",
         "black1": "#090909",
         "black2": "#151515",
@@ -76225,6 +76433,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_surface1"
       },
       "light_white_Input": {
@@ -76465,6 +76674,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_white_Input"
       },
       "light_white_Progress": {
@@ -76705,6 +76915,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_white_Progress"
       },
       "light_white_Slider": {
@@ -76945,6 +77156,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_white_Slider"
       },
       "light_white_TextArea": {
@@ -77185,6 +77397,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_white_TextArea"
       },
       "light_white_surface1": {
@@ -77425,6 +77638,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_white_surface1"
       },
       "light_ProgressIndicator": {
@@ -77465,7 +77679,7 @@
         "borderColorHover": "hsla(0, 0%, 59%, 1)",
         "borderColorFocus": "hsla(0, 0%, 45%, 1)",
         "borderColorPress": "hsla(0, 0%, 30%, 1)",
-        "placeholderColor": "#687076",
+        "placeholderColor": "#4A5565",
         "colorTransparent": "hsla(0, 0%, 2%, 0)",
         "black1": "#090909",
         "black2": "#151515",
@@ -77665,6 +77879,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_ProgressIndicator"
       },
       "light_SliderActive": {
@@ -77705,7 +77920,7 @@
         "borderColorHover": "hsla(0, 0%, 59%, 1)",
         "borderColorFocus": "hsla(0, 0%, 45%, 1)",
         "borderColorPress": "hsla(0, 0%, 30%, 1)",
-        "placeholderColor": "#687076",
+        "placeholderColor": "#4A5565",
         "colorTransparent": "hsla(0, 0%, 2%, 0)",
         "black1": "#090909",
         "black2": "#151515",
@@ -77905,6 +78120,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_SliderActive"
       },
       "light_white_ProgressIndicator": {
@@ -78145,6 +78361,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_white_ProgressIndicator"
       },
       "light_white_SliderActive": {
@@ -78385,6 +78602,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_white_SliderActive"
       },
       "light_SwitchThumb": {
@@ -78625,6 +78843,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_SwitchThumb"
       },
       "light_Tooltip": {
@@ -78865,6 +79084,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_Tooltip"
       },
       "light_white_SwitchThumb": {
@@ -79105,6 +79325,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_white_SwitchThumb"
       },
       "light_white_Tooltip": {
@@ -79345,6 +79566,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_white_Tooltip"
       },
       "light_white_accent": {
@@ -79585,6 +79807,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_white_accent"
       },
       "light_accent": {
@@ -79825,6 +80048,7 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_accent"
       },
       "light_black": {
@@ -80065,6 +80289,7 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_black"
       },
       "light_black_Button": {
@@ -80305,6 +80530,7 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_black_Button"
       },
       "light_black_SliderThumb": {
@@ -80545,6 +80771,7 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_black_SliderThumb"
       },
       "light_black_Switch": {
@@ -80785,6 +81012,7 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_black_Switch"
       },
       "light_black_surface2": {
@@ -81025,6 +81253,7 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_black_surface2"
       },
       "light_black_Input": {
@@ -81265,6 +81494,7 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_black_Input"
       },
       "light_black_Progress": {
@@ -81505,6 +81735,7 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_black_Progress"
       },
       "light_black_Slider": {
@@ -81745,6 +81976,7 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_black_Slider"
       },
       "light_black_TextArea": {
@@ -81985,6 +82217,7 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_black_TextArea"
       },
       "light_black_surface1": {
@@ -82225,6 +82458,7 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_black_surface1"
       },
       "light_black_ProgressIndicator": {
@@ -82465,6 +82699,7 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_black_ProgressIndicator"
       },
       "light_black_SliderActive": {
@@ -82705,6 +82940,7 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_black_SliderActive"
       },
       "light_black_SwitchThumb": {
@@ -82945,6 +83181,7 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_black_SwitchThumb"
       },
       "light_black_Tooltip": {
@@ -83185,6 +83422,7 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_black_Tooltip"
       },
       "light_black_accent": {
@@ -83425,6 +83663,7 @@
         "background002": "hsla(0, 0%, 8%, 0.02)",
         "background001": "hsla(0, 0%, 8%, 0.01)",
         "outlineColor": "hsla(0, 0%, 27%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_black_accent"
       },
       "light_blue": {
@@ -83665,6 +83904,7 @@
         "background002": "hsla(207, 100%, 98%, 0.02)",
         "background001": "hsla(207, 100%, 98%, 0.01)",
         "outlineColor": "hsla(207, 93%, 83%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_blue"
       },
       "light_blue_Button": {
@@ -83905,6 +84145,7 @@
         "background002": "hsla(207, 100%, 98%, 0.02)",
         "background001": "hsla(207, 100%, 98%, 0.01)",
         "outlineColor": "hsla(207, 93%, 83%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_blue_Button"
       },
       "light_blue_SliderThumb": {
@@ -84145,6 +84386,7 @@
         "background002": "hsla(207, 100%, 98%, 0.02)",
         "background001": "hsla(207, 100%, 98%, 0.01)",
         "outlineColor": "hsla(207, 93%, 83%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_blue_SliderThumb"
       },
       "light_blue_Switch": {
@@ -84385,6 +84627,7 @@
         "background002": "hsla(207, 100%, 98%, 0.02)",
         "background001": "hsla(207, 100%, 98%, 0.01)",
         "outlineColor": "hsla(207, 93%, 83%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_blue_Switch"
       },
       "light_blue_surface2": {
@@ -84625,6 +84868,7 @@
         "background002": "hsla(207, 100%, 98%, 0.02)",
         "background001": "hsla(207, 100%, 98%, 0.01)",
         "outlineColor": "hsla(207, 93%, 83%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_blue_surface2"
       },
       "light_blue_Input": {
@@ -84865,6 +85109,7 @@
         "background002": "hsla(207, 100%, 98%, 0.02)",
         "background001": "hsla(207, 100%, 98%, 0.01)",
         "outlineColor": "hsla(207, 93%, 83%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_blue_Input"
       },
       "light_blue_Progress": {
@@ -85105,6 +85350,7 @@
         "background002": "hsla(207, 100%, 98%, 0.02)",
         "background001": "hsla(207, 100%, 98%, 0.01)",
         "outlineColor": "hsla(207, 93%, 83%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_blue_Progress"
       },
       "light_blue_Slider": {
@@ -85345,6 +85591,7 @@
         "background002": "hsla(207, 100%, 98%, 0.02)",
         "background001": "hsla(207, 100%, 98%, 0.01)",
         "outlineColor": "hsla(207, 93%, 83%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_blue_Slider"
       },
       "light_blue_TextArea": {
@@ -85585,6 +85832,7 @@
         "background002": "hsla(207, 100%, 98%, 0.02)",
         "background001": "hsla(207, 100%, 98%, 0.01)",
         "outlineColor": "hsla(207, 93%, 83%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_blue_TextArea"
       },
       "light_blue_surface1": {
@@ -85825,6 +86073,7 @@
         "background002": "hsla(207, 100%, 98%, 0.02)",
         "background001": "hsla(207, 100%, 98%, 0.01)",
         "outlineColor": "hsla(207, 93%, 83%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_blue_surface1"
       },
       "light_blue_ProgressIndicator": {
@@ -86065,6 +86314,7 @@
         "background002": "hsla(207, 100%, 98%, 0.02)",
         "background001": "hsla(207, 100%, 98%, 0.01)",
         "outlineColor": "hsla(207, 93%, 83%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_blue_ProgressIndicator"
       },
       "light_blue_SliderActive": {
@@ -86305,6 +86555,7 @@
         "background002": "hsla(207, 100%, 98%, 0.02)",
         "background001": "hsla(207, 100%, 98%, 0.01)",
         "outlineColor": "hsla(207, 93%, 83%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_blue_SliderActive"
       },
       "light_blue_SwitchThumb": {
@@ -86545,6 +86796,7 @@
         "background002": "hsla(207, 100%, 98%, 0.02)",
         "background001": "hsla(207, 100%, 98%, 0.01)",
         "outlineColor": "hsla(207, 93%, 83%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_blue_SwitchThumb"
       },
       "light_blue_Tooltip": {
@@ -86785,6 +87037,7 @@
         "background002": "hsla(207, 100%, 98%, 0.02)",
         "background001": "hsla(207, 100%, 98%, 0.01)",
         "outlineColor": "hsla(207, 93%, 83%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_blue_Tooltip"
       },
       "light_blue_accent": {
@@ -87025,6 +87278,7 @@
         "background002": "hsla(207, 100%, 98%, 0.02)",
         "background001": "hsla(207, 100%, 98%, 0.01)",
         "outlineColor": "hsla(207, 93%, 83%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_blue_accent"
       },
       "light_gray": {
@@ -87265,6 +87519,7 @@
         "background002": "hsla(0, 0%, 98%, 0.02)",
         "background001": "hsla(0, 0%, 98%, 0.01)",
         "outlineColor": "hsla(0, 0%, 85%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_gray"
       },
       "light_gray_Button": {
@@ -87505,6 +87760,7 @@
         "background002": "hsla(0, 0%, 98%, 0.02)",
         "background001": "hsla(0, 0%, 98%, 0.01)",
         "outlineColor": "hsla(0, 0%, 85%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_gray_Button"
       },
       "light_gray_SliderThumb": {
@@ -87745,6 +88001,7 @@
         "background002": "hsla(0, 0%, 98%, 0.02)",
         "background001": "hsla(0, 0%, 98%, 0.01)",
         "outlineColor": "hsla(0, 0%, 85%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_gray_SliderThumb"
       },
       "light_gray_Switch": {
@@ -87985,6 +88242,7 @@
         "background002": "hsla(0, 0%, 98%, 0.02)",
         "background001": "hsla(0, 0%, 98%, 0.01)",
         "outlineColor": "hsla(0, 0%, 85%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_gray_Switch"
       },
       "light_gray_surface2": {
@@ -88225,6 +88483,7 @@
         "background002": "hsla(0, 0%, 98%, 0.02)",
         "background001": "hsla(0, 0%, 98%, 0.01)",
         "outlineColor": "hsla(0, 0%, 85%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_gray_surface2"
       },
       "light_gray_Input": {
@@ -88465,6 +88724,7 @@
         "background002": "hsla(0, 0%, 98%, 0.02)",
         "background001": "hsla(0, 0%, 98%, 0.01)",
         "outlineColor": "hsla(0, 0%, 85%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_gray_Input"
       },
       "light_gray_Progress": {
@@ -88705,6 +88965,7 @@
         "background002": "hsla(0, 0%, 98%, 0.02)",
         "background001": "hsla(0, 0%, 98%, 0.01)",
         "outlineColor": "hsla(0, 0%, 85%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_gray_Progress"
       },
       "light_gray_Slider": {
@@ -88945,6 +89206,7 @@
         "background002": "hsla(0, 0%, 98%, 0.02)",
         "background001": "hsla(0, 0%, 98%, 0.01)",
         "outlineColor": "hsla(0, 0%, 85%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_gray_Slider"
       },
       "light_gray_TextArea": {
@@ -89185,6 +89447,7 @@
         "background002": "hsla(0, 0%, 98%, 0.02)",
         "background001": "hsla(0, 0%, 98%, 0.01)",
         "outlineColor": "hsla(0, 0%, 85%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_gray_TextArea"
       },
       "light_gray_surface1": {
@@ -89425,6 +89688,7 @@
         "background002": "hsla(0, 0%, 98%, 0.02)",
         "background001": "hsla(0, 0%, 98%, 0.01)",
         "outlineColor": "hsla(0, 0%, 85%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_gray_surface1"
       },
       "light_gray_ProgressIndicator": {
@@ -89665,6 +89929,7 @@
         "background002": "hsla(0, 0%, 98%, 0.02)",
         "background001": "hsla(0, 0%, 98%, 0.01)",
         "outlineColor": "hsla(0, 0%, 85%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_gray_ProgressIndicator"
       },
       "light_gray_SliderActive": {
@@ -89905,6 +90170,7 @@
         "background002": "hsla(0, 0%, 98%, 0.02)",
         "background001": "hsla(0, 0%, 98%, 0.01)",
         "outlineColor": "hsla(0, 0%, 85%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_gray_SliderActive"
       },
       "light_gray_SwitchThumb": {
@@ -90145,6 +90411,7 @@
         "background002": "hsla(0, 0%, 98%, 0.02)",
         "background001": "hsla(0, 0%, 98%, 0.01)",
         "outlineColor": "hsla(0, 0%, 85%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_gray_SwitchThumb"
       },
       "light_gray_Tooltip": {
@@ -90385,6 +90652,7 @@
         "background002": "hsla(0, 0%, 98%, 0.02)",
         "background001": "hsla(0, 0%, 98%, 0.01)",
         "outlineColor": "hsla(0, 0%, 85%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_gray_Tooltip"
       },
       "light_gray_accent": {
@@ -90625,6 +90893,7 @@
         "background002": "hsla(0, 0%, 98%, 0.02)",
         "background001": "hsla(0, 0%, 98%, 0.01)",
         "outlineColor": "hsla(0, 0%, 85%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_gray_accent"
       },
       "light_green": {
@@ -90865,6 +91134,7 @@
         "background002": "hsla(137, 47%, 97%, 0.02)",
         "background001": "hsla(137, 47%, 97%, 0.01)",
         "outlineColor": "hsla(144, 41%, 77%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_green"
       },
       "light_green_Button": {
@@ -91105,6 +91375,7 @@
         "background002": "hsla(137, 47%, 97%, 0.02)",
         "background001": "hsla(137, 47%, 97%, 0.01)",
         "outlineColor": "hsla(144, 41%, 77%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_green_Button"
       },
       "light_green_SliderThumb": {
@@ -91345,6 +91616,7 @@
         "background002": "hsla(137, 47%, 97%, 0.02)",
         "background001": "hsla(137, 47%, 97%, 0.01)",
         "outlineColor": "hsla(144, 41%, 77%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_green_SliderThumb"
       },
       "light_green_Switch": {
@@ -91585,6 +91857,7 @@
         "background002": "hsla(137, 47%, 97%, 0.02)",
         "background001": "hsla(137, 47%, 97%, 0.01)",
         "outlineColor": "hsla(144, 41%, 77%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_green_Switch"
       },
       "light_green_surface2": {
@@ -91825,6 +92098,7 @@
         "background002": "hsla(137, 47%, 97%, 0.02)",
         "background001": "hsla(137, 47%, 97%, 0.01)",
         "outlineColor": "hsla(144, 41%, 77%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_green_surface2"
       },
       "light_green_Input": {
@@ -92065,6 +92339,7 @@
         "background002": "hsla(137, 47%, 97%, 0.02)",
         "background001": "hsla(137, 47%, 97%, 0.01)",
         "outlineColor": "hsla(144, 41%, 77%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_green_Input"
       },
       "light_green_Progress": {
@@ -92305,6 +92580,7 @@
         "background002": "hsla(137, 47%, 97%, 0.02)",
         "background001": "hsla(137, 47%, 97%, 0.01)",
         "outlineColor": "hsla(144, 41%, 77%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_green_Progress"
       },
       "light_green_Slider": {
@@ -92545,6 +92821,7 @@
         "background002": "hsla(137, 47%, 97%, 0.02)",
         "background001": "hsla(137, 47%, 97%, 0.01)",
         "outlineColor": "hsla(144, 41%, 77%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_green_Slider"
       },
       "light_green_TextArea": {
@@ -92785,6 +93062,7 @@
         "background002": "hsla(137, 47%, 97%, 0.02)",
         "background001": "hsla(137, 47%, 97%, 0.01)",
         "outlineColor": "hsla(144, 41%, 77%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_green_TextArea"
       },
       "light_green_surface1": {
@@ -93025,6 +93303,7 @@
         "background002": "hsla(137, 47%, 97%, 0.02)",
         "background001": "hsla(137, 47%, 97%, 0.01)",
         "outlineColor": "hsla(144, 41%, 77%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_green_surface1"
       },
       "light_green_ProgressIndicator": {
@@ -93265,6 +93544,7 @@
         "background002": "hsla(137, 47%, 97%, 0.02)",
         "background001": "hsla(137, 47%, 97%, 0.01)",
         "outlineColor": "hsla(144, 41%, 77%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_green_ProgressIndicator"
       },
       "light_green_SliderActive": {
@@ -93505,6 +93785,7 @@
         "background002": "hsla(137, 47%, 97%, 0.02)",
         "background001": "hsla(137, 47%, 97%, 0.01)",
         "outlineColor": "hsla(144, 41%, 77%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_green_SliderActive"
       },
       "light_green_SwitchThumb": {
@@ -93745,6 +94026,7 @@
         "background002": "hsla(137, 47%, 97%, 0.02)",
         "background001": "hsla(137, 47%, 97%, 0.01)",
         "outlineColor": "hsla(144, 41%, 77%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_green_SwitchThumb"
       },
       "light_green_Tooltip": {
@@ -93985,6 +94267,7 @@
         "background002": "hsla(137, 47%, 97%, 0.02)",
         "background001": "hsla(137, 47%, 97%, 0.01)",
         "outlineColor": "hsla(144, 41%, 77%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_green_Tooltip"
       },
       "light_green_accent": {
@@ -94225,6 +94508,7 @@
         "background002": "hsla(137, 47%, 97%, 0.02)",
         "background001": "hsla(137, 47%, 97%, 0.01)",
         "outlineColor": "hsla(144, 41%, 77%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_green_accent"
       },
       "light_neutral": {
@@ -94465,6 +94749,7 @@
         "background002": "hsla(0, 0%, 65%, 0.02)",
         "background001": "hsla(0, 0%, 65%, 0.01)",
         "outlineColor": "hsla(0, 0%, 53%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_neutral"
       },
       "light_neutral_Button": {
@@ -94705,6 +94990,7 @@
         "background002": "hsla(0, 0%, 65%, 0.02)",
         "background001": "hsla(0, 0%, 65%, 0.01)",
         "outlineColor": "hsla(0, 0%, 53%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_neutral_Button"
       },
       "light_neutral_SliderThumb": {
@@ -94945,6 +95231,7 @@
         "background002": "hsla(0, 0%, 65%, 0.02)",
         "background001": "hsla(0, 0%, 65%, 0.01)",
         "outlineColor": "hsla(0, 0%, 53%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_neutral_SliderThumb"
       },
       "light_neutral_Switch": {
@@ -95185,6 +95472,7 @@
         "background002": "hsla(0, 0%, 65%, 0.02)",
         "background001": "hsla(0, 0%, 65%, 0.01)",
         "outlineColor": "hsla(0, 0%, 53%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_neutral_Switch"
       },
       "light_neutral_surface2": {
@@ -95425,6 +95713,7 @@
         "background002": "hsla(0, 0%, 65%, 0.02)",
         "background001": "hsla(0, 0%, 65%, 0.01)",
         "outlineColor": "hsla(0, 0%, 53%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_neutral_surface2"
       },
       "light_neutral_Input": {
@@ -95665,6 +95954,7 @@
         "background002": "hsla(0, 0%, 65%, 0.02)",
         "background001": "hsla(0, 0%, 65%, 0.01)",
         "outlineColor": "hsla(0, 0%, 53%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_neutral_Input"
       },
       "light_neutral_Progress": {
@@ -95905,6 +96195,7 @@
         "background002": "hsla(0, 0%, 65%, 0.02)",
         "background001": "hsla(0, 0%, 65%, 0.01)",
         "outlineColor": "hsla(0, 0%, 53%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_neutral_Progress"
       },
       "light_neutral_Slider": {
@@ -96145,6 +96436,7 @@
         "background002": "hsla(0, 0%, 65%, 0.02)",
         "background001": "hsla(0, 0%, 65%, 0.01)",
         "outlineColor": "hsla(0, 0%, 53%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_neutral_Slider"
       },
       "light_neutral_TextArea": {
@@ -96385,6 +96677,7 @@
         "background002": "hsla(0, 0%, 65%, 0.02)",
         "background001": "hsla(0, 0%, 65%, 0.01)",
         "outlineColor": "hsla(0, 0%, 53%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_neutral_TextArea"
       },
       "light_neutral_surface1": {
@@ -96625,6 +96918,7 @@
         "background002": "hsla(0, 0%, 65%, 0.02)",
         "background001": "hsla(0, 0%, 65%, 0.01)",
         "outlineColor": "hsla(0, 0%, 53%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_neutral_surface1"
       },
       "light_neutral_ProgressIndicator": {
@@ -96865,6 +97159,7 @@
         "background002": "hsla(0, 0%, 65%, 0.02)",
         "background001": "hsla(0, 0%, 65%, 0.01)",
         "outlineColor": "hsla(0, 0%, 53%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_neutral_ProgressIndicator"
       },
       "light_neutral_SliderActive": {
@@ -97105,6 +97400,7 @@
         "background002": "hsla(0, 0%, 65%, 0.02)",
         "background001": "hsla(0, 0%, 65%, 0.01)",
         "outlineColor": "hsla(0, 0%, 53%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_neutral_SliderActive"
       },
       "light_neutral_SwitchThumb": {
@@ -97345,6 +97641,7 @@
         "background002": "hsla(0, 0%, 65%, 0.02)",
         "background001": "hsla(0, 0%, 65%, 0.01)",
         "outlineColor": "hsla(0, 0%, 53%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_neutral_SwitchThumb"
       },
       "light_neutral_Tooltip": {
@@ -97585,6 +97882,7 @@
         "background002": "hsla(0, 0%, 65%, 0.02)",
         "background001": "hsla(0, 0%, 65%, 0.01)",
         "outlineColor": "hsla(0, 0%, 53%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_neutral_Tooltip"
       },
       "light_neutral_accent": {
@@ -97825,6 +98123,7 @@
         "background002": "hsla(0, 0%, 65%, 0.02)",
         "background001": "hsla(0, 0%, 65%, 0.01)",
         "outlineColor": "hsla(0, 0%, 53%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_neutral_accent"
       },
       "light_orange": {
@@ -98065,6 +98364,7 @@
         "background002": "hsla(33, 100%, 96%, 0.02)",
         "background001": "hsla(33, 100%, 96%, 0.01)",
         "outlineColor": "hsla(30, 100%, 75%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_orange"
       },
       "light_orange_Button": {
@@ -98305,6 +98605,7 @@
         "background002": "hsla(33, 100%, 96%, 0.02)",
         "background001": "hsla(33, 100%, 96%, 0.01)",
         "outlineColor": "hsla(30, 100%, 75%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_orange_Button"
       },
       "light_orange_SliderThumb": {
@@ -98545,6 +98846,7 @@
         "background002": "hsla(33, 100%, 96%, 0.02)",
         "background001": "hsla(33, 100%, 96%, 0.01)",
         "outlineColor": "hsla(30, 100%, 75%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_orange_SliderThumb"
       },
       "light_orange_Switch": {
@@ -98785,6 +99087,7 @@
         "background002": "hsla(33, 100%, 96%, 0.02)",
         "background001": "hsla(33, 100%, 96%, 0.01)",
         "outlineColor": "hsla(30, 100%, 75%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_orange_Switch"
       },
       "light_orange_surface2": {
@@ -99025,6 +99328,7 @@
         "background002": "hsla(33, 100%, 96%, 0.02)",
         "background001": "hsla(33, 100%, 96%, 0.01)",
         "outlineColor": "hsla(30, 100%, 75%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_orange_surface2"
       },
       "light_orange_Input": {
@@ -99265,6 +99569,7 @@
         "background002": "hsla(33, 100%, 96%, 0.02)",
         "background001": "hsla(33, 100%, 96%, 0.01)",
         "outlineColor": "hsla(30, 100%, 75%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_orange_Input"
       },
       "light_orange_Progress": {
@@ -99505,6 +99810,7 @@
         "background002": "hsla(33, 100%, 96%, 0.02)",
         "background001": "hsla(33, 100%, 96%, 0.01)",
         "outlineColor": "hsla(30, 100%, 75%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_orange_Progress"
       },
       "light_orange_Slider": {
@@ -99745,6 +100051,7 @@
         "background002": "hsla(33, 100%, 96%, 0.02)",
         "background001": "hsla(33, 100%, 96%, 0.01)",
         "outlineColor": "hsla(30, 100%, 75%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_orange_Slider"
       },
       "light_orange_TextArea": {
@@ -99985,6 +100292,7 @@
         "background002": "hsla(33, 100%, 96%, 0.02)",
         "background001": "hsla(33, 100%, 96%, 0.01)",
         "outlineColor": "hsla(30, 100%, 75%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_orange_TextArea"
       },
       "light_orange_surface1": {
@@ -100225,6 +100533,7 @@
         "background002": "hsla(33, 100%, 96%, 0.02)",
         "background001": "hsla(33, 100%, 96%, 0.01)",
         "outlineColor": "hsla(30, 100%, 75%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_orange_surface1"
       },
       "light_orange_ProgressIndicator": {
@@ -100465,6 +100774,7 @@
         "background002": "hsla(33, 100%, 96%, 0.02)",
         "background001": "hsla(33, 100%, 96%, 0.01)",
         "outlineColor": "hsla(30, 100%, 75%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_orange_ProgressIndicator"
       },
       "light_orange_SliderActive": {
@@ -100705,6 +101015,7 @@
         "background002": "hsla(33, 100%, 96%, 0.02)",
         "background001": "hsla(33, 100%, 96%, 0.01)",
         "outlineColor": "hsla(30, 100%, 75%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_orange_SliderActive"
       },
       "light_orange_SwitchThumb": {
@@ -100945,6 +101256,7 @@
         "background002": "hsla(33, 100%, 96%, 0.02)",
         "background001": "hsla(33, 100%, 96%, 0.01)",
         "outlineColor": "hsla(30, 100%, 75%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_orange_SwitchThumb"
       },
       "light_orange_Tooltip": {
@@ -101185,6 +101497,7 @@
         "background002": "hsla(33, 100%, 96%, 0.02)",
         "background001": "hsla(33, 100%, 96%, 0.01)",
         "outlineColor": "hsla(30, 100%, 75%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_orange_Tooltip"
       },
       "light_orange_accent": {
@@ -101425,6 +101738,7 @@
         "background002": "hsla(33, 100%, 96%, 0.02)",
         "background001": "hsla(33, 100%, 96%, 0.01)",
         "outlineColor": "hsla(30, 100%, 75%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_orange_accent"
       },
       "light_pink": {
@@ -101665,6 +101979,7 @@
         "background002": "hsla(326, 78%, 98%, 0.02)",
         "background001": "hsla(326, 78%, 98%, 0.01)",
         "outlineColor": "hsla(323, 60%, 84%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_pink"
       },
       "light_pink_Button": {
@@ -101905,6 +102220,7 @@
         "background002": "hsla(326, 78%, 98%, 0.02)",
         "background001": "hsla(326, 78%, 98%, 0.01)",
         "outlineColor": "hsla(323, 60%, 84%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_pink_Button"
       },
       "light_pink_SliderThumb": {
@@ -102145,6 +102461,7 @@
         "background002": "hsla(326, 78%, 98%, 0.02)",
         "background001": "hsla(326, 78%, 98%, 0.01)",
         "outlineColor": "hsla(323, 60%, 84%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_pink_SliderThumb"
       },
       "light_pink_Switch": {
@@ -102385,6 +102702,7 @@
         "background002": "hsla(326, 78%, 98%, 0.02)",
         "background001": "hsla(326, 78%, 98%, 0.01)",
         "outlineColor": "hsla(323, 60%, 84%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_pink_Switch"
       },
       "light_pink_surface2": {
@@ -102625,6 +102943,7 @@
         "background002": "hsla(326, 78%, 98%, 0.02)",
         "background001": "hsla(326, 78%, 98%, 0.01)",
         "outlineColor": "hsla(323, 60%, 84%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_pink_surface2"
       },
       "light_pink_Input": {
@@ -102865,6 +103184,7 @@
         "background002": "hsla(326, 78%, 98%, 0.02)",
         "background001": "hsla(326, 78%, 98%, 0.01)",
         "outlineColor": "hsla(323, 60%, 84%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_pink_Input"
       },
       "light_pink_Progress": {
@@ -103105,6 +103425,7 @@
         "background002": "hsla(326, 78%, 98%, 0.02)",
         "background001": "hsla(326, 78%, 98%, 0.01)",
         "outlineColor": "hsla(323, 60%, 84%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_pink_Progress"
       },
       "light_pink_Slider": {
@@ -103345,6 +103666,7 @@
         "background002": "hsla(326, 78%, 98%, 0.02)",
         "background001": "hsla(326, 78%, 98%, 0.01)",
         "outlineColor": "hsla(323, 60%, 84%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_pink_Slider"
       },
       "light_pink_TextArea": {
@@ -103585,6 +103907,7 @@
         "background002": "hsla(326, 78%, 98%, 0.02)",
         "background001": "hsla(326, 78%, 98%, 0.01)",
         "outlineColor": "hsla(323, 60%, 84%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_pink_TextArea"
       },
       "light_pink_surface1": {
@@ -103825,6 +104148,7 @@
         "background002": "hsla(326, 78%, 98%, 0.02)",
         "background001": "hsla(326, 78%, 98%, 0.01)",
         "outlineColor": "hsla(323, 60%, 84%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_pink_surface1"
       },
       "light_pink_ProgressIndicator": {
@@ -104065,6 +104389,7 @@
         "background002": "hsla(326, 78%, 98%, 0.02)",
         "background001": "hsla(326, 78%, 98%, 0.01)",
         "outlineColor": "hsla(323, 60%, 84%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_pink_ProgressIndicator"
       },
       "light_pink_SliderActive": {
@@ -104305,6 +104630,7 @@
         "background002": "hsla(326, 78%, 98%, 0.02)",
         "background001": "hsla(326, 78%, 98%, 0.01)",
         "outlineColor": "hsla(323, 60%, 84%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_pink_SliderActive"
       },
       "light_pink_SwitchThumb": {
@@ -104545,6 +104871,7 @@
         "background002": "hsla(326, 78%, 98%, 0.02)",
         "background001": "hsla(326, 78%, 98%, 0.01)",
         "outlineColor": "hsla(323, 60%, 84%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_pink_SwitchThumb"
       },
       "light_pink_Tooltip": {
@@ -104785,6 +105112,7 @@
         "background002": "hsla(326, 78%, 98%, 0.02)",
         "background001": "hsla(326, 78%, 98%, 0.01)",
         "outlineColor": "hsla(323, 60%, 84%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_pink_Tooltip"
       },
       "light_pink_accent": {
@@ -105025,6 +105353,7 @@
         "background002": "hsla(326, 78%, 98%, 0.02)",
         "background001": "hsla(326, 78%, 98%, 0.01)",
         "outlineColor": "hsla(323, 60%, 84%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_pink_accent"
       },
       "light_purple": {
@@ -105265,6 +105594,7 @@
         "background002": "hsla(274, 78%, 98%, 0.02)",
         "background001": "hsla(274, 78%, 98%, 0.01)",
         "outlineColor": "hsla(275, 69%, 86%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_purple"
       },
       "light_purple_Button": {
@@ -105505,6 +105835,7 @@
         "background002": "hsla(274, 78%, 98%, 0.02)",
         "background001": "hsla(274, 78%, 98%, 0.01)",
         "outlineColor": "hsla(275, 69%, 86%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_purple_Button"
       },
       "light_purple_SliderThumb": {
@@ -105745,6 +106076,7 @@
         "background002": "hsla(274, 78%, 98%, 0.02)",
         "background001": "hsla(274, 78%, 98%, 0.01)",
         "outlineColor": "hsla(275, 69%, 86%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_purple_SliderThumb"
       },
       "light_purple_Switch": {
@@ -105985,6 +106317,7 @@
         "background002": "hsla(274, 78%, 98%, 0.02)",
         "background001": "hsla(274, 78%, 98%, 0.01)",
         "outlineColor": "hsla(275, 69%, 86%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_purple_Switch"
       },
       "light_purple_surface2": {
@@ -106225,6 +106558,7 @@
         "background002": "hsla(274, 78%, 98%, 0.02)",
         "background001": "hsla(274, 78%, 98%, 0.01)",
         "outlineColor": "hsla(275, 69%, 86%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_purple_surface2"
       },
       "light_purple_Input": {
@@ -106465,6 +106799,7 @@
         "background002": "hsla(274, 78%, 98%, 0.02)",
         "background001": "hsla(274, 78%, 98%, 0.01)",
         "outlineColor": "hsla(275, 69%, 86%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_purple_Input"
       },
       "light_purple_Progress": {
@@ -106705,6 +107040,7 @@
         "background002": "hsla(274, 78%, 98%, 0.02)",
         "background001": "hsla(274, 78%, 98%, 0.01)",
         "outlineColor": "hsla(275, 69%, 86%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_purple_Progress"
       },
       "light_purple_Slider": {
@@ -106945,6 +107281,7 @@
         "background002": "hsla(274, 78%, 98%, 0.02)",
         "background001": "hsla(274, 78%, 98%, 0.01)",
         "outlineColor": "hsla(275, 69%, 86%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_purple_Slider"
       },
       "light_purple_TextArea": {
@@ -107185,6 +107522,7 @@
         "background002": "hsla(274, 78%, 98%, 0.02)",
         "background001": "hsla(274, 78%, 98%, 0.01)",
         "outlineColor": "hsla(275, 69%, 86%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_purple_TextArea"
       },
       "light_purple_surface1": {
@@ -107425,6 +107763,7 @@
         "background002": "hsla(274, 78%, 98%, 0.02)",
         "background001": "hsla(274, 78%, 98%, 0.01)",
         "outlineColor": "hsla(275, 69%, 86%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_purple_surface1"
       },
       "light_purple_ProgressIndicator": {
@@ -107665,6 +108004,7 @@
         "background002": "hsla(274, 78%, 98%, 0.02)",
         "background001": "hsla(274, 78%, 98%, 0.01)",
         "outlineColor": "hsla(275, 69%, 86%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_purple_ProgressIndicator"
       },
       "light_purple_SliderActive": {
@@ -107905,6 +108245,7 @@
         "background002": "hsla(274, 78%, 98%, 0.02)",
         "background001": "hsla(274, 78%, 98%, 0.01)",
         "outlineColor": "hsla(275, 69%, 86%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_purple_SliderActive"
       },
       "light_purple_SwitchThumb": {
@@ -108145,6 +108486,7 @@
         "background002": "hsla(274, 78%, 98%, 0.02)",
         "background001": "hsla(274, 78%, 98%, 0.01)",
         "outlineColor": "hsla(275, 69%, 86%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_purple_SwitchThumb"
       },
       "light_purple_Tooltip": {
@@ -108385,6 +108727,7 @@
         "background002": "hsla(274, 78%, 98%, 0.02)",
         "background001": "hsla(274, 78%, 98%, 0.01)",
         "outlineColor": "hsla(275, 69%, 86%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_purple_Tooltip"
       },
       "light_purple_accent": {
@@ -108625,6 +108968,7 @@
         "background002": "hsla(274, 78%, 98%, 0.02)",
         "background001": "hsla(274, 78%, 98%, 0.01)",
         "outlineColor": "hsla(275, 69%, 86%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_purple_accent"
       },
       "light_red": {
@@ -108865,6 +109209,7 @@
         "background002": "hsla(0, 100%, 98%, 0.02)",
         "background001": "hsla(0, 100%, 98%, 0.01)",
         "outlineColor": "hsla(359, 94%, 87%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_red"
       },
       "light_red_Button": {
@@ -109105,6 +109450,7 @@
         "background002": "hsla(0, 100%, 98%, 0.02)",
         "background001": "hsla(0, 100%, 98%, 0.01)",
         "outlineColor": "hsla(359, 94%, 87%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_red_Button"
       },
       "light_red_SliderThumb": {
@@ -109345,6 +109691,7 @@
         "background002": "hsla(0, 100%, 98%, 0.02)",
         "background001": "hsla(0, 100%, 98%, 0.01)",
         "outlineColor": "hsla(359, 94%, 87%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_red_SliderThumb"
       },
       "light_red_Switch": {
@@ -109585,6 +109932,7 @@
         "background002": "hsla(0, 100%, 98%, 0.02)",
         "background001": "hsla(0, 100%, 98%, 0.01)",
         "outlineColor": "hsla(359, 94%, 87%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_red_Switch"
       },
       "light_red_surface2": {
@@ -109825,6 +110173,7 @@
         "background002": "hsla(0, 100%, 98%, 0.02)",
         "background001": "hsla(0, 100%, 98%, 0.01)",
         "outlineColor": "hsla(359, 94%, 87%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_red_surface2"
       },
       "light_red_Input": {
@@ -110065,6 +110414,7 @@
         "background002": "hsla(0, 100%, 98%, 0.02)",
         "background001": "hsla(0, 100%, 98%, 0.01)",
         "outlineColor": "hsla(359, 94%, 87%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_red_Input"
       },
       "light_red_Progress": {
@@ -110305,6 +110655,7 @@
         "background002": "hsla(0, 100%, 98%, 0.02)",
         "background001": "hsla(0, 100%, 98%, 0.01)",
         "outlineColor": "hsla(359, 94%, 87%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_red_Progress"
       },
       "light_red_Slider": {
@@ -110545,6 +110896,7 @@
         "background002": "hsla(0, 100%, 98%, 0.02)",
         "background001": "hsla(0, 100%, 98%, 0.01)",
         "outlineColor": "hsla(359, 94%, 87%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_red_Slider"
       },
       "light_red_TextArea": {
@@ -110785,6 +111137,7 @@
         "background002": "hsla(0, 100%, 98%, 0.02)",
         "background001": "hsla(0, 100%, 98%, 0.01)",
         "outlineColor": "hsla(359, 94%, 87%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_red_TextArea"
       },
       "light_red_surface1": {
@@ -111025,6 +111378,7 @@
         "background002": "hsla(0, 100%, 98%, 0.02)",
         "background001": "hsla(0, 100%, 98%, 0.01)",
         "outlineColor": "hsla(359, 94%, 87%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_red_surface1"
       },
       "light_red_ProgressIndicator": {
@@ -111265,6 +111619,7 @@
         "background002": "hsla(0, 100%, 98%, 0.02)",
         "background001": "hsla(0, 100%, 98%, 0.01)",
         "outlineColor": "hsla(359, 94%, 87%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_red_ProgressIndicator"
       },
       "light_red_SliderActive": {
@@ -111505,6 +111860,7 @@
         "background002": "hsla(0, 100%, 98%, 0.02)",
         "background001": "hsla(0, 100%, 98%, 0.01)",
         "outlineColor": "hsla(359, 94%, 87%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_red_SliderActive"
       },
       "light_red_SwitchThumb": {
@@ -111745,6 +112101,7 @@
         "background002": "hsla(0, 100%, 98%, 0.02)",
         "background001": "hsla(0, 100%, 98%, 0.01)",
         "outlineColor": "hsla(359, 94%, 87%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_red_SwitchThumb"
       },
       "light_red_Tooltip": {
@@ -111985,6 +112342,7 @@
         "background002": "hsla(0, 100%, 98%, 0.02)",
         "background001": "hsla(0, 100%, 98%, 0.01)",
         "outlineColor": "hsla(359, 94%, 87%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_red_Tooltip"
       },
       "light_red_accent": {
@@ -112225,6 +112583,7 @@
         "background002": "hsla(0, 100%, 98%, 0.02)",
         "background001": "hsla(0, 100%, 98%, 0.01)",
         "outlineColor": "hsla(359, 94%, 87%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_red_accent"
       },
       "light_teal": {
@@ -112465,6 +112824,7 @@
         "background002": "hsla(165, 50%, 97%, 0.02)",
         "background001": "hsla(165, 50%, 97%, 0.01)",
         "outlineColor": "hsla(168, 48%, 75%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_teal"
       },
       "light_teal_Button": {
@@ -112705,6 +113065,7 @@
         "background002": "hsla(165, 50%, 97%, 0.02)",
         "background001": "hsla(165, 50%, 97%, 0.01)",
         "outlineColor": "hsla(168, 48%, 75%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_teal_Button"
       },
       "light_teal_SliderThumb": {
@@ -112945,6 +113306,7 @@
         "background002": "hsla(165, 50%, 97%, 0.02)",
         "background001": "hsla(165, 50%, 97%, 0.01)",
         "outlineColor": "hsla(168, 48%, 75%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_teal_SliderThumb"
       },
       "light_teal_Switch": {
@@ -113185,6 +113547,7 @@
         "background002": "hsla(165, 50%, 97%, 0.02)",
         "background001": "hsla(165, 50%, 97%, 0.01)",
         "outlineColor": "hsla(168, 48%, 75%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_teal_Switch"
       },
       "light_teal_surface2": {
@@ -113425,6 +113788,7 @@
         "background002": "hsla(165, 50%, 97%, 0.02)",
         "background001": "hsla(165, 50%, 97%, 0.01)",
         "outlineColor": "hsla(168, 48%, 75%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_teal_surface2"
       },
       "light_teal_Input": {
@@ -113665,6 +114029,7 @@
         "background002": "hsla(165, 50%, 97%, 0.02)",
         "background001": "hsla(165, 50%, 97%, 0.01)",
         "outlineColor": "hsla(168, 48%, 75%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_teal_Input"
       },
       "light_teal_Progress": {
@@ -113905,6 +114270,7 @@
         "background002": "hsla(165, 50%, 97%, 0.02)",
         "background001": "hsla(165, 50%, 97%, 0.01)",
         "outlineColor": "hsla(168, 48%, 75%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_teal_Progress"
       },
       "light_teal_Slider": {
@@ -114145,6 +114511,7 @@
         "background002": "hsla(165, 50%, 97%, 0.02)",
         "background001": "hsla(165, 50%, 97%, 0.01)",
         "outlineColor": "hsla(168, 48%, 75%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_teal_Slider"
       },
       "light_teal_TextArea": {
@@ -114385,6 +114752,7 @@
         "background002": "hsla(165, 50%, 97%, 0.02)",
         "background001": "hsla(165, 50%, 97%, 0.01)",
         "outlineColor": "hsla(168, 48%, 75%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_teal_TextArea"
       },
       "light_teal_surface1": {
@@ -114625,6 +114993,7 @@
         "background002": "hsla(165, 50%, 97%, 0.02)",
         "background001": "hsla(165, 50%, 97%, 0.01)",
         "outlineColor": "hsla(168, 48%, 75%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_teal_surface1"
       },
       "light_teal_ProgressIndicator": {
@@ -114865,6 +115234,7 @@
         "background002": "hsla(165, 50%, 97%, 0.02)",
         "background001": "hsla(165, 50%, 97%, 0.01)",
         "outlineColor": "hsla(168, 48%, 75%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_teal_ProgressIndicator"
       },
       "light_teal_SliderActive": {
@@ -115105,6 +115475,7 @@
         "background002": "hsla(165, 50%, 97%, 0.02)",
         "background001": "hsla(165, 50%, 97%, 0.01)",
         "outlineColor": "hsla(168, 48%, 75%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_teal_SliderActive"
       },
       "light_teal_SwitchThumb": {
@@ -115345,6 +115716,7 @@
         "background002": "hsla(165, 50%, 97%, 0.02)",
         "background001": "hsla(165, 50%, 97%, 0.01)",
         "outlineColor": "hsla(168, 48%, 75%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_teal_SwitchThumb"
       },
       "light_teal_Tooltip": {
@@ -115585,6 +115957,7 @@
         "background002": "hsla(165, 50%, 97%, 0.02)",
         "background001": "hsla(165, 50%, 97%, 0.01)",
         "outlineColor": "hsla(168, 48%, 75%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_teal_Tooltip"
       },
       "light_teal_accent": {
@@ -115825,6 +116198,7 @@
         "background002": "hsla(165, 50%, 97%, 0.02)",
         "background001": "hsla(165, 50%, 97%, 0.01)",
         "outlineColor": "hsla(168, 48%, 75%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_teal_accent"
       },
       "light_white": {
@@ -116065,6 +116439,7 @@
         "background002": "hsla(0, 0%, 97%, 0.02)",
         "background001": "hsla(0, 0%, 97%, 0.01)",
         "outlineColor": "hsla(0, 0%, 70%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_white"
       },
       "light_yellow": {
@@ -116305,6 +116680,7 @@
         "background002": "hsla(54, 91%, 95%, 0.02)",
         "background001": "hsla(54, 91%, 95%, 0.01)",
         "outlineColor": "hsla(48, 85%, 68%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_yellow"
       },
       "light_yellow_Button": {
@@ -116545,6 +116921,7 @@
         "background002": "hsla(54, 91%, 95%, 0.02)",
         "background001": "hsla(54, 91%, 95%, 0.01)",
         "outlineColor": "hsla(48, 85%, 68%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_yellow_Button"
       },
       "light_yellow_SliderThumb": {
@@ -116785,6 +117162,7 @@
         "background002": "hsla(54, 91%, 95%, 0.02)",
         "background001": "hsla(54, 91%, 95%, 0.01)",
         "outlineColor": "hsla(48, 85%, 68%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_yellow_SliderThumb"
       },
       "light_yellow_Switch": {
@@ -117025,6 +117403,7 @@
         "background002": "hsla(54, 91%, 95%, 0.02)",
         "background001": "hsla(54, 91%, 95%, 0.01)",
         "outlineColor": "hsla(48, 85%, 68%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_yellow_Switch"
       },
       "light_yellow_surface2": {
@@ -117265,6 +117644,7 @@
         "background002": "hsla(54, 91%, 95%, 0.02)",
         "background001": "hsla(54, 91%, 95%, 0.01)",
         "outlineColor": "hsla(48, 85%, 68%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_yellow_surface2"
       },
       "light_yellow_Input": {
@@ -117505,6 +117885,7 @@
         "background002": "hsla(54, 91%, 95%, 0.02)",
         "background001": "hsla(54, 91%, 95%, 0.01)",
         "outlineColor": "hsla(48, 85%, 68%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_yellow_Input"
       },
       "light_yellow_Progress": {
@@ -117745,6 +118126,7 @@
         "background002": "hsla(54, 91%, 95%, 0.02)",
         "background001": "hsla(54, 91%, 95%, 0.01)",
         "outlineColor": "hsla(48, 85%, 68%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_yellow_Progress"
       },
       "light_yellow_Slider": {
@@ -117985,6 +118367,7 @@
         "background002": "hsla(54, 91%, 95%, 0.02)",
         "background001": "hsla(54, 91%, 95%, 0.01)",
         "outlineColor": "hsla(48, 85%, 68%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_yellow_Slider"
       },
       "light_yellow_TextArea": {
@@ -118225,6 +118608,7 @@
         "background002": "hsla(54, 91%, 95%, 0.02)",
         "background001": "hsla(54, 91%, 95%, 0.01)",
         "outlineColor": "hsla(48, 85%, 68%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_yellow_TextArea"
       },
       "light_yellow_surface1": {
@@ -118465,6 +118849,7 @@
         "background002": "hsla(54, 91%, 95%, 0.02)",
         "background001": "hsla(54, 91%, 95%, 0.01)",
         "outlineColor": "hsla(48, 85%, 68%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_yellow_surface1"
       },
       "light_yellow_ProgressIndicator": {
@@ -118705,6 +119090,7 @@
         "background002": "hsla(54, 91%, 95%, 0.02)",
         "background001": "hsla(54, 91%, 95%, 0.01)",
         "outlineColor": "hsla(48, 85%, 68%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_yellow_ProgressIndicator"
       },
       "light_yellow_SliderActive": {
@@ -118945,6 +119331,7 @@
         "background002": "hsla(54, 91%, 95%, 0.02)",
         "background001": "hsla(54, 91%, 95%, 0.01)",
         "outlineColor": "hsla(48, 85%, 68%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_yellow_SliderActive"
       },
       "light_yellow_SwitchThumb": {
@@ -119185,6 +119572,7 @@
         "background002": "hsla(54, 91%, 95%, 0.02)",
         "background001": "hsla(54, 91%, 95%, 0.01)",
         "outlineColor": "hsla(48, 85%, 68%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_yellow_SwitchThumb"
       },
       "light_yellow_Tooltip": {
@@ -119425,6 +119813,7 @@
         "background002": "hsla(54, 91%, 95%, 0.02)",
         "background001": "hsla(54, 91%, 95%, 0.01)",
         "outlineColor": "hsla(48, 85%, 68%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_yellow_Tooltip"
       },
       "light_yellow_accent": {
@@ -119665,6 +120054,7 @@
         "background002": "hsla(54, 91%, 95%, 0.02)",
         "background001": "hsla(54, 91%, 95%, 0.01)",
         "outlineColor": "hsla(48, 85%, 68%, 0.6)",
+        "backgroundGreen": "#00C950",
         "id": "light_yellow_accent"
       }
     },
@@ -120458,17 +120848,133 @@
       "styleCompat": "react-native"
     },
     "animations": {
-      "isReactNative": false,
-      "inputStyle": "css",
-      "outputStyle": "css",
-      "isStub": true,
-      "animations": {},
-      "useAnimations": "Function",
+      "needsCustomComponent": true,
+      "View": "Function",
+      "Text": "Function",
+      "isReactNative": true,
+      "inputStyle": "value",
+      "outputStyle": "inline",
+      "avoidReRenders": true,
+      "animations": {
+        "0ms": {
+          "type": "timing",
+          "duration": 0
+        },
+        "50ms": {
+          "type": "timing",
+          "duration": 50
+        },
+        "75ms": {
+          "type": "timing",
+          "duration": 75
+        },
+        "100ms": {
+          "type": "timing",
+          "duration": 100
+        },
+        "200ms": {
+          "type": "timing",
+          "duration": 200
+        },
+        "250ms": {
+          "type": "timing",
+          "duration": 250
+        },
+        "300ms": {
+          "type": "timing",
+          "duration": 300
+        },
+        "400ms": {
+          "type": "timing",
+          "duration": 400
+        },
+        "500ms": {
+          "type": "timing",
+          "duration": 500
+        },
+        "superBouncy": {
+          "type": "spring",
+          "damping": 5,
+          "mass": 0.7,
+          "stiffness": 180
+        },
+        "bouncy": {
+          "type": "spring",
+          "damping": 9,
+          "mass": 0.9,
+          "stiffness": 120
+        },
+        "superLazy": {
+          "type": "spring",
+          "damping": 25,
+          "mass": 2,
+          "stiffness": 25
+        },
+        "medium": {
+          "type": "spring",
+          "damping": 16,
+          "stiffness": 90,
+          "mass": 0.8
+        },
+        "lazy": {
+          "type": "spring",
+          "damping": 18,
+          "mass": 0.2,
+          "stiffness": 10
+        },
+        "slowest": {
+          "type": "spring",
+          "damping": 15,
+          "stiffness": 10
+        },
+        "slow": {
+          "type": "spring",
+          "damping": 45,
+          "stiffness": 60
+        },
+        "quick": {
+          "type": "spring",
+          "damping": 25,
+          "mass": 1,
+          "stiffness": 550
+        },
+        "quickLessBouncy": {
+          "type": "spring",
+          "damping": 40,
+          "mass": 2,
+          "stiffness": 400
+        },
+        "quicker": {
+          "type": "spring",
+          "damping": 16,
+          "mass": 0.6,
+          "stiffness": 700
+        },
+        "quickerLessBouncy": {
+          "type": "spring",
+          "damping": 27,
+          "mass": 0.45,
+          "stiffness": 750
+        },
+        "quickest": {
+          "type": "spring",
+          "damping": 15,
+          "mass": 0.6,
+          "stiffness": 400
+        },
+        "quickestLessBouncy": {
+          "type": "spring",
+          "damping": 24,
+          "mass": 0.35,
+          "stiffness": 750
+        }
+      },
       "usePresence": "Function",
       "ResetPresence": "Function",
       "useAnimatedNumber": "Function",
+      "useAnimatedNumberReaction": "Function",
       "useAnimatedNumberStyle": "Function",
-      "useAnimatedNumberReaction": "Function"
+      "useAnimations": "Function"
     },
     "defaultProps": {},
     "inverseShorthands": {

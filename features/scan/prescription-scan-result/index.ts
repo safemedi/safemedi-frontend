@@ -1,0 +1,1 @@
+export { PrescriptionScanResultScreen } from "./PrescriptionScanResultScreen";

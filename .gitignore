@@ -25,6 +25,7 @@ expo-env.d.ts
 npm-debug.*
 yarn-debug.*
 yarn-error.*
+coverage/
 
 # macOS
 .DS_Store
@@ -32,6 +33,7 @@ yarn-error.*
 
 # local env files
 .env*.local
+.env
 
 # typescript
 *.tsbuildinfo
@@ -41,3 +43,11 @@ app-example
 # generated native folders
 /ios
 /android
+
+.codex/
+
+# Claude Code personal overrides
+.claude/settings.local.json
+
+# Google Services JSON 파일
+google-services.json

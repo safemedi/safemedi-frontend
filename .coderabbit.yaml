@@ -1,0 +1,138 @@
+language: ko-KR # 리뷰·요약·채팅 응답 언어 (ISO 코드)
+early_access: true
+
+tone_instructions: >
+  리뷰 코멘트와 요약은 한국어로 작성한다.
+  코드 식별자, 파일 경로, 커맨드, 에러 메시지는 원문(영문)을 유지한다.
+  스타일·포맷 이슈는 Biome이 담당하므로 중복 지적하지 않는다.
+  PR 머지 전 yarn lint, yarn test 통과를 전제로 한다.
+
+
+reviews:
+  profile: chill # chill=가벼운 피드백 / assertive=세밀·다량 피드백
+  request_changes_workflow: true # true면 pre-merge 실패 시 GitHub "Changes requested" 요청
+  high_level_summary: true # 변경 사항 고수준 요약 생성
+  high_level_summary_in_walkthrough: true # 요약을 PR 본문이 아닌 walkthrough 댓글 상단에 표시
+  high_level_summary_placeholder: '@coderabbitai summary'  # 본문 placeholder (in_walkthrough 사용 시 미사용)
+  review_status: true # 리뷰 진행·스킵 등 상태 메시지를 walkthrough에 표시
+  review_details: false # true면 무시된 파일·추가 컨텍스트 등 상세 디버그 정보 표시
+  poem: false # walkthrough에 시(유머) 생성 여부
+  sequence_diagrams: true # walkthrough에 시퀀스 다이어그램 포함 여부 (기본 true)
+  collapse_walkthrough: false # true면 walkthrough를 접을 수 있는 섹션으로 감쌈
+  abort_on_close: true # PR이 닫히거나 머지되면 진행 중 리뷰 중단
+
+  path_filters:
+    - "!coverage/**"
+    - "!node_modules/**"
+    - "!**/.expo/**"
+    - "!**/.tamagui/**"
+    - "!**/ios/**" 
+    - "!**/android/**"
+    - "!**/web-build/**"
+    - "!**/dist/**"
+    - "!yarn.lock"
+
+  path_instructions:
+    - path: "**/*.{ts,tsx}"
+      instructions: |
+        Expo ~54, React Native, Tamagui, TypeScript strict 프로젝트.
+        경로 별칭은 @/* (프로젝트 루트).
+        서버 상태는 TanStack Query, 세션·전역 UI는 Zustand, 화면 로컬은 useState 우선.
+        any 금지, interface로 props·ViewModel shape 명시, named export 선호.
+        .env·시크릿·토큰 커밋, coverage/·node_modules/ 변경 금지.
+        요청 범위 밖 대규모 리팩터링 지양.
+
+    - path: "app/**"
+      instructions: |
+        Expo Router 라우트 전용. 화면 로직은 features/에 둔다.
+        라우트 파일은 Screen 컴포넌트 import 후 export default만 하는 얇은 구조 유지.
+        (tabs) / (detail) / (auth) 그룹 구조와 AuthGateView, useAuthRouteState 패턴 준수.
+
+    - path: "features/**"
+      instructions: |
+        도메인 feature UI 루트. 표준 구조:
+        {Feature}Screen.tsx, use{Feature}ViewModel.ts, components/, __tests__/
+        Screen = ViewModel + presentational components 조합.
+        ViewModel은 export interface {Feature}ViewModel로 반환 shape 명시.
+        placeholder 파일명(XxxScreen 등) 대신 기능 의미가 드러나는 이름 사용.
+
+    - path: "api/**"
+      instructions: |
+        API 레이어: endpoints(순수 fetch) → queries(hooks) → api/query-keys.ts(키 단일 정의) → types/.
+        Query hook은 useSessionStore로 accessToken 확인 후 enabled: !!accessToken.
+        api/mock/는 테스트·로컬 전용. 프로덕션 경로에 mock 의존 추가 금지.
+
+    - path: "components/ui/**"
+      instructions: |
+        도메인 무관 공용 UI만 배치. 비즈니스 로직·API 호출 포함하지 않는다.
+
+    - path: "stores/**"
+      instructions: |
+        Zustand 전역 스토어. 세션·사용자 등 앱 전역 상태만 담당.
+
+    - path: "constants/**"
+      instructions: |
+        design-tokens, api-config 등 상수·토큰 정의.
+        UI 색상·간격은 하드코딩 대신 design-tokens 사용 권장.
+
+  auto_review:
+    enabled: true 
+    auto_incremental_review: true 
+    auto_pause_after_reviewed_commits: 1 
+    ignore_title_keywords: []      
+    labels: []                     
+    drafts: false 
+    base_branches:
+      - "dev"
+
+  finishing_touches:
+    docstrings:
+      enabled: false 
+    unit_tests:
+      enabled: true 
+
+  pre_merge_checks:
+    description:
+      mode: warning
+      requirements: |
+        PR 본문에 다음 섹션이 포함되어야 한다:
+        작업 배경, 작업 내용, 테스트 체크리스트, 기타 논의 사항, 셀프 체크리스트.
+        (.github/PULL_REQUEST_TEMPLATE.md 형식)
+    docstrings:
+      mode: "off" 
+
+  tools:
+    biome:
+      enabled: true 
+    eslint:
+      enabled: false 
+    react-doctor:
+      enabled: true 
+    gitleaks:
+      enabled: true 
+
+knowledge_base:
+  code_guidelines:
+    enabled: true 
+    file_patterns:
+      - "**/.cursor/rules/**"
+      - "**/AGENTS.md"
+      - "**/CLAUDE.md"
+    scope: auto  
+  issues:
+    scope: auto  
+
+code_generation:
+  docstrings:
+    language: ko-KR 
+  unit_tests:
+    path_instructions:
+      - path: "features/**/__tests__/**"
+        instructions: |
+          Jest + jest-expo + @testing-library/react-native 사용.
+          yarn test 실행, 전역 커버리지 threshold 60%.
+          moduleNameMapper: @/ → 프로젝트 루트.
+          api/mock/ 의존 테스트는 로컬·테스트 전용임을 명시.
+
+chat:
+  auto_reply: true 

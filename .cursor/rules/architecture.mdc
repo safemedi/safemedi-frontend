@@ -1,0 +1,63 @@
+---
+description: 라우팅, API, ViewModel 아키텍처
+alwaysApply: true
+---
+
+# 아키텍처
+
+## 라우팅 (`app/`)
+
+라우트 파일은 얇게 유지한다.
+
+```tsx
+// app/(tabs)/dashboard.tsx — 패턴 예시
+import { DashboardScreen } from "@/features/dashboard/home/DashboardScreen";
+
+export default function DashboardTabRoute() {
+  return <DashboardScreen />;
+}
+```
+
+- `(tabs)` / `(detail)` / `(auth)` 그룹 구조 유지.
+- 인증 분기: `AuthGateView`, `useAuthRouteState`, session store 패턴 따르기.
+
+## API 레이어
+
+1. `api/endpoints/{domain}.ts` — HTTP/fetch, 순수 함수
+2. `api/queries/{domain}.ts` — `useQuery` / `useMutation` hooks
+3. `queryKeys` — 새 쿼리마다 `api/query-keys.ts`에 키 추가
+4. `api/types/` — 응답·요청 타입
+
+Query hook 패턴:
+
+- `useSessionStore`로 `accessToken` 확인 후 `enabled: !!accessToken`
+- `staleTime` 등 기존 도메인과 유사하게 설정
+
+Mock은 `api/mock/` — 테스트·로컬 전용. 프로덕션 경로에 mock 의존 추가하지 않는다.
+
+## ViewModel
+
+- `use{Feature}ViewModel.ts` — 화면용 파생 데이터·상태 조합
+- ViewModel은 `export interface {Feature}ViewModel`로 반환 shape 명시
+- Screen은 ViewModel + presentational components 조합
+
+## feature 폴더 (`features/`)
+
+```
+features/{domain}/{feature}/
+  {Feature}Screen.tsx
+  use{Feature}ViewModel.ts
+  components/
+  __tests__/
+```
+
+- `view/` 같은 별도 레이어는 기본 구조로 강제하지 않는다.
+- 파일명은 `XxxScreen.tsx` 같은 placeholder를 사용하지 않고 기능 의미가 드러나는 이름을 사용한다.
+
+features 예: `features/manage/medication-management`, `features/profile/edit`.
+
+## 상태
+
+- 서버 상태: TanStack Query
+- 세션·전역 UI: Zustand (`stores/`)
+- 화면 로컬: `useState` 우선, 필요 시만 lift
