@@ -20,7 +20,7 @@ Expo Router · React Native · Tamagui · TanStack Query · Zustand.
 ### Commands
 
 | 작업 | 명령어 |
-|------|--------|
+| ------ | -------- |
 | 개발 서버 | `yarn dev` / `yarn start` |
 | 린트 | `yarn lint` |
 | 린트 자동 수정 | `yarn lint:fix` |
@@ -115,8 +115,8 @@ Expo Router · React Native · Tamagui · TanStack Query · Zustand.
 - PR base는 기본적으로 `dev`. `release` → `main` 승격 PR만 예외적으로 `main`을 base로 한다.
 - 커밋 요청 시 직접 관여한 파일만을 대상으로 한다. 작업하지 않은 파일은 제외한다.
 - PR을 생성할 때는 기본 assignee를 GitHub 인증 사용자(@me)로 설정한다.
-- PR의 제목은 티켓명 괄호 뒤에 개발 내용을 작성한다. 다음과 같이 작성한다 ex) [SAF-00] feat: ~~ 
-- PR작성 시 `.github/PULL_REQUEST_TEMPLATE.md`파일의 규칙을 따른다. 
+- PR의 제목은 티켓명 괄호 뒤에 개발 내용을 작성한다. 다음과 같이 작성한다 ex) [SAF-00] feat: ~~
+- PR작성 시 `.github/PULL_REQUEST_TEMPLATE.md`파일의 규칙을 따른다.
 - PR의 관련 이슈에는 Linear 티켓명을 포함하고, 해당 Linear 티켓에 연결된 GitHub issue가 존재하면 그 issue도 함께 기재한다.
 
 ### P0 / P1 — 반드시 지적 (blocking)
@@ -164,7 +164,7 @@ Expo Router · React Native · Tamagui · TanStack Query · Zustand.
 ### 변경 유형별 빠른 체크
 
 | 변경 위치 | 확인 |
-|-----------|------|
+| ----------- | ------ |
 | `app/**` | 얇은 라우트만, `(tabs)` / `(detail)` / `(auth)` 그룹 유지 |
 | `api/endpoints/**` | 순수 fetch, 부수 효과 최소 |
 | `api/queries/**` | query key, `enabled`, `staleTime` 기존 도메인과 일관 |
