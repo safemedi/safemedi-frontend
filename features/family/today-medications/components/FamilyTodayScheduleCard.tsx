@@ -30,7 +30,7 @@ export function FamilyTodayScheduleCard({ schedule }: FamilyTodayScheduleCardPro
             {schedule.takeTime}
           </Text>
           <Badge
-            label={status ? STATUS_LABELS[status] : "상태 확인 중"}
+            label={(status && STATUS_LABELS[status]) ?? "상태 확인 중"}
             backgroundColor={palette.light_green}
             textColor={palette.green_deep}
           />

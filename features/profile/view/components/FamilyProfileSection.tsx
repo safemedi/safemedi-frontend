@@ -41,7 +41,9 @@ export function FamilyProfileSection({
             key={profile.id}
             disabled={profile.isActive || !onSelectFamily}
             accessibilityRole={profile.isActive ? undefined : "button"}
-            accessibilityLabel={`${profile.relation} ${profile.name} 오늘 복약 정보`}
+            accessibilityLabel={
+              profile.isActive ? undefined : `${profile.relation} ${profile.name} 오늘 복약 정보`
+            }
             onPress={() => onSelectFamily?.(profile)}
           >
             <FamilyProfileItem
