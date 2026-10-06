@@ -6,7 +6,16 @@ import type {
   UpdateMedicationRecordResponse,
 } from "@/api/types/dashboard";
 
-export async function fetchTodayMedicationSchedules(): Promise<TodayMedicationSchedulesResponse> {
+export async function fetchTodayMedicationSchedules(
+  familyId?: number,
+): Promise<TodayMedicationSchedulesResponse> {
+  if (familyId !== undefined) {
+    return api
+      .get(apiPaths.medicationRecordsToday, {
+        searchParams: { familyId: String(familyId) },
+      })
+      .json<TodayMedicationSchedulesResponse>();
+  }
   return api.get(apiPaths.medicationRecordsToday).json<TodayMedicationSchedulesResponse>();
 }
 

@@ -16,9 +16,14 @@ export type FamilyProfile = {
 export type FamilyProfileSectionProps = {
   profiles: readonly FamilyProfile[];
   onAddFamily?: () => void;
+  onSelectFamily?: (profile: FamilyProfile) => void;
 };
 
-export function FamilyProfileSection({ profiles, onAddFamily }: FamilyProfileSectionProps) {
+export function FamilyProfileSection({
+  profiles,
+  onAddFamily,
+  onSelectFamily,
+}: FamilyProfileSectionProps) {
   return (
     <YStack gap={10}>
       <SectionHeader
@@ -32,13 +37,20 @@ export function FamilyProfileSection({ profiles, onAddFamily }: FamilyProfileSec
       />
       <YStack gap={7}>
         {profiles.map((profile) => (
-          <FamilyProfileItem
+          <Pressable
             key={profile.id}
-            name={profile.name}
-            relation={profile.relation}
-            isActive={profile.isActive}
-            avatarGradient={profile.avatarGradient}
-          />
+            disabled={profile.isActive || !onSelectFamily}
+            accessibilityRole={profile.isActive ? undefined : "button"}
+            accessibilityLabel={`${profile.relation} ${profile.name} 오늘 복약 정보`}
+            onPress={() => onSelectFamily?.(profile)}
+          >
+            <FamilyProfileItem
+              name={profile.name}
+              relation={profile.relation}
+              isActive={profile.isActive}
+              avatarGradient={profile.avatarGradient}
+            />
+          </Pressable>
         ))}
       </YStack>
     </YStack>

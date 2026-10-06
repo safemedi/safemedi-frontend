@@ -1,11 +1,12 @@
 import { act, renderHook } from "@testing-library/react-native";
+import { router } from "expo-router";
 import { Alert } from "react-native";
 
 import { useProfileViewModel } from "../useProfileViewModel";
 
 const mockMutate = jest.fn();
 const mockHandleLogout = jest.fn(async () => {});
-const mockUseDeleteUserAccountMutation = jest.fn(() => ({
+const mockUseDeleteUserAccountMutation = jest.fn((_options: unknown) => ({
   mutate: mockMutate,
   isPending: false,
 }));
@@ -39,6 +40,29 @@ describe("useProfileViewModel", () => {
 
   afterEach(() => {
     jest.restoreAllMocks();
+  });
+
+  it("가족 선택 시 해당 가족의 오늘 복약 화면으로 이동한다", () => {
+    const { result } = renderHook(() => useProfileViewModel());
+    act(() =>
+      result.current.handleOpenFamilyMedication({
+        id: "12",
+        name: "김영희",
+        relation: "어머니",
+        isActive: false,
+        avatarGradient: ["green", "green"],
+      }),
+    );
+    expect(router.push).toHaveBeenCalledWith({
+      pathname: "/family/today-medications",
+      params: { familyId: "12", name: "김영희", relation: "어머니" },
+    });
+  });
+
+  it("본인 프로필은 가족 조회 화면으로 이동하지 않는다", () => {
+    const { result } = renderHook(() => useProfileViewModel());
+    act(() => result.current.handleOpenFamilyMedication(result.current.familyProfiles[0]));
+    expect(router.push).not.toHaveBeenCalled();
   });
 
   it("회원 탈퇴 확인 후 API를 호출한다", () => {

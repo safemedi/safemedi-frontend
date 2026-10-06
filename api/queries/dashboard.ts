@@ -31,7 +31,22 @@ export function useDashboardTodayMedicationSchedules() {
     queryKey: queryKeys.dashboard.todayMedicationSchedules,
     enabled: !!accessToken,
     staleTime: STALE_MS,
-    queryFn: fetchTodayMedicationSchedules,
+    queryFn: () => fetchTodayMedicationSchedules(),
+  });
+}
+
+export function useFamilyTodayMedicationSchedules(familyId?: number) {
+  const accessToken = useSessionStore((state) => state.accessToken);
+  const hasValidFamilyId = familyId !== undefined && Number.isSafeInteger(familyId) && familyId > 0;
+
+  return useQuery({
+    queryKey: queryKeys.family.todayMedicationSchedules(familyId),
+    enabled: !!accessToken && hasValidFamilyId,
+    staleTime: STALE_MS,
+    queryFn: () => {
+      if (!hasValidFamilyId) throw new Error("유효하지 않은 가족 ID입니다.");
+      return fetchTodayMedicationSchedules(familyId);
+    },
   });
 }
 

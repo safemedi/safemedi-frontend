@@ -17,6 +17,8 @@ export const queryKeys = {
     deleteAccount: ["user", "delete-account"] as const,
   },
   family: {
+    todayMedicationSchedules: (familyId?: number) =>
+      ["family", "medication-records", "today", familyId] as const,
     list: ["family", "list"] as const,
     invitation: (token: string) => ["family", "invitation", token] as const,
   },

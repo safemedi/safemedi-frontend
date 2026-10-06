@@ -59,6 +59,14 @@ export function useProfileViewModel() {
     router.push("/profile/edit");
   };
 
+  const handleOpenFamilyMedication = (profile: FamilyProfile) => {
+    if (profile.id === "me") return;
+    router.push({
+      pathname: "/family/today-medications",
+      params: { familyId: profile.id, name: profile.name, relation: profile.relation },
+    });
+  };
+
   const handleOpenFamilyManage = () => {
     router.push("/family/manage");
   };
@@ -124,6 +132,7 @@ export function useProfileViewModel() {
     isWithdrawing: deleteUserAccountMutation.isPending,
     handleOpenProfileEdit,
     handleOpenFamilyManage,
+    handleOpenFamilyMedication,
     handleOpenHealthInfoDetail,
   };
 }

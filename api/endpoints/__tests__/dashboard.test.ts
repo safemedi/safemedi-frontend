@@ -27,6 +27,15 @@ describe("api/endpoints/dashboard", () => {
     expect(result).toEqual(expected);
   });
 
+  it("가족 조회에는 familyId만 쿼리 파라미터로 추가한다", async () => {
+    const expected = { schedules: [] };
+    mockApiGet.mockReturnValueOnce({ json: jest.fn(async () => expected) });
+    expect(await fetchTodayMedicationSchedules(12)).toEqual(expected);
+    expect(mockApiGet).toHaveBeenCalledWith(apiPaths.medicationRecordsToday, {
+      searchParams: { familyId: "12" },
+    });
+  });
+
   it("복약 기록 상태 변경 시 medication-records 엔드포인트에 recordIds와 함께 PATCH 요청한다", async () => {
     const expected = {
       recordIds: [500, 501],

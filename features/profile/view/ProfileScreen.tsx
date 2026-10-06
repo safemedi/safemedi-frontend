@@ -35,6 +35,7 @@ export function ProfileScreen() {
         />
         <FamilyProfileSection
           profiles={viewModel.familyProfiles}
+          onSelectFamily={viewModel.handleOpenFamilyMedication}
           onAddFamily={viewModel.handleOpenFamilyManage}
         />
         <HealthInfoSection
