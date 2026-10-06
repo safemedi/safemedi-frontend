@@ -28,6 +28,6 @@ it("가족 항목을 누르면 선택한 가족을 전달하고 본인은 선택
   const screen = render(<FamilyProfileSection profiles={profiles} onSelectFamily={handleSelect} />);
   fireEvent.press(screen.getByLabelText("어머니 김영희 오늘 복약 정보"));
   expect(handleSelect).toHaveBeenCalledWith(profiles[1]);
-  fireEvent.press(screen.getByLabelText("본인 홍길동 오늘 복약 정보"));
+  fireEvent.press(screen.getByText("홍길동"));
   expect(handleSelect).toHaveBeenCalledTimes(1);
 });
