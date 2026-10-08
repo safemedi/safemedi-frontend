@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { YStack } from "tamagui";
+import { PillButton } from "@/components/ui/PillButton";
 import { SurfaceCard } from "@/components/ui/SurfaceCard";
 import { palette } from "@/constants/design-tokens";
 import { FamilyScreenHeader } from "@/features/family/family-screen/components/FamilyScreenHeader";
@@ -64,12 +65,22 @@ export function FamilyTodayMedicationsScreen() {
             )}
           </YStack>
         ) : null}
+        {vm.hasValidFamilyId ? (
+          <PillButton
+            variant="solid"
+            onPress={vm.handleHealthInfo}
+            accessibilityLabel="가족의 의료진 제공용 건강정보 보기"
+          >
+            <Text style={styles.buttonText}>의료진 제공용 건강정보 보기</Text>
+          </PillButton>
+        ) : null}
       </YStack>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  buttonText: { color: palette.white, fontWeight: "700" },
   retry: { color: palette.green_deep },
   heading: { color: palette.black, fontWeight: "700" },
   description: { color: palette.icon },

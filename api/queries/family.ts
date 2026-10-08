@@ -6,8 +6,10 @@ import {
   deleteFamily,
   fetchFamilies,
   fetchFamilyInvitation,
+  fetchFamilyMedicalSummary,
   updateFamilyRelation,
 } from "@/api/endpoints/family";
+import { getHttpStatus } from "@/api/error";
 import { queryKeys } from "@/api/query-keys";
 import type { FamilySummary, UpdateFamilyRelationBody } from "@/api/types/family";
 import { useSessionStore } from "@/stores/sessionStore";
@@ -114,6 +116,25 @@ export function useDeleteFamily() {
       await applyFamilyListUpdate((current) =>
         current?.filter((family) => family.familyId !== familyId),
       );
+    },
+  });
+}
+
+export function useFamilyMedicalSummary(familyId?: number) {
+  const accessToken = useSessionStore((state) => state.accessToken);
+  const hasValidFamilyId = familyId !== undefined && Number.isSafeInteger(familyId) && familyId > 0;
+
+  return useQuery({
+    queryKey: queryKeys.family.medicalSummary(familyId),
+    enabled: !!accessToken && hasValidFamilyId,
+    staleTime: 0,
+    retry: (failureCount, error) => {
+      const status = getHttpStatus(error);
+      return status !== 401 && status !== 403 && status !== 404 && failureCount < 2;
+    },
+    queryFn: () => {
+      if (!hasValidFamilyId) throw new Error("유효하지 않은 가족 ID입니다.");
+      return fetchFamilyMedicalSummary(familyId);
     },
   });
 }

@@ -1,4 +1,5 @@
 import { fireEvent, render } from "@testing-library/react-native";
+import { router } from "expo-router";
 import { useFamilyTodayMedicationSchedules } from "@/api/queries/dashboard";
 import { FamilyTodayMedicationsScreen } from "@/features/family/today-medications/FamilyTodayMedicationsScreen";
 
@@ -6,7 +7,7 @@ const mockRefetch = jest.fn();
 let mockFamilyId: string | string[] | undefined = "12";
 jest.mock("expo-router", () => ({
   useLocalSearchParams: () => ({ familyId: mockFamilyId, name: "김영희" }),
-  router: { back: jest.fn() },
+  router: { back: jest.fn(), push: jest.fn() },
 }));
 jest.mock("@/api/queries/dashboard", () => ({ useFamilyTodayMedicationSchedules: jest.fn() }));
 jest.mock("react-native-safe-area-context", () => ({
@@ -53,6 +54,14 @@ describe("가족 오늘 복약 화면", () => {
     for (const label of ["복용 완료", "복용 필요", "대기", "미복용", "건너뜀"]) {
       expect(screen.getByText(label)).toBeTruthy();
     }
+  });
+  it("하단 버튼으로 선택한 가족의 건강정보 화면에 이동한다", () => {
+    const screen = render(<FamilyTodayMedicationsScreen />);
+    fireEvent.press(screen.getByLabelText("가족의 의료진 제공용 건강정보 보기"));
+    expect(router.push).toHaveBeenCalledWith({
+      pathname: "/family/health-info",
+      params: { familyId: "12" },
+    });
   });
   it("조회 실패 시 다시 시도할 수 있다", () => {
     setQuery({ isError: true });

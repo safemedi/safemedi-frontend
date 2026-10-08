@@ -10,6 +10,7 @@ export interface FamilyTodayMedicationsViewModel {
   readonly isError: boolean;
   readonly isRefreshing: boolean;
   readonly handleRefresh: () => void;
+  readonly handleHealthInfo: () => void;
   readonly handleBack: () => void;
 }
 
@@ -36,6 +37,10 @@ export function useFamilyTodayMedicationsViewModel(): FamilyTodayMedicationsView
     isRefreshing: query.isRefetching,
     handleRefresh: () => {
       if (hasValidFamilyId) void query.refetch();
+    },
+    handleHealthInfo: () => {
+      if (!hasValidFamilyId) return;
+      router.push({ pathname: "/family/health-info", params: { familyId: String(familyId) } });
     },
     handleBack: () => router.back(),
   };

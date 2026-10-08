@@ -9,6 +9,7 @@ import type {
   UpdatedFamilyRelation,
   UpdateFamilyRelationBody,
 } from "@/api/types/family";
+import type { MedicalSummaryResponse } from "@/api/types/medical-summary";
 
 export async function fetchFamilies(): Promise<FamilySummary[]> {
   const response = await api.get(apiPaths.families).json<FamiliesResponse>();
@@ -36,4 +37,8 @@ export async function updateFamilyRelation(
 
 export async function deleteFamily(familyId: number): Promise<void> {
   await api.delete(apiPaths.family(familyId)).text();
+}
+
+export async function fetchFamilyMedicalSummary(familyId: number): Promise<MedicalSummaryResponse> {
+  return api.get(apiPaths.familyMedicalSummary(familyId)).json<MedicalSummaryResponse>();
 }

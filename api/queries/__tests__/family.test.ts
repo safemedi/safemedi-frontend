@@ -5,9 +5,11 @@ import {
   useDeleteFamily,
   useFamilies,
   useFamilyInvitation,
+  useFamilyMedicalSummary,
   useUpdateFamilyRelation,
 } from "../family";
 
+const mockFetchFamilyMedicalSummary = jest.fn<Promise<unknown>, [number]>(async () => ({}));
 const mockFetchFamilies = jest.fn(async () => [
   { familyId: null, name: "홍길동", relation: "본인" },
   { familyId: 7, name: "김영희", relation: "어머니" },
@@ -26,10 +28,10 @@ let mockAccessToken: string | null = "token";
 jest.mock("@tanstack/react-query", () => ({
   useMutation: jest.fn((options: unknown) => options),
   useQuery: jest.fn((options: unknown) => {
-    const query = options as { queryKey?: unknown };
+    const query = options as Record<string, unknown> & { queryKey?: unknown };
     if (Array.isArray(query.queryKey) && query.queryKey.join("/") === "family/list") {
       return {
-        ...options,
+        ...query,
         data: [
           { familyId: null, name: "홍길동", relation: "본인" },
           { familyId: 7, name: "김영희", relation: "어머니" },
@@ -48,6 +50,7 @@ jest.mock("@/api/endpoints/family", () => ({
   acceptFamilyInvitation: (token: string) => mockAcceptFamilyInvitation(token),
   deleteFamily: (familyId: number) => mockDeleteFamily(familyId),
   fetchFamilies: () => mockFetchFamilies(),
+  fetchFamilyMedicalSummary: (familyId: number) => mockFetchFamilyMedicalSummary(familyId),
   fetchFamilyInvitation: (token: string) => mockFetchFamilyInvitation(token),
   updateFamilyRelation: (familyId: number, body: { relation: string }) =>
     mockUpdateFamilyRelation(familyId, body),
@@ -155,5 +158,45 @@ describe("api/queries/family", () => {
     const options = result.current as unknown as { enabled: boolean };
 
     expect(options.enabled).toBe(false);
+  });
+});
+
+interface MedicalSummaryQueryOptions {
+  enabled: boolean;
+  queryKey: readonly unknown[];
+  queryFn: () => Promise<unknown>;
+}
+
+describe("가족 건강정보 쿼리", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockAccessToken = "token";
+  });
+  it("가족 관계별 캐시를 사용하고 해당 가족을 조회한다", async () => {
+    const { result } = renderHook(() => useFamilyMedicalSummary(12));
+    const options = result.current as unknown as MedicalSummaryQueryOptions;
+    expect(options.queryKey).toEqual(queryKeys.family.medicalSummary(12));
+    expect(options.queryKey).not.toEqual(queryKeys.family.medicalSummary(13));
+    expect(options.enabled).toBe(true);
+    await options.queryFn();
+    expect(mockFetchFamilyMedicalSummary).toHaveBeenCalledWith(12);
+  });
+  it("인증 토큰이 없으면 조회하지 않는다", () => {
+    mockAccessToken = null;
+    const { result } = renderHook(() => useFamilyMedicalSummary(12));
+    expect((result.current as unknown as MedicalSummaryQueryOptions).enabled).toBe(false);
+  });
+  it.each([
+    undefined,
+    0,
+    -1,
+    1.5,
+    Number.MAX_SAFE_INTEGER + 1,
+  ])("잘못된 가족 ID %s의 조회를 차단한다", (familyId) => {
+    const { result } = renderHook(() => useFamilyMedicalSummary(familyId));
+    const options = result.current as unknown as MedicalSummaryQueryOptions;
+    expect(options.enabled).toBe(false);
+    expect(() => options.queryFn()).toThrow("유효하지 않은 가족 ID입니다.");
+    expect(mockFetchFamilyMedicalSummary).not.toHaveBeenCalled();
   });
 });
