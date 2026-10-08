@@ -69,12 +69,19 @@ describe("가족 오늘 복약 화면", () => {
     fireEvent.press(screen.getByText("다시 시도"));
     expect(mockRefetch).toHaveBeenCalledTimes(1);
     expect(screen.queryByText("처방전 1")).toBeNull();
+    expect(screen.queryByLabelText("가족의 의료진 제공용 건강정보 보기")).toBeNull();
   });
-  it("불러오는 동안 로딩 상태를 표시한다", () => {
+  it("로딩 중에는 버튼을 숨기고 완료 후 복약 정보와 함께 표시한다", () => {
     setQuery({ isLoading: true, data: undefined });
-    expect(
-      render(<FamilyTodayMedicationsScreen />).getByLabelText("복약 정보 불러오는 중"),
-    ).toBeTruthy();
+    const screen = render(<FamilyTodayMedicationsScreen />);
+    expect(screen.getByLabelText("복약 정보 불러오는 중")).toBeTruthy();
+    expect(screen.queryByLabelText("가족의 의료진 제공용 건강정보 보기")).toBeNull();
+
+    setQuery();
+    screen.rerender(<FamilyTodayMedicationsScreen />);
+    expect(screen.queryByLabelText("복약 정보 불러오는 중")).toBeNull();
+    expect(screen.getByText("오늘 복약 이행률 20%")).toBeTruthy();
+    expect(screen.getByLabelText("가족의 의료진 제공용 건강정보 보기")).toBeTruthy();
   });
   it("일정이 없으면 빈 목록 안내를 표시한다", () => {
     setQuery({
