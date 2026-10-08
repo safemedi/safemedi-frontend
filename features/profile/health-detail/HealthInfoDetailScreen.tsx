@@ -1,12 +1,10 @@
-import Ionicons from "@expo/vector-icons/Ionicons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import { useCallback, useMemo } from "react";
-import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useMemo } from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-
-import { PillButton } from "@/components/ui/PillButton";
 import { palette } from "@/constants/design-tokens";
+import { HealthInfoActions } from "@/features/profile/health-detail/components/HealthInfoActions";
 import { useScreenBottomPadding } from "@/hooks/useScreenBottomPadding";
 import { useHealthInfo, useUserStore } from "@/stores/userStore";
 import { splitBloodTypeWithRh } from "@/utils/blood-type";
@@ -27,8 +25,6 @@ import {
   EMPTY_BADGE_LABEL,
   EMPTY_ITEM_TEXT,
   MEDICAL_GUIDE_TEXT,
-  PRINT_SUCCESS_MESSAGE,
-  SHARE_SUCCESS_MESSAGE,
 } from "./constants";
 import type { ClinicalAlertSection, PatientInfo } from "./types";
 
@@ -151,14 +147,6 @@ export function HealthInfoDetailScreen() {
     [chronicConditions],
   );
 
-  const handlePrint = useCallback(() => {
-    Alert.alert("인쇄하기", PRINT_SUCCESS_MESSAGE);
-  }, []);
-
-  const handleShare = useCallback(() => {
-    Alert.alert("공유하기", SHARE_SUCCESS_MESSAGE);
-  }, []);
-
   return (
     <View style={styles.screen}>
       <LinearGradient
@@ -183,27 +171,7 @@ export function HealthInfoDetailScreen() {
           <ClinicalAlertCard section={allergySection} iconName={ALLERGY_HEADER_ICON} />
           <ClinicalAlertCard section={chronicSection} iconName={CHRONIC_HEADER_ICON} />
           <ClinicianNotesCard notes={CLINICIAN_NOTE_ITEMS} />
-          <View style={styles.actionRow}>
-            <PillButton
-              variant="outline"
-              onPress={handlePrint}
-              borderColor={palette.green_soft}
-              backgroundColor="transparent"
-              leftElement={<Ionicons name="print-outline" size={14} color={palette.green_deep} />}
-              accessibilityLabel="건강 정보 인쇄하기"
-            >
-              <Text style={styles.outlineActionText}>인쇄하기</Text>
-            </PillButton>
-            <PillButton
-              variant="solid"
-              onPress={handleShare}
-              backgroundColor={palette.green}
-              leftElement={<Ionicons name="share-social-outline" size={14} color={palette.white} />}
-              accessibilityLabel="건강 정보 공유하기"
-            >
-              <Text style={styles.solidActionText}>공유하기</Text>
-            </PillButton>
-          </View>
+          <HealthInfoActions />
         </View>
       </ScrollView>
     </View>
@@ -222,22 +190,5 @@ const styles = StyleSheet.create({
   },
   container: {
     gap: 12,
-  },
-  actionRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  outlineActionText: {
-    fontSize: 12,
-    lineHeight: 17,
-    fontWeight: "500",
-    color: palette.green_deep,
-  },
-  solidActionText: {
-    fontSize: 12,
-    lineHeight: 17,
-    fontWeight: "500",
-    color: palette.white,
   },
 });
