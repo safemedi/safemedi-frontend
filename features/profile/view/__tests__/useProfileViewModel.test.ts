@@ -5,6 +5,7 @@ import { Alert } from "react-native";
 import { useProfileViewModel } from "../useProfileViewModel";
 
 let mockFamiliesLoading = false;
+let mockFamiliesFetched = false;
 let mockSettingsLoading = false;
 const mockFamiliesRefetch = jest.fn();
 const mockSettingsRefetch = jest.fn();
@@ -19,6 +20,7 @@ jest.mock("@/api/queries/profile", () => ({
   useFamilyProfiles: () => ({
     data: [],
     isLoading: mockFamiliesLoading,
+    isFetched: mockFamiliesFetched,
     isError: false,
     refetch: mockFamiliesRefetch,
   }),
@@ -127,8 +129,18 @@ describe("프로필 초기 조회", () => {
     mockSettingsLoading = false;
     rerender({});
     expect(result.current.isLoading).toBe(false);
-    act(() => result.current.handleRetry());
+    act(() => result.current.handleRetryFamilies());
     expect(mockFamiliesRefetch).toHaveBeenCalled();
+    act(() => result.current.handleRetrySettings());
     expect(mockSettingsRefetch).toHaveBeenCalled();
   });
+});
+
+it("가족 조회 실패 후 재시도는 전체 화면 로딩으로 돌아가지 않는다", () => {
+  mockFamiliesLoading = true;
+  mockFamiliesFetched = true;
+  mockSettingsLoading = false;
+  const { result } = renderHook(() => useProfileViewModel());
+  expect(result.current.isLoading).toBe(false);
+  expect(result.current.isFamiliesLoading).toBe(true);
 });

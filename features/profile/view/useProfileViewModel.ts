@@ -24,8 +24,12 @@ const AVATAR_GRADIENT_POOL = [
 
 export interface ProfileViewModel {
   readonly isLoading: boolean;
-  readonly isError: boolean;
-  readonly handleRetry: () => void;
+  readonly isFamiliesError: boolean;
+  readonly isFamiliesLoading: boolean;
+  readonly isSettingsError: boolean;
+  readonly isSettingsLoading: boolean;
+  readonly handleRetryFamilies: () => void;
+  readonly handleRetrySettings: () => void;
   readonly profileUser: ReturnType<typeof useProfileUser>;
   readonly familyProfiles: readonly FamilyProfile[];
   readonly allergies: ReturnType<typeof useHealthInfo>["allergies"];
@@ -143,10 +147,17 @@ export function useProfileViewModel(): ProfileViewModel {
   }, [deleteUserAccountMutation]);
 
   return {
-    isLoading: familiesQuery.isLoading || settingsQuery.isLoading,
-    isError: familiesQuery.isError || settingsQuery.isError,
-    handleRetry: () => {
+    isLoading:
+      (familiesQuery.isLoading && !familiesQuery.isFetched) ||
+      (settingsQuery.isLoading && !settingsQuery.isFetched),
+    isFamiliesError: familiesQuery.isError,
+    isFamiliesLoading: familiesQuery.isLoading,
+    isSettingsError: settingsQuery.isError,
+    isSettingsLoading: settingsQuery.isLoading,
+    handleRetryFamilies: () => {
       void familiesQuery.refetch();
+    },
+    handleRetrySettings: () => {
       void settingsQuery.refetch();
     },
     profileUser,

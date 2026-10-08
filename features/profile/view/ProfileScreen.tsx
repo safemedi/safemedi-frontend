@@ -1,9 +1,9 @@
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { YStack } from "tamagui";
 import { ScreenLoadingView } from "@/components/ui/ScreenLoadingView";
-
 import { layout } from "@/constants/design-tokens";
+import { ProfileSectionFeedback } from "@/features/profile/view/components/ProfileSectionFeedback";
 import { AppInfoSection } from "./components/AppInfoSection";
 import { FamilyProfileSection } from "./components/FamilyProfileSection";
 import { HealthInfoSection } from "./components/HealthInfoSection";
@@ -20,16 +20,6 @@ export function ProfileScreen() {
 
   if (viewModel.isLoading) {
     return <ScreenLoadingView accessibilityLabel="프로필 정보 로딩 중" />;
-  }
-  if (viewModel.isError) {
-    return (
-      <View style={styles.feedback}>
-        <Text>프로필 정보를 불러오지 못했습니다.</Text>
-        <Pressable accessibilityRole="button" onPress={viewModel.handleRetry}>
-          <Text>다시 시도</Text>
-        </Pressable>
-      </View>
-    );
   }
 
   return (
@@ -48,11 +38,20 @@ export function ProfileScreen() {
           role={viewModel.profileUser.role}
           onPress={viewModel.handleOpenProfileEdit}
         />
-        <FamilyProfileSection
-          profiles={viewModel.familyProfiles}
-          onSelectFamily={viewModel.handleOpenFamilyMedication}
-          onAddFamily={viewModel.handleOpenFamilyManage}
-        />
+        {viewModel.isFamiliesError || viewModel.isFamiliesLoading ? (
+          <ProfileSectionFeedback
+            title="가족"
+            isLoading={viewModel.isFamiliesLoading}
+            onRetry={viewModel.handleRetryFamilies}
+          />
+        ) : (
+          <FamilyProfileSection
+            profiles={viewModel.familyProfiles}
+            onSelectFamily={viewModel.handleOpenFamilyMedication}
+            onAddFamily={viewModel.handleOpenFamilyManage}
+          />
+        )}
+
         <HealthInfoSection
           allergies={viewModel.allergies}
           chronicConditions={viewModel.chronicConditions}
@@ -60,7 +59,15 @@ export function ProfileScreen() {
           onEditAllergies={viewModel.handleOpenProfileEdit}
           onEditChronicConditions={viewModel.handleOpenProfileEdit}
         />
-        <SettingsSection />
+        {viewModel.isSettingsError || viewModel.isSettingsLoading ? (
+          <ProfileSectionFeedback
+            title="알림 설정"
+            isLoading={viewModel.isSettingsLoading}
+            onRetry={viewModel.handleRetrySettings}
+          />
+        ) : (
+          <SettingsSection />
+        )}
         <AppInfoSection items={viewModel.appInfoItems} />
         <YStack gap={8}>
           <LogoutButton onPress={viewModel.handleLogout} disabled={viewModel.isWithdrawing} />
@@ -76,7 +83,6 @@ export function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  feedback: { flex: 1, alignItems: "center", justifyContent: "center", gap: 12 },
   scroll: {
     flex: 1,
   },
