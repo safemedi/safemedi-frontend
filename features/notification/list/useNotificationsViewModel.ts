@@ -77,10 +77,10 @@ export function useNotificationsViewModel(): NotificationsViewModel {
   return {
     items,
     unreadCount,
-    isLoading: notificationsQuery.isLoading,
-    isError: notificationsQuery.isError,
+    isLoading: notificationsQuery.isLoading || unreadCountQuery.isLoading,
+    isError: notificationsQuery.isError || unreadCountQuery.isError,
     isMarkAllReadPending: markAllReadMutation.isPending,
-    refetch: notificationsQuery.refetch,
+    refetch: () => Promise.all([notificationsQuery.refetch(), unreadCountQuery.refetch()]),
     handlePressBack,
     handlePressMarkAllRead,
     handlePressNotification,

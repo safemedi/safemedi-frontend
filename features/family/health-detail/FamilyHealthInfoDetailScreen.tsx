@@ -1,13 +1,7 @@
-import {
-  ActivityIndicator,
-  Pressable,
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  Text,
-} from "react-native";
+import { Pressable, RefreshControl, ScrollView, StyleSheet, Text } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { YStack } from "tamagui";
+import { ScreenLoadingView } from "@/components/ui/ScreenLoadingView";
 import { palette } from "@/constants/design-tokens";
 import { ActiveMedicationsCard } from "@/features/family/health-detail/components/ActiveMedicationsCard";
 import { useFamilyHealthInfoDetailViewModel } from "@/features/family/health-detail/useFamilyHealthInfoDetailViewModel";
@@ -27,6 +21,10 @@ import {
 export function FamilyHealthInfoDetailScreen() {
   const vm = useFamilyHealthInfoDetailViewModel();
   const insets = useSafeAreaInsets();
+  if (vm.isLoading && !vm.errorMessage) {
+    return <ScreenLoadingView accessibilityLabel="가족 건강정보 불러오는 중" />;
+  }
+
   return (
     <ScrollView
       contentContainerStyle={[
@@ -47,8 +45,6 @@ export function FamilyHealthInfoDetailScreen() {
               </Pressable>
             ) : null}
           </YStack>
-        ) : vm.isLoading ? (
-          <ActivityIndicator accessibilityLabel="가족 건강정보 불러오는 중" color={palette.green} />
         ) : vm.patient ? (
           <YStack gap={12}>
             <MedicalGuideCard description={MEDICAL_GUIDE_TEXT} />

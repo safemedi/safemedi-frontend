@@ -4,10 +4,11 @@ import { useCallback, useMemo } from "react";
 import { Alert, Linking } from "react-native";
 
 import { getApiErrorMessage } from "@/api/error";
-import { useFamilyProfiles } from "@/api/queries/profile";
+import { useFamilyProfiles, useNotificationSettings } from "@/api/queries/profile";
 import { useDeleteUserAccountMutation } from "@/api/queries/user";
 import { useLogout } from "@/hooks/useLogout";
 import { useHealthInfo, useProfileUser } from "@/stores/userStore";
+import type { AppInfoLinkItem } from "./components/AppInfoSection";
 import type { FamilyProfile } from "./components/FamilyProfileSection";
 import { FAMILY_AVATAR_GRADIENTS } from "./constants";
 
@@ -21,14 +22,34 @@ const AVATAR_GRADIENT_POOL = [
   FAMILY_AVATAR_GRADIENTS.green,
 ] as const;
 
-export function useProfileViewModel() {
+export interface ProfileViewModel {
+  readonly isLoading: boolean;
+  readonly isError: boolean;
+  readonly handleRetry: () => void;
+  readonly profileUser: ReturnType<typeof useProfileUser>;
+  readonly familyProfiles: readonly FamilyProfile[];
+  readonly allergies: ReturnType<typeof useHealthInfo>["allergies"];
+  readonly chronicConditions: ReturnType<typeof useHealthInfo>["chronicConditions"];
+  readonly appInfoItems: readonly AppInfoLinkItem[];
+  readonly handleLogout: ReturnType<typeof useLogout>;
+  readonly handleWithdrawAccount: () => void;
+  readonly isWithdrawing: boolean;
+  readonly handleOpenProfileEdit: () => void;
+  readonly handleOpenFamilyManage: () => void;
+  readonly handleOpenFamilyMedication: (profile: FamilyProfile) => void;
+  readonly handleOpenHealthInfoDetail: () => void;
+}
+
+export function useProfileViewModel(): ProfileViewModel {
   const handleLogout = useLogout();
   const deleteUserAccountMutation = useDeleteUserAccountMutation({
     onSuccess: handleLogout,
   });
 
   const profileUser = useProfileUser();
-  const { data: familySummaries = [] } = useFamilyProfiles();
+  const familiesQuery = useFamilyProfiles();
+  const settingsQuery = useNotificationSettings();
+  const familySummaries = familiesQuery.data ?? [];
   const { allergies, chronicConditions } = useHealthInfo();
 
   const familyProfiles = useMemo<FamilyProfile[]>(() => {
@@ -122,6 +143,12 @@ export function useProfileViewModel() {
   }, [deleteUserAccountMutation]);
 
   return {
+    isLoading: familiesQuery.isLoading || settingsQuery.isLoading,
+    isError: familiesQuery.isError || settingsQuery.isError,
+    handleRetry: () => {
+      void familiesQuery.refetch();
+      void settingsQuery.refetch();
+    },
     profileUser,
     familyProfiles,
     allergies,

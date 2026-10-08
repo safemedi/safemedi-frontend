@@ -7,8 +7,8 @@ import { Text, XStack, YStack } from "tamagui";
 
 import { getHttpStatus } from "@/api/error";
 import { useAcceptFamilyInvitation, useFamilyInvitation } from "@/api/queries/family";
-import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { PillButton } from "@/components/ui/PillButton";
+import { ScreenLoadingView } from "@/components/ui/ScreenLoadingView";
 import { SurfaceCard } from "@/components/ui/SurfaceCard";
 import { palette } from "@/constants/design-tokens";
 
@@ -88,6 +88,15 @@ export function InviteAcceptScreen({ token }: InviteAcceptScreenProps) {
   const isError = isMissingToken || invitationQuery.isError;
   const isAccepting = acceptInvitationMutation.isPending;
 
+  if (isLoading) {
+    return (
+      <ScreenLoadingView
+        accessibilityLabel="초대 정보 확인 중"
+        message="초대 정보를 확인하는 중입니다."
+      />
+    );
+  }
+
   return (
     <View style={styles.container}>
       <LinearGradient
@@ -98,13 +107,6 @@ export function InviteAcceptScreen({ token }: InviteAcceptScreenProps) {
       />
       <View style={[styles.content, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
         <SurfaceCard style={styles.card}>
-          {isLoading ? (
-            <YStack items="center" gap={12} style={styles.feedback}>
-              <LoadingSpinner accessibilityLabel="초대 정보 확인 중" />
-              <Text style={styles.feedbackText}>초대 정보를 확인하는 중입니다.</Text>
-            </YStack>
-          ) : null}
-
           {!isLoading && isError ? (
             <YStack items="center" gap={14} style={styles.feedback}>
               <Ionicons name="alert-circle-outline" size={36} color={palette.red_strong} />

@@ -13,7 +13,7 @@ import {
   useFamilies,
   useUpdateFamilyRelation,
 } from "@/api/queries/family";
-import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { ScreenLoadingView } from "@/components/ui/ScreenLoadingView";
 import { palette } from "@/constants/design-tokens";
 import { useScreenBottomPadding } from "@/hooks/useScreenBottomPadding";
 import { FamilyFeatureBanner } from "./components/FamilyFeatureBanner";
@@ -124,6 +124,18 @@ export function FamilyManageScreen() {
     [deleteFamilyMutation],
   );
 
+  if (
+    familiesQuery.isLoading ||
+    (!inviteLink && (createInvitationMutation.isIdle || createInvitationMutation.isPending))
+  ) {
+    return (
+      <ScreenLoadingView
+        accessibilityLabel="가족 정보 로딩 중"
+        message="가족 정보를 불러오는 중입니다."
+      />
+    );
+  }
+
   return (
     <View style={styles.container}>
       <LinearGradient
@@ -142,12 +154,6 @@ export function FamilyManageScreen() {
       >
         <YStack gap={14}>
           <FamilyManageHeader onBack={() => router.back()} />
-          {familiesQuery.isLoading ? (
-            <View style={styles.feedbackContainer}>
-              <LoadingSpinner accessibilityLabel="가족 정보 로딩 중" />
-              <Text style={styles.feedbackText}>가족 정보를 불러오는 중입니다.</Text>
-            </View>
-          ) : null}
 
           {familiesQuery.isError ? (
             <YStack items="center" gap={12} style={styles.feedbackContainer}>

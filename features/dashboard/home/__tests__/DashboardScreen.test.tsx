@@ -3,6 +3,8 @@ import { router } from "expo-router";
 import { DashboardScreen } from "../DashboardScreen";
 import type { DashboardViewModel } from "../useDashboardViewModel";
 
+let mockUnreadLoading = false;
+const mockUnreadRefetch = jest.fn();
 const mockRefetch = jest.fn<Promise<unknown>, []>();
 const mockUseDashboardViewModel = jest.fn<DashboardViewModel, []>();
 
@@ -36,6 +38,9 @@ jest.mock("../useDashboardViewModel", () => ({
 jest.mock("@/api/queries/notification", () => ({
   useUnreadNotificationCount: () => ({
     data: { unreadCount: 1 },
+    isLoading: mockUnreadLoading,
+    isError: false,
+    refetch: mockUnreadRefetch,
   }),
 }));
 
@@ -210,6 +215,7 @@ describe("DashboardScreen 통합 테스트", () => {
   const mockRouterPush = router.push as jest.MockedFunction<typeof router.push>;
 
   beforeEach(() => {
+    mockUnreadLoading = false;
     jest.clearAllMocks();
     mockPreviousFocusEffect = null;
     mockUseDashboardViewModel.mockImplementation(() => createViewModel());
@@ -293,5 +299,15 @@ describe("DashboardScreen 통합 테스트", () => {
     rerender(<DashboardScreen />);
 
     expect(mockRefetch.mock.calls.length).toBe(callCountAfterMount);
+  });
+
+  it("대시보드 데이터가 준비되어도 알림 개수 조회가 끝날 때까지 화면을 기다린다", () => {
+    mockUnreadLoading = true;
+    const screen = render(<DashboardScreen />);
+    expect(screen.getByLabelText("대시보드 정보 로딩 중")).toBeTruthy();
+    expect(screen.queryByText("처방전 스캔")).toBeNull();
+    mockUnreadLoading = false;
+    screen.rerender(<DashboardScreen />);
+    expect(screen.queryByLabelText("대시보드 정보 로딩 중")).toBeNull();
   });
 });

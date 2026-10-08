@@ -82,3 +82,7 @@ describe("데이터가 없으면 기본값을 반환한다.", () => {
     expect(getByText("등록된 처방전이 없습니다")).toBeTruthy();
   });
 });
+
+jest.mock("react-native-safe-area-context", () => ({
+  useSafeAreaInsets: () => ({ top: 0, bottom: 0 }),
+}));

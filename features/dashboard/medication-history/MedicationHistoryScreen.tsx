@@ -3,8 +3,8 @@ import { useCallback } from "react";
 import { Alert, ScrollView, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Text, YStack } from "tamagui";
-import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { PillButton } from "@/components/ui/PillButton";
+import { ScreenLoadingView } from "@/components/ui/ScreenLoadingView";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { SurfaceCard } from "@/components/ui/SurfaceCard";
 import { palette } from "@/constants/design-tokens";
@@ -28,6 +28,15 @@ export function MedicationHistoryScreen() {
     Alert.alert("의사 상담 후 승인", "이번 버전에서는 승인 기능이 준비 중입니다.");
   }, []);
 
+  if (viewModel.isLoading) {
+    return (
+      <ScreenLoadingView
+        accessibilityLabel="복약 등록 기록 로딩 중"
+        message="복약 등록 기록을 불러오는 중입니다."
+      />
+    );
+  }
+
   return (
     <ScrollView
       style={styles.screen}
@@ -49,13 +58,6 @@ export function MedicationHistoryScreen() {
         ) : null}
 
         <SectionHeader title="등록된 약물" />
-
-        {viewModel.isLoading ? (
-          <YStack style={styles.feedbackBox} gap={10}>
-            <LoadingSpinner accessibilityLabel="복약 등록 기록 로딩 중" />
-            <Text style={styles.feedbackText}>복약 등록 기록을 불러오는 중입니다.</Text>
-          </YStack>
-        ) : null}
 
         {viewModel.isError ? (
           <YStack style={styles.feedbackBox} gap={10}>

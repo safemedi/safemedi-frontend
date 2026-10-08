@@ -358,7 +358,7 @@ export function useMedicationCalendarViewModel(today = new Date()): MedicationCa
 
   const dailyRecordsQuery = useMedicationDailyRecords({
     date: resolvedSelectedDate ?? monthRange.startDate,
-    enabled: !!resolvedSelectedDate,
+    enabled: !!resolvedSelectedDate && !!monthlyStatisticsQuery.data,
   });
 
   const calendarWeeks = useMemo(

@@ -4,6 +4,8 @@ import type { NotificationItem } from "@/api/types";
 
 import { useNotificationsViewModel } from "../useNotificationsViewModel";
 
+let mockUnreadLoading = false;
+const mockUnreadRefetch = jest.fn();
 const mockRefetch = jest.fn();
 const mockMarkRead = jest.fn();
 const mockMarkAllRead = jest.fn();
@@ -56,6 +58,9 @@ jest.mock("@/api/queries/notification", () => ({
   }),
   useUnreadNotificationCount: () => ({
     data: mockUnreadCountData,
+    isLoading: mockUnreadLoading,
+    isError: false,
+    refetch: mockUnreadRefetch,
   }),
   useMarkNotificationRead: () => ({
     mutate: mockMarkRead,
@@ -68,6 +73,7 @@ jest.mock("@/api/queries/notification", () => ({
 
 describe("useNotificationsViewModel", () => {
   beforeEach(() => {
+    mockUnreadLoading = false;
     jest.clearAllMocks();
     mockNotificationsContent = defaultNotifications;
     mockUnreadCountData = { unreadCount: 1 };
@@ -189,5 +195,18 @@ describe("useNotificationsViewModel", () => {
 
     expect(mockMarkRead).toHaveBeenCalledWith(1);
     expect(mockRouterPush).not.toHaveBeenCalled();
+  });
+
+  it("알림 목록 조회 후에도 읽지 않은 개수 조회가 남으면 기다리고 두 요청을 재시도한다", async () => {
+    mockIsNotificationsLoading = false;
+    mockUnreadLoading = true;
+    const { result, rerender } = renderHook(() => useNotificationsViewModel());
+    expect(result.current.isLoading).toBe(true);
+    mockUnreadLoading = false;
+    rerender({});
+    expect(result.current.isLoading).toBe(false);
+    await result.current.refetch();
+    expect(mockRefetch).toHaveBeenCalled();
+    expect(mockUnreadRefetch).toHaveBeenCalled();
   });
 });

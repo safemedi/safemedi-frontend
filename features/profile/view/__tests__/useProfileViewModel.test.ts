@@ -4,6 +4,10 @@ import { Alert } from "react-native";
 
 import { useProfileViewModel } from "../useProfileViewModel";
 
+let mockFamiliesLoading = false;
+let mockSettingsLoading = false;
+const mockFamiliesRefetch = jest.fn();
+const mockSettingsRefetch = jest.fn();
 const mockMutate = jest.fn();
 const mockHandleLogout = jest.fn(async () => {});
 const mockUseDeleteUserAccountMutation = jest.fn((_options: unknown) => ({
@@ -12,7 +16,18 @@ const mockUseDeleteUserAccountMutation = jest.fn((_options: unknown) => ({
 }));
 
 jest.mock("@/api/queries/profile", () => ({
-  useFamilyProfiles: () => ({ data: [] }),
+  useFamilyProfiles: () => ({
+    data: [],
+    isLoading: mockFamiliesLoading,
+    isError: false,
+    refetch: mockFamiliesRefetch,
+  }),
+  useNotificationSettings: () => ({
+    data: {},
+    isLoading: mockSettingsLoading,
+    isError: false,
+    refetch: mockSettingsRefetch,
+  }),
 }));
 
 jest.mock("@/api/queries/user", () => ({
@@ -34,6 +49,8 @@ jest.mock("expo-router", () => ({
 
 describe("useProfileViewModel", () => {
   beforeEach(() => {
+    mockFamiliesLoading = false;
+    mockSettingsLoading = false;
     jest.clearAllMocks();
     jest.spyOn(Alert, "alert").mockImplementation(() => {});
   });
@@ -93,5 +110,25 @@ describe("useProfileViewModel", () => {
       undefined,
       expect.not.objectContaining({ onSuccess: expect.anything() }),
     );
+  });
+});
+
+describe("프로필 초기 조회", () => {
+  it.each([
+    [true, false],
+    [false, true],
+    [true, true],
+  ])("가족 또는 설정 조회가 남아 있으면 기다린다 (%s, %s)", (families, settings) => {
+    mockFamiliesLoading = families;
+    mockSettingsLoading = settings;
+    const { result, rerender } = renderHook(() => useProfileViewModel());
+    expect(result.current.isLoading).toBe(true);
+    mockFamiliesLoading = false;
+    mockSettingsLoading = false;
+    rerender({});
+    expect(result.current.isLoading).toBe(false);
+    act(() => result.current.handleRetry());
+    expect(mockFamiliesRefetch).toHaveBeenCalled();
+    expect(mockSettingsRefetch).toHaveBeenCalled();
   });
 });

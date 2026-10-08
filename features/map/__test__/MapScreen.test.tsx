@@ -176,19 +176,27 @@ describe("MapScreen", () => {
     expect(screen.queryByText("0개 의료기관")).toBeNull();
   });
 
-  it("목록 조회 중에는 기존 본문을 유지하고 목록 로딩만 표시한다", async () => {
+  it("지도와 목록이 모두 준비된 뒤 본문을 한 번에 표시한다", async () => {
     mockUseMapViewModel.mockReturnValue({
       ...BASE_VIEW_MODEL,
       isLoadingFacilities: true,
+      facilities: [],
     });
+    const { rerender } = render(<MapScreen />);
+    expect(screen.getByLabelText("주변 의료기관 지도 로딩 중")).toBeTruthy();
+    expect(screen.queryByText("주변 의료기관")).toBeNull();
+    expect(screen.queryByText("0개 의료기관")).toBeNull();
+    mockUseMapViewModel.mockReturnValue(BASE_VIEW_MODEL);
+    rerender(<MapScreen />);
+    await waitFor(() => expect(screen.getByText("1개 의료기관")).toBeTruthy());
+    expect(screen.queryByLabelText("주변 의료기관 지도 로딩 중")).toBeNull();
+  });
 
+  it("기존 데이터가 있는 백그라운드 갱신은 본문을 유지한다", async () => {
+    mockUseMapViewModel.mockReturnValue({ ...BASE_VIEW_MODEL, isRefreshingFacilities: true });
     render(<MapScreen />);
-
-    await waitFor(() => {
-      expect(screen.getByText("주변 의료기관")).toBeTruthy();
-    });
-    expect(screen.getByText("1개 의료기관")).toBeTruthy();
-    expect(screen.queryByText("주변 의료기관 지도를 불러오는 중이에요.")).toBeNull();
+    await waitFor(() => expect(screen.getByText("1개 의료기관")).toBeTruthy());
+    expect(screen.queryByLabelText("주변 의료기관 지도 로딩 중")).toBeNull();
   });
 
   it("지도 로딩에 실패하면 에러 메시지를 렌더링한다", () => {
