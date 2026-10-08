@@ -376,4 +376,16 @@ describe("useMedicationCalendarViewModel", () => {
     await result.current.refetchDailyRecords();
     expect(mockRefetchDailyRecords).toHaveBeenCalledTimes(2);
   });
+  it("월별 통계로 기본 날짜를 결정한 뒤 일별 기록 조회를 시작한다", () => {
+    mockQueries({ isStatisticsLoading: true });
+    const { rerender } = renderHook(() => useMedicationCalendarViewModel());
+    expect(mockUseMedicationDailyRecords).toHaveBeenLastCalledWith(
+      expect.objectContaining({ enabled: false }),
+    );
+    mockQueries({ statisticsData: mockStatisticsResponse, isDailyRecordsLoading: true });
+    rerender(undefined);
+    expect(mockUseMedicationDailyRecords).toHaveBeenLastCalledWith(
+      expect.objectContaining({ enabled: true }),
+    );
+  });
 });

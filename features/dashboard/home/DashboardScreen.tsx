@@ -6,8 +6,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Text, YStack } from "tamagui";
 
 import { useUnreadNotificationCount } from "@/api/queries/notification";
-import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { PillButton } from "@/components/ui/PillButton";
+import { ScreenLoadingView } from "@/components/ui/ScreenLoadingView";
 import { layout, palette } from "@/constants/design-tokens";
 import { AdherenceSummaryCard } from "./components/AdherenceSummaryCard";
 import { DashboardTopHeader } from "./components/DashboardTopHeader";
@@ -46,6 +46,15 @@ export function DashboardScreen() {
     });
   };
 
+  if (viewModel.isLoading || unreadCountQuery.isLoading) {
+    return (
+      <ScreenLoadingView
+        accessibilityLabel="대시보드 정보 로딩 중"
+        message="대시보드 정보를 불러오는 중입니다."
+      />
+    );
+  }
+
   return (
     <ScrollView
       style={styles.scroll}
@@ -62,23 +71,23 @@ export function DashboardScreen() {
         />
         <ScanPrescriptionCard onPress={handlePressScan} />
 
-        {viewModel.isLoading ? (
-          <YStack style={styles.feedbackBox} gap={10}>
-            <LoadingSpinner accessibilityLabel="대시보드 정보 로딩 중" />
-            <Text style={styles.feedbackText}>대시보드 정보를 불러오는 중입니다.</Text>
-          </YStack>
-        ) : null}
-
-        {viewModel.isError ? (
+        {viewModel.isError || unreadCountQuery.isError ? (
           <YStack style={styles.feedbackBox} gap={10}>
             <Text style={styles.feedbackText}>대시보드 정보를 불러오지 못했습니다.</Text>
-            <PillButton variant="outline" onPress={() => viewModel.refetch()} flex={0}>
+            <PillButton
+              variant="outline"
+              onPress={() => {
+                void viewModel.refetch();
+                void unreadCountQuery.refetch();
+              }}
+              flex={0}
+            >
               <Text style={styles.retryText}>다시 시도</Text>
             </PillButton>
           </YStack>
         ) : null}
 
-        {!viewModel.isLoading && !viewModel.isError ? (
+        {!viewModel.isError && !unreadCountQuery.isError ? (
           <>
             <AdherenceSummaryCard
               adherenceRate={viewModel.adherenceRate}

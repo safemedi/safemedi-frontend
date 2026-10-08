@@ -1,9 +1,7 @@
 import { useState } from "react";
-import { ScrollView, StyleSheet } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { StyleSheet, View } from "react-native";
 import { YStack } from "tamagui";
 
-import { layout } from "@/constants/design-tokens";
 import { MedicationReportHeader } from "./components/MedicationReportHeader";
 import { MedicationReportTabBar } from "./components/MedicationReportTabBar";
 import { MedicationCalendarTab } from "./medication-calendar";
@@ -12,36 +10,26 @@ import { MedicationStatisticsTab } from "./medication-statistics";
 import type { MedicationReportTab } from "./types";
 
 export function MedicationReportScreen() {
-  const insets = useSafeAreaInsets();
   const [activeTab, setActiveTab] = useState<MedicationReportTab>("calendar");
 
+  const header = (
+    <YStack gap={14}>
+      <MedicationReportHeader />
+      <MedicationReportTabBar activeTab={activeTab} onChangeTab={setActiveTab} />
+    </YStack>
+  );
+
   return (
-    <ScrollView
-      style={styles.screen}
-      contentContainerStyle={[
-        styles.content,
-        { paddingTop: insets.top + 14, paddingBottom: layout.tabScreenBottomSpacing },
-      ]}
-      showsVerticalScrollIndicator={false}
-    >
-      <YStack gap={14}>
-        <MedicationReportHeader />
-
-        <MedicationReportTabBar activeTab={activeTab} onChangeTab={setActiveTab} />
-
-        {activeTab === "calendar" ? <MedicationCalendarTab /> : null}
-        {activeTab === "statistics" ? <MedicationStatisticsTab /> : null}
-        {activeTab === "management" ? <MedicationManagementTab /> : null}
-      </YStack>
-    </ScrollView>
+    <View style={styles.screen}>
+      {activeTab === "calendar" ? <MedicationCalendarTab header={header} /> : null}
+      {activeTab === "statistics" ? <MedicationStatisticsTab header={header} /> : null}
+      {activeTab === "management" ? <MedicationManagementTab header={header} /> : null}
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-  },
-  content: {
-    paddingHorizontal: 14,
   },
 });

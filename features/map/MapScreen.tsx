@@ -139,9 +139,8 @@ export function MapScreen() {
     );
   }
 
-  const isContentReady = mapLoadState === "ready";
+  const isContentReady = mapLoadState === "ready" && !viewModel.isLoadingFacilities;
   const showBlockingOverlay = !isContentReady;
-  const showFacilitiesLoading = viewModel.isLoadingFacilities || viewModel.isRefreshingFacilities;
 
   return (
     <SafeAreaView style={styles.screen} edges={["top"]}>
@@ -223,9 +222,7 @@ export function MapScreen() {
           <View style={styles.listHeaderRow}>
             <Text style={styles.listHeaderText}>{viewModel.facilities.length}개 의료기관</Text>
           </View>
-          {showFacilitiesLoading ? (
-            <LoadingSpinner size="small" accessibilityLabel="의료기관 목록 로딩 중" />
-          ) : null}
+
           {viewModel.facilitiesError ? (
             <Text style={styles.errorText}>
               목록을 가져오지 못했어요. 잠시 후 다시 시도해 주세요.

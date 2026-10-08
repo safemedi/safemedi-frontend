@@ -2,8 +2,8 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Text, YStack } from "tamagui";
 import { GradientCard } from "@/components/ui/GradientCard";
-import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { PillButton } from "@/components/ui/PillButton";
+import { ScreenLoadingView } from "@/components/ui/ScreenLoadingView";
 import { palette } from "@/constants/design-tokens";
 import { PrescriptionScanHeader } from "@/features/scan/prescription-scan/components/PrescriptionScanHeader";
 import { AnalysisSummaryCard } from "./components/AnalysisSummaryCard";
@@ -31,6 +31,15 @@ export function IngredientAnalysisScreen() {
         ? "의사 확인 필요"
         : "복약 등록 완료";
 
+  if (viewModel.isAnalyzing) {
+    return (
+      <ScreenLoadingView
+        accessibilityLabel="약물 성분 분석 중"
+        message="약물 성분을 분석하는 중입니다."
+      />
+    );
+  }
+
   return (
     <YStack style={styles.screen}>
       <GradientCard
@@ -52,13 +61,6 @@ export function IngredientAnalysisScreen() {
         showsVerticalScrollIndicator={false}
       >
         <YStack gap={12}>
-          {viewModel.isAnalyzing ? (
-            <View style={styles.loadingCard}>
-              <LoadingSpinner accessibilityLabel="약물 성분 분석 중" />
-              <Text style={styles.loadingText}>약물 성분을 분석하는 중입니다.</Text>
-            </View>
-          ) : null}
-
           {viewModel.errorMessage ? (
             <YStack gap={10}>
               <DoctorConsultationCard
@@ -141,23 +143,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingTop: 14,
     paddingBottom: 24,
-  },
-  loadingCard: {
-    borderRadius: 18,
-    paddingVertical: 18,
-    paddingHorizontal: 16,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 10,
-    backgroundColor: palette.surface_card,
-    borderWidth: 1,
-    borderColor: palette.border_muted,
-  },
-  loadingText: {
-    color: palette.black,
-    fontSize: 14,
-    lineHeight: 20,
-    fontWeight: "600",
   },
   bottomActionBar: {
     borderTopWidth: 1,

@@ -3,8 +3,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Text, YStack } from "tamagui";
 
 import type { NotificationItem } from "@/api/types";
-import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { PillButton } from "@/components/ui/PillButton";
+import { ScreenLoadingView } from "@/components/ui/ScreenLoadingView";
 import { SurfaceCard } from "@/components/ui/SurfaceCard";
 import { palette } from "@/constants/design-tokens";
 import { useScreenBottomPadding } from "@/hooks/useScreenBottomPadding";
@@ -20,6 +20,12 @@ export function NotificationsScreen() {
   const renderItem = ({ item }: { item: NotificationItem }) => (
     <NotificationCard item={item} onPress={viewModel.handlePressNotification} />
   );
+
+  if (viewModel.isLoading) {
+    return (
+      <ScreenLoadingView accessibilityLabel="알림 로딩 중" message="알림을 불러오는 중입니다." />
+    );
+  }
 
   return (
     <FlatList
@@ -39,13 +45,6 @@ export function NotificationsScreen() {
             onPressMarkAllRead={viewModel.handlePressMarkAllRead}
             isMarkAllReadDisabled={viewModel.unreadCount === 0 || viewModel.isMarkAllReadPending}
           />
-
-          {viewModel.isLoading ? (
-            <YStack style={styles.feedbackBox} gap={10}>
-              <LoadingSpinner accessibilityLabel="알림 로딩 중" />
-              <Text style={styles.feedbackText}>알림을 불러오는 중입니다.</Text>
-            </YStack>
-          ) : null}
 
           {viewModel.isError ? (
             <YStack style={styles.feedbackBox} gap={10}>
