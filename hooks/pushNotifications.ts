@@ -128,7 +128,7 @@ export async function getDevicePushToken(): Promise<string | null> {
 
   const tokenResponse = await notifications.getDevicePushTokenAsync();
 
-  setRegisteredDeviceToken(tokenResponse.data);
+  await setRegisteredDeviceToken(tokenResponse.data);
   return tokenResponse.data;
 }
 

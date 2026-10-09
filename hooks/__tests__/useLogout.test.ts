@@ -1,6 +1,9 @@
 import { act, renderHook } from "@testing-library/react-native";
 import { useLogout } from "@/hooks/useLogout";
 
+const mockMarkPending = jest.fn();
+const mockClearPending = jest.fn();
+const mockRestoreTokenState = jest.fn();
 const mockRemoveQueries = jest.fn();
 const mockClearSession = jest.fn();
 const mockClearUser = jest.fn();
@@ -22,6 +25,9 @@ jest.mock("@/api/queries/auth", () => ({
 }));
 
 jest.mock("@/hooks/pushNotificationTokenStore", () => ({
+  restoreDeviceTokenState: () => mockRestoreTokenState(),
+  markDeviceTokenCleanupPending: (token: string) => mockMarkPending(token),
+  clearPendingDeviceTokenCleanup: (token: string) => mockClearPending(token),
   getRegisteredDeviceToken: () => mockRegisteredDeviceToken,
   clearRegisteredDeviceToken: (...args: unknown[]) => mockClearRegisteredDeviceToken(...args),
 }));
@@ -62,7 +68,18 @@ describe("useLogout", () => {
     expect(mockRemoveQueries).toHaveBeenCalledWith({ queryKey: ["scan"] });
     expect(mockRemoveQueries).toHaveBeenCalledWith({ queryKey: ["map"] });
     expect(mockRemoveQueries).toHaveBeenCalledWith({ queryKey: ["notification"] });
-    expect(mockRemoveQueries).toHaveBeenCalledTimes(8);
+    expect(mockRemoveQueries).toHaveBeenCalledTimes(9);
+  });
+
+  it("인증 만료 시 서버 로그아웃 대신 정리 대상을 기록하고 로컬 세션을 종료한다", async () => {
+    const { result } = renderHook(() => useLogout());
+    await act(async () => {
+      await result.current({ reason: "session-expired" });
+    });
+    expect(mockMarkPending).toHaveBeenCalledWith("mock-device-token");
+    expect(mockLogoutMutateAsync).not.toHaveBeenCalled();
+    expect(mockClearPending).not.toHaveBeenCalled();
+    expect(mockClearSession).toHaveBeenCalledTimes(1);
   });
 
   it("로그아웃 API 응답 전에는 로컬 상태를 정리하지 않는다", async () => {
@@ -93,7 +110,7 @@ describe("useLogout", () => {
     expect(mockClearRegisteredDeviceToken).toHaveBeenCalledTimes(1);
     expect(mockClearSession).toHaveBeenCalledTimes(1);
     expect(mockClearUser).toHaveBeenCalledTimes(1);
-    expect(mockRemoveQueries).toHaveBeenCalledTimes(8);
+    expect(mockRemoveQueries).toHaveBeenCalledTimes(9);
   });
 
   it("로그아웃 처리 중 중복 호출되면 추가 API 호출을 막는다", async () => {
@@ -134,7 +151,7 @@ describe("useLogout", () => {
     expect(mockClearRegisteredDeviceToken).not.toHaveBeenCalled();
     expect(mockClearSession).toHaveBeenCalledTimes(1);
     expect(mockClearUser).toHaveBeenCalledTimes(1);
-    expect(mockRemoveQueries).toHaveBeenCalledTimes(8);
+    expect(mockRemoveQueries).toHaveBeenCalledTimes(9);
   });
 
   it("로그아웃 API가 실패해도 로컬 로그아웃은 완료한다", async () => {
@@ -149,7 +166,7 @@ describe("useLogout", () => {
     expect(mockClearRegisteredDeviceToken).not.toHaveBeenCalled();
     expect(mockClearSession).toHaveBeenCalledTimes(1);
     expect(mockClearUser).toHaveBeenCalledTimes(1);
-    expect(mockRemoveQueries).toHaveBeenCalledTimes(8);
+    expect(mockRemoveQueries).toHaveBeenCalledTimes(9);
     warnSpy.mockRestore();
   });
 });

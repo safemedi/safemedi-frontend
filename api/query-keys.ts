@@ -13,6 +13,7 @@ export const queryKeys = {
       ["medications", "statistics", startDate, endDate] as const,
   },
   user: {
+    registerDeviceToken: ["user", "device-token", "register"] as const,
     me: ["user", "me"] as const,
     deleteAccount: ["user", "delete-account"] as const,
   },
