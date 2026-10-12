@@ -29,7 +29,7 @@ export function useAuthRouteState(): AuthRouteState {
     if (!hydrated || !accessToken || !isError || !isUnauthorizedError(error)) {
       return;
     }
-    logout();
+    void logout({ reason: "session-expired" });
   }, [hydrated, accessToken, isError, error, logout]);
 
   useEffect(() => {

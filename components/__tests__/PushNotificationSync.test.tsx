@@ -3,6 +3,9 @@ import { queryKeys } from "@/api/query-keys";
 import { PushNotificationSync } from "../PushNotificationSync";
 
 const mockPostDeviceToken = jest.fn();
+const mockRegisterDeviceToken = jest.fn(({ body }: { body?: unknown }) =>
+  body ? mockPostDeviceToken(body) : Promise.resolve(),
+);
 const mockRegisterPushTokenWithBackend = jest.fn();
 const mockAddNotificationReceivedListener = jest.fn();
 const mockAddNotificationResponseListener = jest.fn();
@@ -21,8 +24,8 @@ jest.mock("@tanstack/react-query", () => ({
   }),
 }));
 
-jest.mock("@/api/endpoints/device-token", () => ({
-  postDeviceToken: (body: unknown) => mockPostDeviceToken(body),
+jest.mock("@/api/queries/device-token", () => ({
+  useRegisterDeviceTokenMutation: () => ({ mutateAsync: mockRegisterDeviceToken }),
 }));
 
 jest.mock("@/hooks/pushNotifications", () => ({
@@ -123,15 +126,13 @@ describe("PushNotificationSync", () => {
     );
   });
 
-  it("토큰 등록 실패는 에러 메시지를 포함해 개발 로그로 남긴다", async () => {
+  it("토큰 등록 실패는 토큰이 포함될 수 있는 원본 오류를 로그에 남기지 않는다", async () => {
     mockRegisterPushTokenWithBackend.mockRejectedValue(new Error("network"));
 
     render(<PushNotificationSync />);
 
     await waitFor(() =>
-      expect(warnSpy).toHaveBeenCalledWith(
-        "[PushNotificationSync] FCM 디바이스 토큰 등록 실패: network",
-      ),
+      expect(warnSpy).toHaveBeenCalledWith("[PushNotificationSync] FCM 디바이스 토큰 등록 실패"),
     );
   });
 
