@@ -71,6 +71,25 @@ describe("useLogout", () => {
     expect(mockRemoveQueries).toHaveBeenCalledTimes(9);
   });
 
+  it.each([
+    "restore",
+    "persist",
+  ])("저장소 %s 실패에도 서버 로그아웃과 로컬 정리를 진행한다", async (stage) => {
+    const warnSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
+    const failingOperation = stage === "restore" ? mockRestoreTokenState : mockMarkPending;
+    failingOperation.mockRejectedValueOnce(new Error("storage unavailable"));
+    const { result } = renderHook(() => useLogout());
+
+    await act(async () => {
+      await result.current();
+    });
+
+    expect(mockLogoutMutateAsync).toHaveBeenCalledWith({ deviceToken: "mock-device-token" });
+    expect(mockClearSession).toHaveBeenCalledTimes(1);
+    expect(mockClearUser).toHaveBeenCalledTimes(1);
+    warnSpy.mockRestore();
+  });
+
   it("인증 만료 시 서버 로그아웃 대신 정리 대상을 기록하고 로컬 세션을 종료한다", async () => {
     const { result } = renderHook(() => useLogout());
     await act(async () => {

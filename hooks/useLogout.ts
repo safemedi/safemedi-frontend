@@ -48,11 +48,19 @@ export function useLogout() {
       isLoggingOut = true;
       try {
         await runDeviceTokenOperation(async () => {
-          await restoreDeviceTokenState();
+          try {
+            await restoreDeviceTokenState();
+          } catch {
+            if (__DEV__) console.warn("[useLogout] 저장소 복원 실패로 메모리 토큰을 사용합니다.");
+          }
           const deviceToken = getRegisteredDeviceToken();
           if (deviceToken) {
             // 네트워크 요청 전에 기록해 종료·실패 시에도 정리 작업을 잃지 않는다.
-            await markDeviceTokenCleanupPending(deviceToken);
+            try {
+              await markDeviceTokenCleanupPending(deviceToken);
+            } catch {
+              if (__DEV__) console.warn("[useLogout] 정리 기록 저장에 실패했습니다.");
+            }
             if (options?.reason !== "session-expired") {
               await logoutAsync({ deviceToken });
               await clearPendingDeviceTokenCleanup(deviceToken);

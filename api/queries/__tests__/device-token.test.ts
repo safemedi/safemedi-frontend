@@ -1,4 +1,5 @@
 import { renderHook } from "@testing-library/react-native";
+import ky from "ky";
 import { useRegisterDeviceTokenMutation } from "@/api/queries/device-token";
 
 const mockDelete = jest.fn();
@@ -11,7 +12,6 @@ jest.mock("@/api/endpoints/device-token", () => ({
   deleteDeviceToken: (...args: unknown[]) => mockDelete(...args),
   postDeviceToken: (...args: unknown[]) => mockRegister(...args),
 }));
-jest.mock("@/api/error", () => ({ parseApiError: async (error: unknown) => error }));
 jest.mock("@/hooks/pushNotificationTokenStore", () => ({
   restoreDeviceTokenState: async () => {},
   getPendingDeviceTokenCleanups: () => mockPendingTokens,
@@ -25,6 +25,21 @@ interface Variables {
   body?: { deviceToken: string; deviceType: "ANDROID" };
   accessToken: string;
   signal: AbortSignal;
+}
+async function createHttpError(status: number, code?: string): Promise<unknown> {
+  try {
+    await ky.delete("https://example.test/device-token", {
+      retry: 0,
+      fetch: async () =>
+        new Response(JSON.stringify({ code }), {
+          status,
+          headers: { "Content-Type": "application/json" },
+        }),
+    });
+  } catch (error) {
+    return error;
+  }
+  throw new Error("HTTP 오류가 발생해야 합니다.");
 }
 function setup() {
   const { result } = renderHook(() => useRegisterDeviceTokenMutation());
@@ -57,19 +72,21 @@ it("보류 토큰을 해제한 뒤 현재 토큰을 등록하며 세션 로그�
   );
 });
 it("다른 계정 소유 토큰은 보류하고 현재 토큰만 등록한다", async () => {
-  mockDelete.mockRejectedValue({ status: 403, code: "NOTI_001" });
+  mockDelete.mockRejectedValue(await createHttpError(403, "NOTI_001"));
   await setup()();
   expect(mockClearPending).not.toHaveBeenCalledWith("old-device");
   expect(mockRegister).toHaveBeenCalledTimes(1);
 });
 it("이미 없는 토큰만 정리 완료로 간주한다", async () => {
-  mockDelete.mockRejectedValue({ status: 404, code: "NOTI_002" });
+  mockDelete.mockRejectedValue(await createHttpError(404, "NOTI_002"));
   await setup()();
   expect(mockClearPending).toHaveBeenCalledWith("old-device");
+  expect(mockRegister).toHaveBeenCalledTimes(1);
 });
 it.each([401, 500, 404])("인증·서버·알 수 없는 %s 오류는 보류 기록을 유지한다", async (status) => {
-  mockDelete.mockRejectedValue({ status });
-  await expect(setup()()).rejects.toEqual({ status });
+  const error = await createHttpError(status);
+  mockDelete.mockRejectedValue(error);
+  await expect(setup()()).rejects.toBe(error);
   expect(mockClearPending).not.toHaveBeenCalled();
   expect(mockRegister).not.toHaveBeenCalled();
 });
