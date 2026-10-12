@@ -57,6 +57,35 @@ describe("api/error", () => {
     });
   });
 
+  it("이미 소비된 응답은 ky의 data에서 코드와 메시지를 읽는다", async () => {
+    const clone = jest.fn(() => {
+      throw new Error("Body has already been consumed");
+    });
+    const error = {
+      __httpError: true,
+      data: { code: "NOTI_001", message: "다른 사용자 소유입니다." },
+      response: { status: 403, bodyUsed: true, clone },
+    };
+    await expect(parseApiError(error)).resolves.toEqual({
+      status: 403,
+      code: "NOTI_001",
+      message: "다른 사용자 소유입니다.",
+    });
+    expect(clone).not.toHaveBeenCalled();
+  });
+
+  it("파싱된 오류 데이터의 코드와 메시지가 문자열이 아니면 기본 메시지를 사용한다", async () => {
+    const error = {
+      ...createHttpErrorMock(500, {}),
+      data: { code: 123, message: { value: "invalid" } },
+    };
+    await expect(parseApiError(error, "요청 실패")).resolves.toEqual({
+      status: 500,
+      code: undefined,
+      message: "요청 실패",
+    });
+  });
+
   it("응답 메시지가 없으면 전달한 fallback 메시지를 사용한다", async () => {
     const error = createHttpErrorMock(400, { code: "VAL_001" });
     const parsed = await parseApiError(error, "입력값을 확인해 주세요.");

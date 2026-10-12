@@ -134,7 +134,7 @@ describe("useAuthRouteState", () => {
     const { result } = renderHook(() => useAuthRouteState());
 
     await waitFor(() => {
-      expect(mockLogout).toHaveBeenCalledWith();
+      expect(mockLogout).toHaveBeenCalledWith({ reason: "session-expired" });
     });
     expect(mockClearSession).not.toHaveBeenCalled();
     expect(mockRemoveQueries).not.toHaveBeenCalled();
