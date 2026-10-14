@@ -36,9 +36,15 @@ export function restoreDeviceTokenState(): Promise<void> {
   return hydration;
 }
 
-function persistState(): Promise<void> {
-  const snapshot = JSON.stringify(state);
-  const write = writes.then(() => AsyncStorage.setItem(STORAGE_KEY, snapshot));
+async function updateState(
+  createNextState: (current: DeviceTokenState) => DeviceTokenState,
+): Promise<void> {
+  await restoreDeviceTokenState();
+  const write = writes.then(async () => {
+    const nextState = createNextState(state);
+    await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(nextState));
+    state = nextState;
+  });
   writes = write.catch(() => {});
   return write;
 }
@@ -47,19 +53,20 @@ export function getRegisteredDeviceToken(): string | null {
   return state.registeredToken;
 }
 
-export async function setRegisteredDeviceToken(token: string | null): Promise<void> {
-  await restoreDeviceTokenState();
-  const previousToken = state.registeredToken;
-  if (
-    token &&
-    previousToken &&
-    token !== previousToken &&
-    !state.pendingTokens.includes(previousToken)
-  ) {
-    state.pendingTokens.push(previousToken);
-  }
-  state.registeredToken = token;
-  await persistState();
+export function setRegisteredDeviceToken(token: string | null): Promise<void> {
+  return updateState((current) => {
+    const pendingTokens = [...current.pendingTokens];
+    const previousToken = current.registeredToken;
+    if (
+      token &&
+      previousToken &&
+      token !== previousToken &&
+      !pendingTokens.includes(previousToken)
+    ) {
+      pendingTokens.push(previousToken);
+    }
+    return { registeredToken: token, pendingTokens };
+  });
 }
 
 export function clearRegisteredDeviceToken(): Promise<void> {
@@ -70,14 +77,18 @@ export function getPendingDeviceTokenCleanups(): readonly string[] {
   return [...state.pendingTokens];
 }
 
-export async function markDeviceTokenCleanupPending(token: string): Promise<void> {
-  await restoreDeviceTokenState();
-  if (!state.pendingTokens.includes(token)) state.pendingTokens.push(token);
-  await persistState();
+export function markDeviceTokenCleanupPending(token: string): Promise<void> {
+  return updateState((current) => ({
+    ...current,
+    pendingTokens: current.pendingTokens.includes(token)
+      ? [...current.pendingTokens]
+      : [...current.pendingTokens, token],
+  }));
 }
 
-export async function clearPendingDeviceTokenCleanup(token: string): Promise<void> {
-  await restoreDeviceTokenState();
-  state.pendingTokens = state.pendingTokens.filter((pending) => pending !== token);
-  await persistState();
+export function clearPendingDeviceTokenCleanup(token: string): Promise<void> {
+  return updateState((current) => ({
+    ...current,
+    pendingTokens: current.pendingTokens.filter((pending) => pending !== token),
+  }));
 }
