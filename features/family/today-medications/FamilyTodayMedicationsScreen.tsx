@@ -61,7 +61,7 @@ export function FamilyTodayMedicationsScreen() {
             )}
           </YStack>
         ) : null}
-        {vm.hasValidFamilyId && !vm.isLoading && !vm.isError && vm.data ? (
+        {vm.hasValidFamilyId ? (
           <PillButton
             variant="solid"
             onPress={vm.handleHealthInfo}

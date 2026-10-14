@@ -7,7 +7,6 @@ import { ActiveMedicationsCard } from "@/features/family/health-detail/component
 import { useFamilyHealthInfoDetailViewModel } from "@/features/family/health-detail/useFamilyHealthInfoDetailViewModel";
 import { ClinicalAlertCard } from "@/features/profile/health-detail/components/ClinicalAlertCard";
 import { ClinicianNotesCard } from "@/features/profile/health-detail/components/ClinicianNotesCard";
-import { HealthInfoActions } from "@/features/profile/health-detail/components/HealthInfoActions";
 import { HealthInfoDetailHeader } from "@/features/profile/health-detail/components/HealthInfoDetailHeader";
 import { MedicalGuideCard } from "@/features/profile/health-detail/components/MedicalGuideCard";
 import { PatientInfoCard } from "@/features/profile/health-detail/components/PatientInfoCard";
@@ -21,6 +20,11 @@ import {
 export function FamilyHealthInfoDetailScreen() {
   const vm = useFamilyHealthInfoDetailViewModel();
   const insets = useSafeAreaInsets();
+  const clinicianNotes = [
+    ...(vm.allergySection ? [CLINICIAN_NOTE_ITEMS[0]] : []),
+    ...(vm.diseaseSection ? [CLINICIAN_NOTE_ITEMS[1]] : []),
+    ...(vm.allergySection || vm.diseaseSection ? [CLINICIAN_NOTE_ITEMS[2]] : []),
+  ];
   if (vm.isLoading && !vm.errorMessage) {
     return <ScreenLoadingView accessibilityLabel="가족 건강정보 불러오는 중" />;
   }
@@ -56,8 +60,7 @@ export function FamilyHealthInfoDetailScreen() {
               <ClinicalAlertCard section={vm.diseaseSection} iconName={CHRONIC_HEADER_ICON} />
             ) : null}
             <ActiveMedicationsCard prescriptions={vm.prescriptions} />
-            <ClinicianNotesCard notes={CLINICIAN_NOTE_ITEMS} />
-            <HealthInfoActions />
+            {clinicianNotes.length > 0 ? <ClinicianNotesCard notes={clinicianNotes} /> : null}
           </YStack>
         ) : null}
       </YStack>

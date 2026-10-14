@@ -86,6 +86,19 @@ describe("가족 의료진 제공용 건강정보", () => {
     expect(screen.queryByText("약물 알러지")).toBeNull();
     expect(screen.queryByText("기저질환")).toBeNull();
     expect(screen.getByText("현재 복용 중인 약물이 없습니다.")).toBeTruthy();
+    expect(screen.queryByText("의료진 참고사항")).toBeNull();
+    expect(screen.queryByLabelText("건강 정보 인쇄하기")).toBeNull();
+  });
+
+  it("알레르기만 있으면 기저질환 관련 참고사항을 숨긴다", () => {
+    setQuery({ data: { ...summary, diseases: [] } });
+    const screen = render(<FamilyHealthInfoDetailScreen />);
+    expect(
+      screen.getByText("상기 알러지 성분이 포함된 약물 처방을 피해주시기 바랍니다."),
+    ).toBeTruthy();
+    expect(
+      screen.queryByText("기저질환 치료제와의 약물 상호작용을 확인해주시기 바랍니다."),
+    ).toBeNull();
   });
   it.each([
     [403, "해당 가족이 건강 정보 공개를 허용하지 않았습니다."],

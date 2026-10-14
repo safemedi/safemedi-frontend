@@ -69,7 +69,7 @@ describe("가족 오늘 복약 화면", () => {
     fireEvent.press(screen.getByText("다시 시도"));
     expect(mockRefetch).toHaveBeenCalledTimes(1);
     expect(screen.queryByText("처방전 1")).toBeNull();
-    expect(screen.queryByLabelText("가족의 의료진 제공용 건강정보 보기")).toBeNull();
+    expect(screen.getByLabelText("가족의 의료진 제공용 건강정보 보기")).toBeTruthy();
   });
   it("로딩 중에는 버튼을 숨기고 완료 후 복약 정보와 함께 표시한다", () => {
     setQuery({ isLoading: true, data: undefined });
