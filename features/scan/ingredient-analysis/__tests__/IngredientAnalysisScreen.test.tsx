@@ -91,7 +91,14 @@ jest.mock("../components/MedicationAnalysisCard", () => ({
 }));
 
 jest.mock("../../prescription-scan/components/PrescriptionScanHeader", () => ({
-  PrescriptionScanHeader: () => null,
+  PrescriptionScanHeader: ({ onPressClose }: { onPressClose: () => void }) => {
+    const React = require("react");
+    const { Pressable } = require("react-native");
+    return React.createElement(Pressable, {
+      accessibilityLabel: "분석 닫기",
+      onPress: onPressClose,
+    });
+  },
 }));
 
 describe("IngredientAnalysisScreen", () => {
@@ -136,9 +143,11 @@ describe("IngredientAnalysisScreen", () => {
       result: null,
     };
 
-    const { getByText } = render(<IngredientAnalysisScreen />);
+    const { getByText, getByLabelText } = render(<IngredientAnalysisScreen />);
 
     expect(getByText("약물 성분을 분석하는 중입니다.")).toBeTruthy();
+    fireEvent.press(getByLabelText("분석 닫기"));
+    expect(mockHandlePressClose).toHaveBeenCalledTimes(1);
   });
 
   it("분석 결과가 없으면 확정 버튼 문구를 안내 상태로 노출한다", () => {
