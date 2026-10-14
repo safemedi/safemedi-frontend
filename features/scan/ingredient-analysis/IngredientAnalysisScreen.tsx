@@ -33,10 +33,18 @@ export function IngredientAnalysisScreen() {
 
   if (viewModel.isAnalyzing) {
     return (
-      <ScreenLoadingView
-        accessibilityLabel="약물 성분 분석 중"
-        message="약물 성분을 분석하는 중입니다."
-      />
+      <YStack style={styles.screen}>
+        <YStack style={{ paddingTop: insets.top }}>
+          <PrescriptionScanHeader
+            onPressClose={viewModel.handlePressClose}
+            title="성분 분석 결과"
+          />
+        </YStack>
+        <ScreenLoadingView
+          accessibilityLabel="약물 성분 분석 중"
+          message="약물 성분을 분석하는 중입니다."
+        />
+      </YStack>
     );
   }
 
