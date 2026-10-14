@@ -46,7 +46,7 @@ export function DashboardScreen() {
     });
   };
 
-  if (viewModel.isLoading || unreadCountQuery.isLoading) {
+  if (viewModel.isLoading) {
     return (
       <ScreenLoadingView
         accessibilityLabel="대시보드 정보 로딩 중"
@@ -71,14 +71,13 @@ export function DashboardScreen() {
         />
         <ScanPrescriptionCard onPress={handlePressScan} />
 
-        {viewModel.isError || unreadCountQuery.isError ? (
+        {viewModel.isError ? (
           <YStack style={styles.feedbackBox} gap={10}>
             <Text style={styles.feedbackText}>대시보드 정보를 불러오지 못했습니다.</Text>
             <PillButton
               variant="outline"
               onPress={() => {
                 void viewModel.refetch();
-                void unreadCountQuery.refetch();
               }}
               flex={0}
             >
@@ -87,7 +86,7 @@ export function DashboardScreen() {
           </YStack>
         ) : null}
 
-        {!viewModel.isError && !unreadCountQuery.isError ? (
+        {!viewModel.isError ? (
           <>
             <AdherenceSummaryCard
               adherenceRate={viewModel.adherenceRate}

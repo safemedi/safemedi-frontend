@@ -4,6 +4,7 @@ import { DashboardScreen } from "../DashboardScreen";
 import type { DashboardViewModel } from "../useDashboardViewModel";
 
 let mockUnreadLoading = false;
+let mockUnreadError = false;
 const mockUnreadRefetch = jest.fn();
 const mockRefetch = jest.fn<Promise<unknown>, []>();
 const mockUseDashboardViewModel = jest.fn<DashboardViewModel, []>();
@@ -39,7 +40,7 @@ jest.mock("@/api/queries/notification", () => ({
   useUnreadNotificationCount: () => ({
     data: { unreadCount: 1 },
     isLoading: mockUnreadLoading,
-    isError: false,
+    isError: mockUnreadError,
     refetch: mockUnreadRefetch,
   }),
 }));
@@ -216,6 +217,7 @@ describe("DashboardScreen 통합 테스트", () => {
 
   beforeEach(() => {
     mockUnreadLoading = false;
+    mockUnreadError = false;
     jest.clearAllMocks();
     mockPreviousFocusEffect = null;
     mockUseDashboardViewModel.mockImplementation(() => createViewModel());
@@ -301,13 +303,20 @@ describe("DashboardScreen 통합 테스트", () => {
     expect(mockRefetch.mock.calls.length).toBe(callCountAfterMount);
   });
 
-  it("대시보드 데이터가 준비되어도 알림 개수 조회가 끝날 때까지 화면을 기다린다", () => {
+  it("알림 개수 조회 중에도 대시보드 콘텐츠를 표시한다", () => {
     mockUnreadLoading = true;
     const screen = render(<DashboardScreen />);
-    expect(screen.getByLabelText("대시보드 정보 로딩 중")).toBeTruthy();
-    expect(screen.queryByText("처방전 스캔")).toBeNull();
+    expect(screen.queryByLabelText("대시보드 정보 로딩 중")).toBeNull();
+    expect(screen.getByLabelText("처방전 스캔하기")).toBeTruthy();
     mockUnreadLoading = false;
     screen.rerender(<DashboardScreen />);
     expect(screen.queryByLabelText("대시보드 정보 로딩 중")).toBeNull();
+  });
+
+  it("알림 개수 조회 실패에도 대시보드 콘텐츠를 유지한다", () => {
+    mockUnreadError = true;
+    const screen = render(<DashboardScreen />);
+    expect(screen.getByLabelText("처방전 스캔하기")).toBeTruthy();
+    expect(screen.queryByText("대시보드 정보를 불러오지 못했습니다.")).toBeNull();
   });
 });

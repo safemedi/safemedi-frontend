@@ -5,6 +5,7 @@ import type { NotificationItem } from "@/api/types";
 import { useNotificationsViewModel } from "../useNotificationsViewModel";
 
 let mockUnreadLoading = false;
+let mockUnreadError = false;
 const mockUnreadRefetch = jest.fn();
 const mockRefetch = jest.fn();
 const mockMarkRead = jest.fn();
@@ -59,7 +60,7 @@ jest.mock("@/api/queries/notification", () => ({
   useUnreadNotificationCount: () => ({
     data: mockUnreadCountData,
     isLoading: mockUnreadLoading,
-    isError: false,
+    isError: mockUnreadError,
     refetch: mockUnreadRefetch,
   }),
   useMarkNotificationRead: () => ({
@@ -74,6 +75,7 @@ jest.mock("@/api/queries/notification", () => ({
 describe("useNotificationsViewModel", () => {
   beforeEach(() => {
     mockUnreadLoading = false;
+    mockUnreadError = false;
     jest.clearAllMocks();
     mockNotificationsContent = defaultNotifications;
     mockUnreadCountData = { unreadCount: 1 };
@@ -197,16 +199,26 @@ describe("useNotificationsViewModel", () => {
     expect(mockRouterPush).not.toHaveBeenCalled();
   });
 
-  it("알림 목록 조회 후에도 읽지 않은 개수 조회가 남으면 기다리고 두 요청을 재시도한다", async () => {
+  it("미읽음 개수 조회 중에도 알림 목록을 유지하고 두 요청을 재시도한다", async () => {
     mockIsNotificationsLoading = false;
     mockUnreadLoading = true;
     const { result, rerender } = renderHook(() => useNotificationsViewModel());
-    expect(result.current.isLoading).toBe(true);
+    expect(result.current.isLoading).toBe(false);
+    expect(result.current.items).toHaveLength(2);
     mockUnreadLoading = false;
     rerender({});
     expect(result.current.isLoading).toBe(false);
     await result.current.refetch();
     expect(mockRefetch).toHaveBeenCalled();
     expect(mockUnreadRefetch).toHaveBeenCalled();
+  });
+
+  it("미읽음 개수 조회가 실패해도 알림 목록 오류로 표시하지 않는다", () => {
+    mockUnreadCountData = undefined;
+    mockUnreadError = true;
+    const { result } = renderHook(() => useNotificationsViewModel());
+    expect(result.current.items).toHaveLength(2);
+    expect(result.current.unreadCount).toBe(1);
+    expect(result.current.isError).toBe(false);
   });
 });

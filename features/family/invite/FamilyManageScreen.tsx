@@ -124,10 +124,7 @@ export function FamilyManageScreen() {
     [deleteFamilyMutation],
   );
 
-  if (
-    familiesQuery.isLoading ||
-    (!inviteLink && (createInvitationMutation.isIdle || createInvitationMutation.isPending))
-  ) {
+  if (familiesQuery.isLoading) {
     return (
       <ScreenLoadingView
         accessibilityLabel="가족 정보 로딩 중"
