@@ -51,7 +51,8 @@ export function useNotificationsViewModel(): NotificationsViewModel {
     [notificationsQuery.data?.content],
   );
 
-  const unreadCount = unreadCountQuery.data?.unreadCount ?? 0;
+  const unreadCount =
+    unreadCountQuery.data?.unreadCount ?? items.filter((item) => !item.isRead).length;
 
   const handlePressBack = useCallback(() => {
     router.back();
@@ -77,8 +78,8 @@ export function useNotificationsViewModel(): NotificationsViewModel {
   return {
     items,
     unreadCount,
-    isLoading: notificationsQuery.isLoading || unreadCountQuery.isLoading,
-    isError: notificationsQuery.isError || unreadCountQuery.isError,
+    isLoading: notificationsQuery.isLoading,
+    isError: notificationsQuery.isError,
     isMarkAllReadPending: markAllReadMutation.isPending,
     refetch: () => Promise.all([notificationsQuery.refetch(), unreadCountQuery.refetch()]),
     handlePressBack,
