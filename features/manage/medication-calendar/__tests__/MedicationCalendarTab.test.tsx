@@ -14,10 +14,16 @@ jest.mock("tamagui", () => ({
   Text: require("react-native").Text,
 }));
 jest.mock("../components/MedicationReportCalendarCard", () => ({
-  MedicationReportCalendarCard: () => null,
+  MedicationReportCalendarCard: () =>
+    require("react").createElement(require("react-native").Text, null, "달력"),
 }));
 jest.mock("../components/MedicationReportDailyRecordsCard", () => ({
-  MedicationReportDailyRecordsCard: () => null,
+  MedicationReportDailyRecordsCard: ({ isLoading }: { isLoading: boolean }) =>
+    require("react").createElement(
+      require("react-native").Text,
+      null,
+      isLoading ? "일별 기록 로딩 중" : "일별 기록",
+    ),
 }));
 jest.mock("../../medication-statistics/components/MedicationReportPeriodSummaryCard", () => ({
   MedicationReportPeriodSummaryCard: () => null,
@@ -34,18 +40,22 @@ function setViewModel(overrides: Record<string, unknown> = {}) {
 }
 
 describe("복약 달력 화면의 초기 조회", () => {
-  it.each([
-    "isInitialLoading",
-    "isCalendarLoading",
-    "isDailyRecordsLoading",
-  ])("%s 동안 일부 콘텐츠를 표시하지 않는다", (flag) => {
+  it.each(["isInitialLoading", "isCalendarLoading"])("%s 동안 탭 헤더를 유지한다", (flag) => {
     setViewModel({ [flag]: true });
     const screen = render(<MedicationCalendarTab header={<Text>복약 리포트 헤더</Text>} />);
     expect(screen.getByLabelText("복약 리포트 로딩 중")).toBeTruthy();
-    expect(screen.queryByText("복약 리포트 헤더")).toBeNull();
+    expect(screen.getByText("복약 리포트 헤더")).toBeTruthy();
     setViewModel();
     screen.rerender(<MedicationCalendarTab header={<Text>복약 리포트 헤더</Text>} />);
     expect(screen.queryByLabelText("복약 리포트 로딩 중")).toBeNull();
     expect(screen.getByText("복약 리포트 헤더")).toBeTruthy();
+  });
+
+  it("일별 기록 조회 중에도 달력을 표시한다", () => {
+    setViewModel({ isDailyRecordsLoading: true });
+    const screen = render(<MedicationCalendarTab header={<Text>복약 리포트 헤더</Text>} />);
+    expect(screen.getByText("달력")).toBeTruthy();
+    expect(screen.getByText("일별 기록 로딩 중")).toBeTruthy();
+    expect(screen.queryByLabelText("복약 리포트 로딩 중")).toBeNull();
   });
 });

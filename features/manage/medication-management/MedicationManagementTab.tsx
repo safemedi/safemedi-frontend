@@ -17,10 +17,12 @@ export function MedicationManagementTab({ header }: MedicationReportTabProps) {
 
   if (viewModel.isLoading) {
     return (
-      <ScreenLoadingView
-        accessibilityLabel="복약 관리 정보 로딩 중"
-        message="복약 관리 정보를 불러오는 중입니다."
-      />
+      <MedicationReportTabContent header={header}>
+        <ScreenLoadingView
+          accessibilityLabel="복약 관리 정보 로딩 중"
+          message="복약 관리 정보를 불러오는 중입니다."
+        />
+      </MedicationReportTabContent>
     );
   }
 
