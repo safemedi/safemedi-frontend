@@ -17,10 +17,12 @@ export function MedicationStatisticsTab({ header }: MedicationReportTabProps) {
 
   if (viewModel.isLoading) {
     return (
-      <ScreenLoadingView
-        accessibilityLabel="통계 분석 로딩 중"
-        message="통계 분석을 불러오는 중입니다."
-      />
+      <MedicationReportTabContent header={header}>
+        <ScreenLoadingView
+          accessibilityLabel="통계 분석 로딩 중"
+          message="통계 분석을 불러오는 중입니다."
+        />
+      </MedicationReportTabContent>
     );
   }
 

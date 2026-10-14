@@ -15,16 +15,14 @@ import { useMedicationCalendarViewModel } from "./useMedicationCalendarViewModel
 export function MedicationCalendarTab({ header }: MedicationReportTabProps) {
   const viewModel = useMedicationCalendarViewModel();
 
-  if (
-    viewModel.isInitialLoading ||
-    viewModel.isCalendarLoading ||
-    viewModel.isDailyRecordsLoading
-  ) {
+  if (viewModel.isInitialLoading || viewModel.isCalendarLoading) {
     return (
-      <ScreenLoadingView
-        accessibilityLabel="복약 리포트 로딩 중"
-        message="복약 리포트를 불러오는 중입니다."
-      />
+      <MedicationReportTabContent header={header}>
+        <ScreenLoadingView
+          accessibilityLabel="복약 리포트 로딩 중"
+          message="복약 리포트를 불러오는 중입니다."
+        />
+      </MedicationReportTabContent>
     );
   }
 
@@ -60,6 +58,7 @@ export function MedicationCalendarTab({ header }: MedicationReportTabProps) {
           title={viewModel.selectedDateTitle}
           summary={viewModel.selectedDaySummary}
           prescriptionGroups={viewModel.prescriptionGroups}
+          isLoading={viewModel.isDailyRecordsLoading}
           isError={viewModel.isDailyRecordsError}
           onRetry={() => viewModel.refetchDailyRecords()}
         />
