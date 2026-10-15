@@ -16,17 +16,41 @@ jest.mock("../components/MedicationReportHeader", () => ({ MedicationReportHeade
 jest.mock("../medication-calendar", () => {
   const React = require("react");
   const { Text } = require("react-native");
-  return { MedicationCalendarTab: () => React.createElement(Text, null, "CALENDAR_TAB") };
+  return {
+    MedicationCalendarTab: ({ header }: { header?: React.ReactNode }) =>
+      React.createElement(
+        React.Fragment,
+        null,
+        header,
+        React.createElement(Text, null, "CALENDAR_TAB"),
+      ),
+  };
 });
 jest.mock("../medication-statistics", () => {
   const React = require("react");
   const { Text } = require("react-native");
-  return { MedicationStatisticsTab: () => React.createElement(Text, null, "STATISTICS_TAB") };
+  return {
+    MedicationStatisticsTab: ({ header }: { header?: React.ReactNode }) =>
+      React.createElement(
+        React.Fragment,
+        null,
+        header,
+        React.createElement(Text, null, "STATISTICS_TAB"),
+      ),
+  };
 });
 jest.mock("../medication-management", () => {
   const React = require("react");
   const { Text } = require("react-native");
-  return { MedicationManagementTab: () => React.createElement(Text, null, "MANAGEMENT_TAB") };
+  return {
+    MedicationManagementTab: ({ header }: { header?: React.ReactNode }) =>
+      React.createElement(
+        React.Fragment,
+        null,
+        header,
+        React.createElement(Text, null, "MANAGEMENT_TAB"),
+      ),
+  };
 });
 jest.mock("../components/MedicationReportTabBar", () => {
   const React = require("react");

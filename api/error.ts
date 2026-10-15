@@ -57,7 +57,14 @@ export async function parseApiError(
   let message: string | undefined;
 
   try {
-    const body = toErrorResponseBody(await error.response.clone().json());
+    // ky 2는 응답 본문을 소비한 뒤 data에 파싱 결과를 보관한다.
+    const body = toErrorResponseBody(
+      error.data !== undefined
+        ? error.data
+        : error.response.bodyUsed
+          ? undefined
+          : await error.response.clone().json(),
+    );
     code = body.code;
     message = body.message;
   } catch {

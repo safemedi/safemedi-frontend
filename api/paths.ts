@@ -11,6 +11,7 @@ export const apiPaths = {
 
   families: "/api/v1/families",
   family: (familyId: number | string) => `/api/v1/families/${familyId}`,
+  familyMedicalSummary: (familyId: number) => `/api/v1/families/${familyId}/medical-summary`,
   familyInvitations: "/api/v1/family-invitations",
   familyInvitation: (token: string) => `/api/v1/family-invitations/${token}`,
   familyInvitationAccept: (token: string) => `/api/v1/family-invitations/${token}/accept`,

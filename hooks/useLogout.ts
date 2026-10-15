@@ -1,11 +1,15 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { useCallback, useRef } from "react";
+import { useCallback } from "react";
 
 import { useLogoutMutation } from "@/api/queries/auth";
 import { queryKeys } from "@/api/query-keys";
+import { runDeviceTokenOperation } from "@/hooks/deviceTokenLifecycle";
 import {
+  clearPendingDeviceTokenCleanup,
   clearRegisteredDeviceToken,
   getRegisteredDeviceToken,
+  markDeviceTokenCleanupPending,
+  restoreDeviceTokenState,
 } from "@/hooks/pushNotificationTokenStore";
 import { useSessionStore } from "@/stores/sessionStore";
 import { useUserStore } from "@/stores/userStore";
@@ -13,6 +17,7 @@ import { useUserStore } from "@/stores/userStore";
 const AUTH_SCOPED_QUERY_KEY_PREFIXES = [
   queryKeys.user.me,
   ["dashboard"],
+  ["medications"],
   ["family"],
   ["profile"],
   ["prescriptions"],
@@ -21,42 +26,59 @@ const AUTH_SCOPED_QUERY_KEY_PREFIXES = [
   ["notification"],
 ] as const;
 
+export interface LogoutOptions {
+  readonly reason?: "user-request" | "session-expired";
+}
+
+// 여러 인증 게이트에서 동시에 호출되어도 서버 로그아웃은 한 번만 수행한다.
+let isLoggingOut = false;
+
 export function useLogout() {
   const queryClient = useQueryClient();
   const { mutateAsync: logoutAsync } = useLogoutMutation();
   const clearSession = useSessionStore((s) => s.clearSession);
   const clearUser = useUserStore((s) => s.clearUser);
-  const isLoggingOutRef = useRef(false);
 
-  return useCallback(async () => {
-    if (isLoggingOutRef.current) {
-      return;
-    }
+  return useCallback(
+    async (options?: LogoutOptions) => {
+      if (isLoggingOut) {
+        return;
+      }
 
-    isLoggingOutRef.current = true;
-    const deviceToken = getRegisteredDeviceToken();
-    let didLogoutOnServer = false;
-
-    try {
-      if (deviceToken) {
-        await logoutAsync({ deviceToken });
-        didLogoutOnServer = true;
+      isLoggingOut = true;
+      try {
+        await runDeviceTokenOperation(async () => {
+          try {
+            await restoreDeviceTokenState();
+          } catch {
+            if (__DEV__) console.warn("[useLogout] 저장소 복원 실패로 메모리 토큰을 사용합니다.");
+          }
+          const deviceToken = getRegisteredDeviceToken();
+          if (deviceToken) {
+            // 네트워크 요청 전에 기록해 종료·실패 시에도 정리 작업을 잃지 않는다.
+            try {
+              await markDeviceTokenCleanupPending(deviceToken);
+            } catch {
+              if (__DEV__) console.warn("[useLogout] 정리 기록 저장에 실패했습니다.");
+            }
+            if (options?.reason !== "session-expired") {
+              await logoutAsync({ deviceToken });
+              await clearPendingDeviceTokenCleanup(deviceToken);
+            }
+            await clearRegisteredDeviceToken();
+          }
+        });
+      } catch {
+        if (__DEV__) console.warn("[useLogout] 서버 토큰 정리를 보류하고 로컬 세션을 종료합니다.");
+      } finally {
+        clearSession();
+        clearUser();
+        for (const queryKey of AUTH_SCOPED_QUERY_KEY_PREFIXES) {
+          queryClient.removeQueries({ queryKey });
+        }
+        isLoggingOut = false;
       }
-    } catch (error) {
-      if (__DEV__) {
-        const message = error instanceof Error ? error.message : String(error);
-        console.warn(`[useLogout] 로그아웃 API 호출 실패: ${message}`);
-      }
-    } finally {
-      if (didLogoutOnServer) {
-        clearRegisteredDeviceToken();
-      }
-      clearSession();
-      clearUser();
-      for (const queryKey of AUTH_SCOPED_QUERY_KEY_PREFIXES) {
-        queryClient.removeQueries({ queryKey });
-      }
-      isLoggingOutRef.current = false;
-    }
-  }, [clearSession, clearUser, logoutAsync, queryClient]);
+    },
+    [clearSession, clearUser, logoutAsync, queryClient],
+  );
 }

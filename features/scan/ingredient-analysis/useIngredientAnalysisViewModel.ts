@@ -110,7 +110,7 @@ export function useIngredientAnalysisViewModel(): IngredientAnalysisViewModel {
     () => ({
       request,
       result,
-      isAnalyzing: analyzeMutation.isPending,
+      isAnalyzing: analyzeMutation.isPending || (!!request && !result && !errorMessage),
       isSubmitting: createMutation.isPending,
       errorMessage,
       handlePressClose,

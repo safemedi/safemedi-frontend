@@ -13,10 +13,14 @@ export const queryKeys = {
       ["medications", "statistics", startDate, endDate] as const,
   },
   user: {
+    registerDeviceToken: ["user", "device-token", "register"] as const,
     me: ["user", "me"] as const,
     deleteAccount: ["user", "delete-account"] as const,
   },
   family: {
+    medicalSummary: (familyId?: number) => ["family", "medical-summary", familyId] as const,
+    todayMedicationSchedules: (familyId?: number) =>
+      ["family", "medication-records", "today", familyId] as const,
     list: ["family", "list"] as const,
     invitation: (token: string) => ["family", "invitation", token] as const,
   },

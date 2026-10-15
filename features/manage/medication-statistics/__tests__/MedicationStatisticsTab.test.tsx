@@ -87,3 +87,7 @@ describe("MedicationStatisticsTab", () => {
     expect(getByText("MONTHLY_ACHIEVEMENT_CARD")).toBeTruthy();
   });
 });
+
+jest.mock("react-native-safe-area-context", () => ({
+  useSafeAreaInsets: () => ({ top: 0, bottom: 0 }),
+}));

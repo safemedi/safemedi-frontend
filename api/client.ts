@@ -12,7 +12,7 @@ type KyRequestError = {
   request?: Request;
 };
 
-const SENSITIVE_LOG_KEYS = new Set(["accessToken", "refreshToken"]);
+const SENSITIVE_LOG_KEYS = new Set(["accessToken", "refreshToken", "deviceToken"]);
 
 function maskSensitiveFieldsForLog(value: unknown, seen: WeakSet<object> = new WeakSet()): unknown {
   if (Array.isArray(value)) {
@@ -88,7 +88,9 @@ function getErrorRequest(error: unknown): Request | undefined {
 
 function formatApiErrorForLog(error: unknown): string {
   const request = getErrorRequest(error);
-  const requestLabel = request ? `${request.method} ${request.url}` : "unknown request";
+  const requestLabel = request
+    ? `${request.method} ${sanitizeUrlForLog(request.url)}`
+    : "unknown request";
 
   if (error instanceof HTTPError) {
     return `${error.response.status} ${requestLabel}`;
@@ -172,9 +174,9 @@ export const api: KyInstance = ky.create({
 
         const requestBody = await readRequestBodyForLog(request);
         if (requestBody !== undefined) {
-          logApiDev(`[api] → ${request.method} ${request.url}`, requestBody);
+          logApiDev(`[api] → ${request.method} ${sanitizeUrlForLog(request.url)}`, requestBody);
         } else {
-          logApiDev(`[api] → ${request.method} ${request.url}`);
+          logApiDev(`[api] → ${request.method} ${sanitizeUrlForLog(request.url)}`);
         }
       },
     ],
@@ -185,12 +187,20 @@ export const api: KyInstance = ky.create({
         }
 
         const body = await readResponseBodyForLog(response);
-        logApiDev(`[api] ← ${response.status} ${request.method} ${request.url}`, body);
+        logApiDev(
+          `[api] ← ${response.status} ${request.method} ${sanitizeUrlForLog(request.url)}`,
+          body,
+        );
         return response;
       },
-      async ({ request, response, retryCount }) => {
+      async ({ request, response, retryCount, options }) => {
         const isReissueRequest = request.url.endsWith(apiPaths.authReissue);
-        if (response.status !== 401 || retryCount > 0 || isReissueRequest) {
+        if (
+          response.status !== 401 ||
+          retryCount > 0 ||
+          isReissueRequest ||
+          options?.context?.skipAuthRefresh
+        ) {
           return;
         }
 

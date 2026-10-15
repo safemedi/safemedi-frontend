@@ -207,6 +207,30 @@ describe("FamilyManageScreen", () => {
     mockSetStringAsync.mockResolvedValue(true);
   });
 
+  it("초대 링크 생성 중에도 가족 목록과 관리 기능을 표시한다", () => {
+    mockUseCreateFamilyInvitation.mockReturnValue({
+      data: undefined,
+      isIdle: false,
+      isPending: true,
+      isError: false,
+      mutate: mockMutate,
+    });
+    const screen = render(<FamilyManageScreen />);
+    expect(screen.queryByLabelText("가족 정보 로딩 중")).toBeNull();
+    expect(screen.getByText("패밀리 배너")).toBeTruthy();
+    expect(screen.getByText("구성원:2")).toBeTruthy();
+    mockUseCreateFamilyInvitation.mockReturnValue({
+      data: { inviteUrl: "https://safemedi.app/invite/abc" },
+      isIdle: false,
+      isPending: false,
+      isError: false,
+      mutate: mockMutate,
+    });
+    screen.rerender(<FamilyManageScreen />);
+    expect(screen.queryByLabelText("가족 정보 로딩 중")).toBeNull();
+    expect(screen.getByText("패밀리 배너")).toBeTruthy();
+  });
+
   it("조회 데이터와 초대 링크가 화면에 반영된다", () => {
     const { getByText } = render(<FamilyManageScreen />);
 
