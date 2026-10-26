@@ -19,7 +19,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#6FAFBD",
+        "backgroundColor": "#00BFCB",
         "foregroundImage": "./assets/android/android-icon-foreground.png"
       },
       "edgeToEdgeEnabled": true,
@@ -68,7 +68,7 @@
         "expo-notifications",
         {
           "icon": "./assets/android/android-notification-icon.png",
-          "color": "#00C950"
+          "color": "#00BFCB"
         }
       ],
       "expo-build-properties"
