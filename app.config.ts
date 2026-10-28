@@ -119,6 +119,14 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         {
           organization: SENTRY_ORG_SLUG,
           project: SENTRY_PROJECT_SLUG,
+          experimental_android: {
+            enableAndroidGradlePlugin: true,
+            includeProguardMapping: true,
+            autoUploadProguardMapping: true,
+            uploadNativeSymbols: false,
+            autoUploadNativeSymbols: false,
+            includeNativeSources: false,
+          },
         },
       ],
     ],

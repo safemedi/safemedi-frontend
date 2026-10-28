@@ -230,7 +230,21 @@ describe("app.config", () => {
 
     expect(result.plugins).toEqual(
       expect.arrayContaining([
-        ["@sentry/react-native/expo", { organization: "test-org", project: "test-project" }],
+        [
+          "@sentry/react-native/expo",
+          {
+            organization: "test-org",
+            project: "test-project",
+            experimental_android: {
+              enableAndroidGradlePlugin: true,
+              includeProguardMapping: true,
+              autoUploadProguardMapping: true,
+              uploadNativeSymbols: false,
+              autoUploadNativeSymbols: false,
+              includeNativeSources: false,
+            },
+          },
+        ],
       ]),
     );
   });
