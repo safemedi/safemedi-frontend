@@ -43,7 +43,7 @@ app-example
 # generated native folders
 /ios
 /android
-
+/output
 .codex/
 
 # Claude Code personal overrides
