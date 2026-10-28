@@ -92,6 +92,7 @@ describe("app.config", () => {
     expect(result.plugins).toEqual(
       expect.arrayContaining([
         "expo-font",
+        "./plugins/withAndroidR8Optimization.js",
         [
           "@react-native-seoul/kakao-login",
           { kakaoAppKey: "test-kakao-app-key", kotlinVersion: "2.1.20" },
@@ -101,6 +102,11 @@ describe("app.config", () => {
           {
             android: {
               extraMavenRepos: ["https://devrepo.kakao.com/nexus/content/groups/public/"],
+              enableMinifyInReleaseBuilds: true,
+              enableShrinkResourcesInReleaseBuilds: true,
+              extraProguardRules: expect.stringContaining(
+                "-keep,allowobfuscation,allowshrinking interface retrofit2.Call",
+              ),
             },
           },
         ],
@@ -119,6 +125,27 @@ describe("app.config", () => {
     const buildPropertiesEntries =
       result.plugins?.filter((plugin) => getPluginName(plugin) === "expo-build-properties") ?? [];
     expect(buildPropertiesEntries).toHaveLength(1);
+    expect(buildPropertiesEntries[0]).toEqual([
+      "expo-build-properties",
+      expect.objectContaining({
+        android: expect.objectContaining({
+          extraProguardRules: expect.stringContaining(
+            "-keep @interface expo.modules.kotlin.records.Field { *; }",
+          ),
+        }),
+      }),
+    ]);
+
+    expect(buildPropertiesEntries[0]).toEqual([
+      "expo-build-properties",
+      expect.objectContaining({
+        android: expect.objectContaining({
+          extraProguardRules: expect.stringContaining(
+            "-keep class expo.modules.notifications.** { *; }",
+          ),
+        }),
+      }),
+    ]);
 
     expect(result.ios?.infoPlist).toEqual(
       expect.objectContaining({
@@ -180,6 +207,11 @@ describe("app.config", () => {
           {
             android: {
               extraMavenRepos: ["https://devrepo.kakao.com/nexus/content/groups/public/"],
+              enableMinifyInReleaseBuilds: true,
+              enableShrinkResourcesInReleaseBuilds: true,
+              extraProguardRules: expect.stringContaining(
+                "-keep,allowobfuscation,allowshrinking interface retrofit2.Call",
+              ),
             },
           },
         ],
@@ -198,7 +230,21 @@ describe("app.config", () => {
 
     expect(result.plugins).toEqual(
       expect.arrayContaining([
-        ["@sentry/react-native/expo", { organization: "test-org", project: "test-project" }],
+        [
+          "@sentry/react-native/expo",
+          {
+            organization: "test-org",
+            project: "test-project",
+            experimental_android: {
+              enableAndroidGradlePlugin: true,
+              includeProguardMapping: true,
+              autoUploadProguardMapping: true,
+              uploadNativeSymbols: false,
+              autoUploadNativeSymbols: false,
+              includeNativeSources: false,
+            },
+          },
+        ],
       ]),
     );
   });
