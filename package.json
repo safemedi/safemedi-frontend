@@ -7,7 +7,7 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
-    "dev": "expo start --dev-client",
+    "dev": "NODE_ENV=development expo start --dev-client",
     "ios:dev": "expo run:ios --no-bundler",
     "android:dev": "expo run:android --no-bundler",
     "eas:android:dev": "eas build -p android --profile development",
