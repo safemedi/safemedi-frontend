@@ -84,3 +84,29 @@ export function applyOptimisticMedicationRecordsUpdate(
     data,
   );
 }
+
+/** 실패한 요청의 일정만 복구해 다른 요청의 완료 상태를 보존한다. */
+export function rollbackMedicationRecordsUpdate(
+  current: TodayMedicationSchedulesResponse,
+  previous: TodayMedicationSchedulesResponse,
+  recordIds: readonly number[],
+): TodayMedicationSchedulesResponse {
+  if (current.date !== previous.date) return current;
+  let completedDelta = 0;
+  const schedules = current.schedules.map((schedule) => {
+    if (!schedule.recordIds.some((id) => recordIds.includes(id))) return schedule;
+    const original = previous.schedules.find(
+      (item) =>
+        item.prescriptionId === schedule.prescriptionId &&
+        item.takeTime === schedule.takeTime &&
+        item.recordIds.length === schedule.recordIds.length &&
+        item.recordIds.every((id) => schedule.recordIds.includes(id)),
+    );
+    if (!original) return schedule;
+    completedDelta +=
+      Number(isCompletedStatus(getScheduleStatus(original))) -
+      Number(isCompletedStatus(getScheduleStatus(schedule)));
+    return { ...schedule, status: original.status, displayStatus: original.displayStatus };
+  });
+  return { ...current, schedules, summary: buildUpdatedSummary(current.summary, completedDelta) };
+}

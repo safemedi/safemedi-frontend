@@ -9,6 +9,8 @@ import {
 
 const mockFetchTodayMedicationSchedules = jest.fn<Promise<unknown>, [number?]>(async () => ({}));
 const mockUpdateMedicationRecords = jest.fn<Promise<unknown>, [unknown]>(async () => ({}));
+let mockPendingCount = 1;
+let mockMutationListener: (() => void) | undefined;
 const mockCancelQueries = jest.fn(async () => undefined);
 const mockInvalidateQueries = jest.fn(async () => undefined);
 const mockGetQueryData = jest.fn<TodayMedicationSchedulesResponse | undefined, [unknown]>(
@@ -22,6 +24,15 @@ jest.mock("@tanstack/react-query", () => ({
   useMutation: jest.fn((options: unknown) => options),
   useQuery: jest.fn((options: unknown) => options),
   useQueryClient: jest.fn(() => ({
+    isMutating: jest.fn(({ mutationKey }: { mutationKey: readonly string[] }) =>
+      mutationKey[1] === "mark-records" ? mockPendingCount : 0,
+    ),
+    getMutationCache: () => ({
+      subscribe: (listener: () => void) => {
+        mockMutationListener = listener;
+        return () => {};
+      },
+    }),
     cancelQueries: mockCancelQueries,
     getQueryData: mockGetQueryData,
     invalidateQueries: mockInvalidateQueries,
@@ -66,6 +77,7 @@ describe("api/queries/dashboard", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockAccessToken = "token";
+    mockPendingCount = 1;
     mockGetQueryData.mockReturnValue(todaySchedulesData);
   });
 
@@ -152,12 +164,12 @@ describe("api/queries/dashboard", () => {
     );
 
     await mutation.onSettled();
-    expect(mockInvalidateQueries).toHaveBeenNthCalledWith(1, {
+    mockPendingCount = 0;
+    mockMutationListener?.();
+    expect(mockInvalidateQueries).toHaveBeenCalledWith({
       queryKey: queryKeys.dashboard.todayMedicationSchedules,
     });
-    expect(mockInvalidateQueries).toHaveBeenNthCalledWith(2, {
-      queryKey: queryKeys.medications.all,
-    });
+    expect(mockInvalidateQueries).toHaveBeenCalledWith({ queryKey: queryKeys.medications.all });
   });
 
   it("mutation이 실패하면 onError에서 낙관적 업데이트를 롤백한다", async () => {
@@ -186,7 +198,7 @@ describe("api/queries/dashboard", () => {
     mutation.onError(new Error("network error"), { recordIds: [1, 2], status: "SUCCESS" }, context);
     expect(mockSetQueryData).toHaveBeenLastCalledWith(
       queryKeys.dashboard.todayMedicationSchedules,
-      todaySchedulesData,
+      expect.any(Function),
     );
   });
 });

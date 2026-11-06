@@ -95,7 +95,7 @@ export function DashboardScreen() {
             <TodayScheduleSection
               remainingCount={viewModel.scheduleRemainingCount}
               items={viewModel.scheduleCards}
-              takingPrescriptionId={viewModel.takingPrescriptionId}
+              takingPrescriptionIds={viewModel.takingPrescriptionIds}
               onPressTake={viewModel.markPrescriptionAsTaken}
             />
             <RecentPrescriptionsSection

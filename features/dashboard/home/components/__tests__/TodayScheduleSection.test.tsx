@@ -72,7 +72,7 @@ describe("TodayScheduleSection", () => {
       <TodayScheduleSection
         remainingCount={2}
         items={ITEMS}
-        takingPrescriptionId={null}
+        takingPrescriptionIds={[]}
         onPressTake={mockOnPressTake}
       />,
     );
@@ -87,7 +87,7 @@ describe("TodayScheduleSection", () => {
       <TodayScheduleSection
         remainingCount={0}
         items={[]}
-        takingPrescriptionId={null}
+        takingPrescriptionIds={[]}
         onPressTake={mockOnPressTake}
       />,
     );

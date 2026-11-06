@@ -1,7 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { fetchTodayMedicationSchedules, updateMedicationRecords } from "@/api/endpoints/dashboard";
-import { applyOptimisticMedicationRecordsUpdate } from "@/api/queries/optimisticTodayMedicationSchedules";
+import { invalidateTodaySchedulesAfterWrites } from "@/api/queries/invalidateTodaySchedules";
+import {
+  applyOptimisticMedicationRecordsUpdate,
+  rollbackMedicationRecordsUpdate,
+} from "@/api/queries/optimisticTodayMedicationSchedules";
 import { queryKeys } from "@/api/query-keys";
 import type {
   TodayMedicationSchedulesResponse,
@@ -10,19 +14,6 @@ import type {
 import { useSessionStore } from "@/stores/sessionStore";
 
 const STALE_MS = 60 * 1000;
-
-async function invalidateMedicationRecordQueries(
-  queryClient: ReturnType<typeof useQueryClient>,
-): Promise<void> {
-  await Promise.all([
-    queryClient.invalidateQueries({
-      queryKey: queryKeys.dashboard.todayMedicationSchedules,
-    }),
-    queryClient.invalidateQueries({
-      queryKey: queryKeys.medications.all,
-    }),
-  ]);
-}
 
 export function useDashboardTodayMedicationSchedules() {
   const accessToken = useSessionStore((state) => state.accessToken);
@@ -58,6 +49,7 @@ export function useMarkMedicationRecordsMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
+    mutationKey: queryKeys.dashboard.markRecords,
     mutationFn: (variables: UpdateMedicationRecordRequest) => updateMedicationRecords(variables),
     onMutate: async (variables) => {
       await queryClient.cancelQueries({
@@ -77,16 +69,18 @@ export function useMarkMedicationRecordsMutation() {
 
       return { previousData } satisfies MarkMedicationRecordsMutationContext;
     },
-    onError: (_error, _variables, context) => {
-      if (context?.previousData) {
+    onError: (_error, variables, context) => {
+      const previous = context?.previousData;
+      if (previous) {
         queryClient.setQueryData(
           queryKeys.dashboard.todayMedicationSchedules,
-          context.previousData,
+          (current: TodayMedicationSchedulesResponse | undefined) =>
+            current
+              ? rollbackMedicationRecordsUpdate(current, previous, variables.recordIds)
+              : current,
         );
       }
     },
-    onSettled: async () => {
-      await invalidateMedicationRecordQueries(queryClient);
-    },
+    onSettled: () => invalidateTodaySchedulesAfterWrites(queryClient),
   });
 }

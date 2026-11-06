@@ -14,14 +14,14 @@ import { TodayScheduleCard } from "./TodayScheduleCard";
 interface TodayScheduleSectionProps {
   readonly remainingCount: number;
   readonly items: readonly DashboardScheduleCardItem[];
-  readonly takingPrescriptionId: string | null;
+  readonly takingPrescriptionIds: readonly string[];
   readonly onPressTake: (prescription: DashboardSchedulePrescriptionItem) => void;
 }
 
 export function TodayScheduleSection({
   remainingCount,
   items,
-  takingPrescriptionId,
+  takingPrescriptionIds,
   onPressTake,
 }: TodayScheduleSectionProps) {
   return (
@@ -44,7 +44,7 @@ export function TodayScheduleSection({
             <TodayScheduleCard
               key={item.id}
               item={item}
-              takingPrescriptionId={takingPrescriptionId}
+              takingPrescriptionIds={takingPrescriptionIds}
               onPressTake={onPressTake}
             />
           ))}
