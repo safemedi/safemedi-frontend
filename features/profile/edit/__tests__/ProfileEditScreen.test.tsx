@@ -8,7 +8,7 @@ import type { User } from "@/stores/userStore";
 import { ProfileEditScreen } from "../ProfileEditScreen";
 
 const mockBack = jest.fn();
-const mockMutate = jest.fn();
+const mockMutate = jest.fn(async () => ({}));
 const mockUseSearchDrugAllergiesQuery = jest.fn();
 const mockUseSearchDiseasesQuery = jest.fn();
 
@@ -32,7 +32,7 @@ let mockActiveUser: User | null = mockUser;
 
 jest.mock("expo-router", () => ({
   router: {
-    back: mockBack,
+    back: () => mockBack(),
   },
 }));
 
@@ -49,7 +49,7 @@ jest.mock("@/stores/userStore", () => ({
 
 jest.mock("@/api/queries/user", () => ({
   useUpdateUserProfileMutation: () => ({
-    mutate: mockMutate,
+    mutateAsync: mockMutate,
     isPending: false,
   }),
 }));
@@ -271,7 +271,6 @@ describe("프로필 수정 화면", () => {
             { type: "FOOD", value: "꽃가루", name: "꽃가루" },
           ]),
         }),
-        expect.any(Object),
       );
     });
   });
@@ -282,24 +281,19 @@ describe("프로필 수정 화면", () => {
     fireEvent.press(getByLabelText("저장"));
 
     await waitFor(() => {
-      expect(mockMutate).toHaveBeenCalledWith(
-        {
-          nickname: "홍길동",
-          gender: "FEMALE",
-          bloodType: "AB",
-          rhType: "MINUS",
-          diseaseCodes: ["COND010"],
-          allergies: [
-            { type: "FOOD", value: "페니실린", name: "페니실린" },
-            { type: "FOOD", value: "해산물", name: "해산물" },
-            { type: "ATC_GROUP", value: "R06AX13", name: "꽃가루" },
-          ],
-        },
-        expect.objectContaining({
-          onSuccess: expect.any(Function),
-          onError: expect.any(Function),
-        }),
-      );
+      expect(mockMutate).toHaveBeenCalledWith({
+        diseaseNames: { COND010: "천식" },
+        nickname: "홍길동",
+        gender: "FEMALE",
+        bloodType: "AB",
+        rhType: "MINUS",
+        diseaseCodes: ["COND010"],
+        allergies: [
+          { type: "FOOD", value: "페니실린", name: "페니실린" },
+          { type: "FOOD", value: "해산물", name: "해산물" },
+          { type: "ATC_GROUP", value: "R06AX13", name: "꽃가루" },
+        ],
+      });
     });
   });
 
@@ -329,7 +323,6 @@ describe("프로필 수정 화면", () => {
         expect.objectContaining({
           diseaseCodes: ["COND010", "G43"],
         }),
-        expect.any(Object),
       );
     });
   });

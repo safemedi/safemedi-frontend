@@ -1,10 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
-import { type BaseSyntheticEvent, useEffect, useMemo, useState } from "react";
+import { type BaseSyntheticEvent, useEffect, useMemo, useRef, useState } from "react";
 import { type Control, useForm, useWatch } from "react-hook-form";
 import { Alert } from "react-native";
 
 import { getApiErrorMessage } from "@/api/error";
+import type { UpdateUserProfileVariables } from "@/api/queries/optimisticUserProfile";
 import { useUpdateUserProfileMutation } from "@/api/queries/user";
 import type { UserProfilePatchAllergyItem } from "@/api/types/user";
 import {
@@ -13,6 +14,7 @@ import {
   type GenderOptionValue,
 } from "@/constants/health-profile-options";
 import { useDiseaseSearch, useDrugAllergySearch } from "@/hooks/useHealthProfileSearch";
+import { useSessionStore } from "@/stores/sessionStore";
 import { useUserStore } from "@/stores/userStore";
 import { splitBloodTypeWithRhOrDefault } from "@/utils/blood-type";
 import {
@@ -91,6 +93,7 @@ function createInitialChronicConditionCodes(
 export function useProfileEditViewModel(): ProfileEditViewModel {
   const user = useUserStore((s) => s.user);
   const saveMutation = useUpdateUserProfileMutation();
+  const isSavingRef = useRef(false);
   const { labels: initialAllergies, mappings: initialAllergyMappings } = useMemo(
     () => buildUserAllergyEditState(user?.allergies ?? [], user?.allergyMappings ?? {}),
     [user?.allergies, user?.allergyMappings],
@@ -238,29 +241,46 @@ export function useProfileEditViewModel(): ProfileEditViewModel {
   };
 
   const handleSubmitValid = (values: ProfileEditFormValues) => {
-    saveMutation.mutate(
-      {
-        nickname: values.displayName.trim(),
-        gender: values.gender === "female" ? "FEMALE" : "MALE",
-        bloodType: values.bloodType,
-        rhType: values.rhFactor === "negative" ? "MINUS" : "PLUS",
-        diseaseCodes: chronicConditionLabelsToDiseaseCodes(
-          values.chronicConditions,
-          selectedChronicConditionCodes,
-        ),
-        allergies: profileAllergyLabelsToPatchItems(values.allergies, selectedAllergyItems),
-      },
-      {
-        onSuccess: () => router.back(),
-        onError: async (error) => {
+    if (saveMutation.isPending || isSavingRef.current) return;
+    const sessionVersion = useSessionStore.getState().sessionVersion;
+    const body: UpdateUserProfileVariables = {
+      diseaseNames: Object.fromEntries(
+        Object.entries(selectedChronicConditionCodes).map(([name, code]) => [code, name]),
+      ),
+      nickname: values.displayName.trim(),
+      gender: values.gender === "female" ? "FEMALE" : "MALE",
+      bloodType: values.bloodType,
+      rhType: values.rhFactor === "negative" ? "MINUS" : "PLUS",
+      diseaseCodes: chronicConditionLabelsToDiseaseCodes(
+        values.chronicConditions,
+        selectedChronicConditionCodes,
+      ),
+      allergies: profileAllergyLabelsToPatchItems(values.allergies, selectedAllergyItems),
+    };
+    const handleSave = () => {
+      if (isSavingRef.current || useSessionStore.getState().sessionVersion !== sessionVersion)
+        return;
+      isSavingRef.current = true;
+      void saveMutation
+        .mutateAsync(body)
+        .catch(async (error) => {
+          if (useSessionStore.getState().sessionVersion !== sessionVersion) return;
           const message = await getApiErrorMessage(
             error,
-            "프로필 저장에 실패했습니다. 잠시 후 다시 시도해주세요.",
+            "프로필 저장에 실패해 이전 정보로 되돌렸습니다.",
           );
-          Alert.alert("저장 실패", message);
-        },
-      },
-    );
+          if (useSessionStore.getState().sessionVersion !== sessionVersion) return;
+          Alert.alert("저장 실패", message, [
+            { text: "닫기", style: "cancel" },
+            { text: "다시 저장", onPress: handleSave },
+          ]);
+        })
+        .finally(() => {
+          isSavingRef.current = false;
+        });
+    };
+    handleSave();
+    router.back();
   };
 
   const onInvalid = () => {
