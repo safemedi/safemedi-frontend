@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { Alert } from "react-native";
 
 import { getApiErrorMessage } from "@/api/error";
@@ -27,6 +27,11 @@ import {
   toggleCollapsedPrescriptionId,
 } from "./medicationManagementModel";
 
+interface PendingPrescriptionTitle {
+  readonly prescriptionId: number;
+  readonly title: string;
+}
+
 export function useMedicationManagementViewModel(): MedicationManagementViewModel {
   const prescriptionsQuery = usePrescriptionsQuery();
   const updatePrescriptionMutation = useUpdatePrescriptionMutation();
@@ -37,14 +42,23 @@ export function useMedicationManagementViewModel(): MedicationManagementViewMode
   );
   const [editingPrescriptionId, setEditingPrescriptionId] = useState<number | null>(null);
   const [prescriptionTitleDraft, setPrescriptionTitleDraft] = useState("");
+  const [pendingTitle, setPendingTitle] = useState<PendingPrescriptionTitle | null>(null);
+  const isSavingTitle = useRef(false);
   const [editingMedicationKey, setEditingMedicationKey] = useState<MedicationEditKey | null>(null);
   const [editDraft, setEditDraft] = useState<MedicationEditDraft | null>(null);
 
   const prescriptions = prescriptionsQuery.data?.prescriptions ?? [];
 
   const prescriptionGroups = useMemo(
-    () => mapPrescriptionsToManagementGroups(prescriptions),
-    [prescriptions],
+    () =>
+      mapPrescriptionsToManagementGroups(
+        prescriptions.map((prescription) =>
+          pendingTitle?.prescriptionId === prescription.prescriptionId
+            ? { ...prescription, title: pendingTitle.title }
+            : prescription,
+        ),
+      ),
+    [prescriptions, pendingTitle],
   );
 
   const isSaveEditEnabled = useMemo(() => isMedicationEditDraftSavable(editDraft), [editDraft]);
@@ -115,7 +129,11 @@ export function useMedicationManagementViewModel(): MedicationManagementViewMode
   );
 
   const handleSavePrescriptionTitle = useCallback(() => {
-    if (editingPrescriptionId === null) {
+    if (
+      editingPrescriptionId === null ||
+      updatePrescriptionMutation.isPending ||
+      isSavingTitle.current
+    ) {
       return;
     }
 
@@ -138,24 +156,35 @@ export function useMedicationManagementViewModel(): MedicationManagementViewMode
       return;
     }
 
-    updatePrescriptionMutation.mutate(
-      {
+    isSavingTitle.current = true;
+    setPendingTitle({ prescriptionId: editingPrescriptionId, title: nextTitle });
+    handleCancelEditPrescriptionTitle();
+    void updatePrescriptionMutation
+      .mutateAsync({
         prescriptionId: editingPrescriptionId,
         body: { title: nextTitle },
-      },
-      {
-        onSuccess: () => {
-          handleCancelEditPrescriptionTitle();
-        },
-        onError: async (error) => {
-          const message = await getApiErrorMessage(
-            error,
-            "처방전 이름 수정에 실패했습니다. 잠시 후 다시 시도해주세요.",
-          );
-          Alert.alert("저장 실패", message);
-        },
-      },
-    );
+      })
+      .catch(async (error) => {
+        setPendingTitle(null);
+        const message = await getApiErrorMessage(
+          error,
+          "처방전 이름 수정에 실패했습니다. 다시 시도해주세요.",
+        );
+        Alert.alert("저장 실패", message, [
+          { text: "닫기", style: "cancel" },
+          {
+            text: "다시 편집",
+            onPress: () => {
+              setEditingPrescriptionId(editingPrescriptionId);
+              setPrescriptionTitleDraft(nextTitle);
+            },
+          },
+        ]);
+      })
+      .finally(() => {
+        isSavingTitle.current = false;
+        setPendingTitle(null);
+      });
   }, [
     editingPrescriptionId,
     handleCancelEditPrescriptionTitle,

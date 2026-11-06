@@ -6,6 +6,8 @@ import {
   fetchPrescriptions,
   updatePrescription,
 } from "@/api/endpoints/prescriptions";
+import { invalidateTodaySchedulesAfterWrites } from "@/api/queries/invalidateTodaySchedules";
+import { updatePrescriptionTitleOptimistically } from "@/api/queries/optimisticPrescriptionTitle";
 import { queryKeys } from "@/api/query-keys";
 import type {
   UpdatePrescriptionRequest,
@@ -49,14 +51,18 @@ export function useUpdatePrescriptionMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
+    mutationKey: queryKeys.prescriptions.update,
     mutationFn: ({ prescriptionId, body }: UpdatePrescriptionMutationParams) =>
       updatePrescription(prescriptionId, body),
-    onSuccess: async () => {
+    onMutate: async ({ prescriptionId, body }) => {
+      if (body.title === undefined) return undefined;
+      return updatePrescriptionTitleOptimistically(queryClient, prescriptionId, body.title);
+    },
+    onError: (_error, _variables, rollback) => rollback?.(),
+    onSettled: async () => {
       await queryClient.invalidateQueries({ queryKey: queryKeys.prescriptions.list });
       await queryClient.invalidateQueries({ queryKey: ["prescriptions", "detail"] });
-      await queryClient.invalidateQueries({
-        queryKey: queryKeys.dashboard.todayMedicationSchedules,
-      });
+      invalidateTodaySchedulesAfterWrites(queryClient);
     },
   });
 }
