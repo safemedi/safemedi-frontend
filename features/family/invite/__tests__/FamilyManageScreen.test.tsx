@@ -29,7 +29,7 @@ const mockUseFamilies = jest.fn();
 const mockUseCreateFamilyInvitation = jest.fn();
 const mockUseUpdateFamilyRelation = jest.fn();
 const mockUseDeleteFamily = jest.fn();
-const mockUpdateRelationMutate = jest.fn();
+const mockUpdateRelationMutate = jest.fn(async () => ({}));
 const mockDeleteFamilyMutate = jest.fn();
 
 jest.mock("expo-linear-gradient", () => {
@@ -195,7 +195,7 @@ describe("FamilyManageScreen", () => {
       mutate: mockMutate,
     });
     mockUseUpdateFamilyRelation.mockReturnValue({
-      mutate: mockUpdateRelationMutate,
+      mutateAsync: mockUpdateRelationMutate,
       isPending: false,
     });
     mockUseDeleteFamily.mockReturnValue({
@@ -319,14 +319,12 @@ describe("FamilyManageScreen", () => {
     fireEvent.press(getByLabelText("호칭 입력 트리거"));
     fireEvent.press(getByLabelText("호칭 저장 트리거"));
 
-    expect(mockUpdateRelationMutate).toHaveBeenCalledWith(
-      { familyId: 2, body: { relation: "엄마" } },
-      expect.any(Object),
-    );
+    expect(mockUpdateRelationMutate).toHaveBeenCalledWith({
+      familyId: 2,
+      body: { relation: "엄마" },
+    });
 
-    const { onSuccess } = mockUpdateRelationMutate.mock.calls[0][1];
-    onSuccess();
-    expect(mockAlert).toHaveBeenCalledWith("호칭 수정 완료", "가족 호칭을 수정했어요.");
+    expect(mockAlert).not.toHaveBeenCalled();
   });
 
   it("연동 해제 트리거 시 확인 알림을 띄우고 확인하면 mutation을 호출한다", () => {

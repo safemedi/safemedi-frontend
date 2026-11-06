@@ -112,6 +112,7 @@ describe("api/queries/family", () => {
     const options = result.current as unknown as {
       mutationFn: (token: string) => Promise<unknown>;
       onSuccess: (data: { familyId: number; name: string; relation: string }) => Promise<void>;
+      onSettled: () => Promise<void>;
     };
 
     await options.mutationFn("abc");
@@ -127,10 +128,12 @@ describe("api/queries/family", () => {
     const options = result.current as unknown as {
       mutationFn: (variables: { familyId: number; body: { relation: string } }) => Promise<unknown>;
       onSuccess: (data: { familyId: number; name: string; relation: string }) => Promise<void>;
+      onSettled: () => Promise<void>;
     };
 
     await options.mutationFn({ familyId: 7, body: { relation: "엄마" } });
     await options.onSuccess({ familyId: 7, name: "김영희", relation: "엄마" });
+    await options.onSettled();
 
     expect(mockUpdateFamilyRelation).toHaveBeenCalledWith(7, { relation: "엄마" });
     expect(mockSetQueryData).toHaveBeenCalledWith(queryKeys.family.list, expect.any(Function));

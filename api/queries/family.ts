@@ -87,23 +87,42 @@ export function useAcceptFamilyInvitation() {
 }
 
 export function useUpdateFamilyRelation() {
-  const { applyFamilyListUpdate } = useFamilyListMutationEffects();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: ({ familyId, body }: { familyId: number; body: UpdateFamilyRelationBody }) =>
       updateFamilyRelation(familyId, body),
-    onSuccess: async (updated) => {
-      await applyFamilyListUpdate((current) => {
-        if (!current) {
-          return current;
-        }
-        return current.map((family) =>
+    onMutate: async ({ familyId, body }) => {
+      await queryClient.cancelQueries({ queryKey: queryKeys.family.list });
+      const previous = queryClient
+        .getQueryData<FamilySummary[]>(queryKeys.family.list)
+        ?.find((family) => family.familyId === familyId);
+      queryClient.setQueryData<FamilySummary[]>(queryKeys.family.list, (current) =>
+        current?.map((family) =>
+          family.familyId === familyId ? { ...family, relation: body.relation } : family,
+        ),
+      );
+      return { previous };
+    },
+    onError: (_error, { familyId }, context) => {
+      const previous = context?.previous;
+      if (!previous) return;
+      queryClient.setQueryData<FamilySummary[]>(queryKeys.family.list, (current) =>
+        current?.map((family) =>
+          family.familyId === familyId ? { ...family, relation: previous.relation } : family,
+        ),
+      );
+    },
+    onSuccess: (updated) => {
+      queryClient.setQueryData<FamilySummary[]>(queryKeys.family.list, (current) =>
+        current?.map((family) =>
           family.familyId === updated.familyId
             ? { ...family, name: updated.name, relation: updated.relation }
             : family,
-        );
-      });
+        ),
+      );
     },
+    onSettled: () => queryClient.invalidateQueries({ queryKey: queryKeys.family.list }),
   });
 }
 
