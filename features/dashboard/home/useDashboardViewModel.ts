@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Alert } from "react-native";
 
 import { getApiErrorMessage } from "@/api/error";
@@ -49,7 +49,7 @@ export interface DashboardViewModel {
   readonly healthTipDescription: string;
   readonly isLoading: boolean;
   readonly isError: boolean;
-  readonly takingPrescriptionId: string | null;
+  readonly takingPrescriptionIds: readonly string[];
   readonly markPrescriptionAsTaken: (prescription: DashboardSchedulePrescriptionItem) => void;
   readonly refetch: () => Promise<unknown>;
 }
@@ -174,7 +174,8 @@ export function useDashboardViewModel(): DashboardViewModel {
   const todayScheduleQuery = useDashboardTodayMedicationSchedules();
   const markMedicationRecordsMutation = useMarkMedicationRecordsMutation();
   const prescriptionsQuery = usePrescriptionsQuery();
-  const [takingPrescriptionId, setTakingPrescriptionId] = useState<string | null>(null);
+  const pendingIds = useRef(new Set<string>());
+  const [takingPrescriptionIds, setTakingPrescriptionIds] = useState<readonly string[]>([]);
   const prescriptions = prescriptionsQuery.data?.prescriptions ?? [];
 
   const adherenceRate = Math.round(todayScheduleQuery.data?.summary.completionRate ?? 0);
@@ -248,9 +249,10 @@ export function useDashboardViewModel(): DashboardViewModel {
     Promise.all([todayScheduleQuery.refetch(), prescriptionsQuery.refetch()]);
 
   const markPrescriptionAsTaken = (prescription: DashboardSchedulePrescriptionItem) => {
-    if (!prescription.canMarkAsTaken || takingPrescriptionId !== null) return;
+    if (!prescription.canMarkAsTaken || pendingIds.current.has(prescription.id)) return;
 
-    setTakingPrescriptionId(prescription.id);
+    pendingIds.current.add(prescription.id);
+    setTakingPrescriptionIds([...pendingIds.current]);
     void markMedicationRecordsMutation
       .mutateAsync({
         recordIds: prescription.recordIds,
@@ -260,7 +262,10 @@ export function useDashboardViewModel(): DashboardViewModel {
         const message = await getApiErrorMessage(error, "복약 완료 처리 중 오류가 발생했습니다.");
         Alert.alert("복약 처리 실패", message);
       })
-      .finally(() => setTakingPrescriptionId(null));
+      .finally(() => {
+        pendingIds.current.delete(prescription.id);
+        setTakingPrescriptionIds([...pendingIds.current]);
+      });
   };
 
   return {
@@ -274,7 +279,7 @@ export function useDashboardViewModel(): DashboardViewModel {
       "약은 충분한 물과 함께 복용하세요. 최소 200ml(컵 1잔) 이상의 물과 함께 드시면 효과가 더 좋아요.",
     isLoading: todayScheduleQuery.isLoading || prescriptionsQuery.isLoading,
     isError: todayScheduleQuery.isError || prescriptionsQuery.isError,
-    takingPrescriptionId,
+    takingPrescriptionIds,
     markPrescriptionAsTaken,
     refetch,
   };

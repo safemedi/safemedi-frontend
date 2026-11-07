@@ -3,6 +3,7 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
 type SessionState = {
+  sessionVersion: number;
   accessToken: string | null;
   refreshToken: string | null;
   isTutorialCompleted: boolean;
@@ -15,14 +16,27 @@ type SessionState = {
 export const useSessionStore = create<SessionState>()(
   persist(
     (set) => ({
+      sessionVersion: 0,
       accessToken: null,
       refreshToken: null,
       isTutorialCompleted: false,
-      setAccessToken: (accessToken) => set({ accessToken }),
+      setAccessToken: (accessToken) =>
+        set((state) => ({
+          accessToken,
+          sessionVersion:
+            Boolean(state.accessToken) === Boolean(accessToken)
+              ? state.sessionVersion
+              : state.sessionVersion + 1,
+        })),
       setRefreshToken: (refreshToken) => set({ refreshToken }),
       setTutorialCompleted: (isTutorialCompleted) => set({ isTutorialCompleted }),
       clearSession: () =>
-        set({ accessToken: null, refreshToken: null, isTutorialCompleted: false }),
+        set((state) => ({
+          accessToken: null,
+          refreshToken: null,
+          isTutorialCompleted: false,
+          sessionVersion: state.sessionVersion + 1,
+        })),
     }),
     {
       name: "safemedi-session",

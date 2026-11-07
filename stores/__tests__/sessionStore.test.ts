@@ -61,6 +61,7 @@ describe("useSessionStore", () => {
     expect(partialize).toBeDefined();
 
     const partialized = partialize?.({
+      sessionVersion: 0,
       accessToken: "token-123",
       refreshToken: "refresh-token-123",
       isTutorialCompleted: true,

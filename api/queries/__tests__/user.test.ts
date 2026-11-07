@@ -27,6 +27,7 @@ const mockInvalidateQueries = jest.fn(async () => {});
 let mockAccessToken: string | null = "token";
 
 jest.mock("@tanstack/react-query", () => ({
+  useIsMutating: jest.fn(() => 0),
   useQuery: jest.fn((options: unknown) => options),
   useMutation: jest.fn((options: unknown) => options),
   useQueryClient: jest.fn(),
@@ -50,20 +51,23 @@ jest.mock("@/api/endpoints/user", () => ({
 }));
 
 jest.mock("@/stores/sessionStore", () => ({
-  useSessionStore: (
-    selector: (state: {
-      accessToken: string | null;
-      setAccessToken: (token: string | null) => void;
-      setRefreshToken: (token: string | null) => void;
-      setTutorialCompleted: (value: boolean) => void;
-    }) => unknown,
-  ) =>
-    selector({
-      accessToken: mockAccessToken,
-      setAccessToken: mockSetAccessToken,
-      setRefreshToken: mockSetRefreshToken,
-      setTutorialCompleted: mockSetTutorialCompleted,
-    }),
+  useSessionStore: Object.assign(
+    (
+      selector: (state: {
+        accessToken: string | null;
+        setAccessToken: (token: string | null) => void;
+        setRefreshToken: (token: string | null) => void;
+        setTutorialCompleted: (value: boolean) => void;
+      }) => unknown,
+    ) =>
+      selector({
+        accessToken: mockAccessToken,
+        setAccessToken: mockSetAccessToken,
+        setRefreshToken: mockSetRefreshToken,
+        setTutorialCompleted: mockSetTutorialCompleted,
+      }),
+    { getState: () => ({ sessionVersion: 0 }) },
+  ),
 }));
 
 jest.mock("@/stores/userStore", () => ({
@@ -182,13 +186,17 @@ describe("api/queries/user", () => {
     const { result } = renderHook(() => useUpdateUserProfileMutation());
     const mutation = result.current as unknown as {
       mutationFn: (body: unknown) => Promise<unknown>;
-      onSuccess: (updated: { id: string }) => Promise<void>;
+      onSuccess: (
+        updated: { id: string },
+        body: unknown,
+        context: { sessionVersion: number },
+      ) => Promise<void>;
     };
 
     await mutation.mutationFn({ nickname: "새 닉네임" });
     expect(mockPatchUserProfile).toHaveBeenCalledWith({ nickname: "새 닉네임" });
 
-    await mutation.onSuccess({ id: "me" });
+    await mutation.onSuccess({ id: "me" }, {}, { sessionVersion: 0 });
     expect(mockSetQueryData).toHaveBeenCalledWith(queryKeys.user.me, { id: "me" });
     expect(mockSetUser).toHaveBeenCalledWith({ id: "me" });
   });

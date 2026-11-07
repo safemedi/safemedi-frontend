@@ -3,6 +3,7 @@ export const queryKeys = {
     logout: ["auth", "logout"] as const,
   },
   dashboard: {
+    markRecords: ["dashboard", "mark-records"] as const,
     todayMedicationSchedules: ["dashboard", "medication-records", "today"] as const,
   },
   medications: {
@@ -13,6 +14,7 @@ export const queryKeys = {
       ["medications", "statistics", startDate, endDate] as const,
   },
   user: {
+    updateProfile: ["user", "update-profile"] as const,
     registerDeviceToken: ["user", "device-token", "register"] as const,
     me: ["user", "me"] as const,
     deleteAccount: ["user", "delete-account"] as const,
@@ -32,6 +34,7 @@ export const queryKeys = {
     searchDiseases: (keyword: string) => ["profile", "diseases", "search", keyword] as const,
   },
   prescriptions: {
+    update: ["prescriptions", "update"] as const,
     list: ["prescriptions", "list"] as const,
     detail: (prescriptionId: number) => ["prescriptions", "detail", prescriptionId] as const,
   },

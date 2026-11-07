@@ -203,7 +203,7 @@ function createViewModel(overrides?: Partial<DashboardViewModel>): DashboardView
     healthTipDescription: "충분한 물과 함께 복용하세요.",
     isLoading: false,
     isError: false,
-    takingPrescriptionId: null,
+    takingPrescriptionIds: [],
     markPrescriptionAsTaken: jest.fn(),
     // 실제 useDashboardViewModel처럼 훅 호출마다 새 함수 참조를 반환해
     // DashboardScreen의 focus effect가 참조 불안정성에 견고한지 검증한다.
