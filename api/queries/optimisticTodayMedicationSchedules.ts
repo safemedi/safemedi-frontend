@@ -93,15 +93,18 @@ export function rollbackMedicationRecordsUpdate(
 ): TodayMedicationSchedulesResponse {
   if (current.date !== previous.date) return current;
   let completedDelta = 0;
-  const schedules = current.schedules.map((schedule) => {
+  const schedules = current.schedules.map((schedule, index) => {
     if (!schedule.recordIds.some((id) => recordIds.includes(id))) return schedule;
-    const original = previous.schedules.find(
-      (item) =>
-        item.prescriptionId === schedule.prescriptionId &&
-        item.takeTime === schedule.takeTime &&
-        item.recordIds.length === schedule.recordIds.length &&
-        item.recordIds.every((id) => schedule.recordIds.includes(id)),
-    );
+    const candidate = previous.schedules[index];
+    const original =
+      candidate &&
+      [candidate].find(
+        (item) =>
+          item.prescriptionId === schedule.prescriptionId &&
+          item.takeTime === schedule.takeTime &&
+          item.recordIds.length === schedule.recordIds.length &&
+          item.recordIds.every((id) => schedule.recordIds.includes(id)),
+      );
     if (!original) return schedule;
     completedDelta +=
       Number(isCompletedStatus(getScheduleStatus(original))) -

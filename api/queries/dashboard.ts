@@ -42,6 +42,8 @@ export function useFamilyTodayMedicationSchedules(familyId?: number) {
 }
 
 interface MarkMedicationRecordsMutationContext {
+  readonly hasRefetched: () => boolean;
+  readonly unsubscribe: () => void;
   readonly previousData: TodayMedicationSchedulesResponse | undefined;
 }
 
@@ -67,11 +69,25 @@ export function useMarkMedicationRecordsMutation() {
         );
       }
 
-      return { previousData } satisfies MarkMedicationRecordsMutationContext;
+      let hasRefetched = false;
+      const unsubscribe = queryClient.getQueryCache().subscribe((event) => {
+        if (
+          event.type === "updated" &&
+          event.query.queryHash === JSON.stringify(queryKeys.dashboard.todayMedicationSchedules) &&
+          event.action.type === "success" &&
+          !event.action.manual
+        )
+          hasRefetched = true;
+      });
+      return {
+        previousData,
+        hasRefetched: () => hasRefetched,
+        unsubscribe,
+      } satisfies MarkMedicationRecordsMutationContext;
     },
     onError: (_error, variables, context) => {
       const previous = context?.previousData;
-      if (previous) {
+      if (previous && !context?.hasRefetched()) {
         queryClient.setQueryData(
           queryKeys.dashboard.todayMedicationSchedules,
           (current: TodayMedicationSchedulesResponse | undefined) =>
@@ -81,6 +97,9 @@ export function useMarkMedicationRecordsMutation() {
         );
       }
     },
-    onSettled: () => invalidateTodaySchedulesAfterWrites(queryClient),
+    onSettled: (_data, _error, _variables, context) => {
+      context?.unsubscribe();
+      invalidateTodaySchedulesAfterWrites(queryClient);
+    },
   });
 }

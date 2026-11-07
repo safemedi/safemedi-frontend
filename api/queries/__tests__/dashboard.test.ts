@@ -27,6 +27,7 @@ jest.mock("@tanstack/react-query", () => ({
     isMutating: jest.fn(({ mutationKey }: { mutationKey: readonly string[] }) =>
       mutationKey[1] === "mark-records" ? mockPendingCount : 0,
     ),
+    getQueryCache: () => ({ subscribe: () => () => {} }),
     getMutationCache: () => ({
       subscribe: (listener: () => void) => {
         mockMutationListener = listener;

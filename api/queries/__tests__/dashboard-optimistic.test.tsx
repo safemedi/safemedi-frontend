@@ -114,3 +114,36 @@ it("두 복약 요청이 같은 시점에 끝나도 마지막에 한 번 재조�
   ).toHaveLength(1);
   client.clear();
 });
+
+it("재조회로 확인한 서버 완료 상태는 요청 실패로 되돌리지 않는다", async () => {
+  const { client, wrapper } = setup();
+  client.setQueryData(queryKeys.dashboard.todayMedicationSchedules, schedules);
+  const request = deferred<unknown>();
+  mockUpdateRecords.mockReturnValue(request.promise);
+  const { result } = renderHook(() => useMarkMedicationRecordsMutation(), { wrapper });
+  let pending!: Promise<unknown>;
+  await act(async () => {
+    pending = result.current
+      .mutateAsync({ recordIds: [1], status: "SUCCESS" })
+      .catch(() => undefined);
+  });
+  await client.fetchQuery({
+    queryKey: queryKeys.dashboard.todayMedicationSchedules,
+    staleTime: 0,
+    queryFn: async () => ({
+      ...schedules,
+      schedules: schedules.schedules.map((row) => ({ ...row, displayStatus: "SUCCESS" as const })),
+      summary: { totalCount: 2, completedCount: 2, completionRate: 100 },
+    }),
+  });
+  await act(async () => {
+    request.reject(new Error("응답 실패"));
+    await pending;
+  });
+  expect(
+    client.getQueryData<TodayMedicationSchedulesResponse>(
+      queryKeys.dashboard.todayMedicationSchedules,
+    )?.summary.completedCount,
+  ).toBe(2);
+  client.clear();
+});
