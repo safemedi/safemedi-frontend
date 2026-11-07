@@ -1,5 +1,5 @@
 import { fireEvent, render, waitFor } from "@testing-library/react-native";
-import { StyleSheet } from "react-native";
+import { Alert, StyleSheet } from "react-native";
 import type {
   useSearchDiseasesQuery,
   useSearchDrugAllergiesQuery,
@@ -8,6 +8,21 @@ import type { User } from "@/stores/userStore";
 import { ProfileEditScreen } from "../ProfileEditScreen";
 
 const mockBack = jest.fn();
+const mockNavigate = jest.fn();
+const mockSetUser = jest.fn();
+const mockRefetchProfile = jest.fn(async () => ({
+  data: {
+    displayName: "서버 최신 이름",
+    birthDate: null,
+    gender: null,
+    bloodType: null,
+    height: null,
+    weight: null,
+    allergies: [],
+    diseases: [],
+    isTutorialCompleted: true,
+  },
+}));
 const mockMutate = jest.fn(async () => ({}));
 const mockUseSearchDrugAllergiesQuery = jest.fn();
 const mockUseSearchDiseasesQuery = jest.fn();
@@ -33,6 +48,7 @@ let mockActiveUser: User | null = mockUser;
 jest.mock("expo-router", () => ({
   router: {
     back: () => mockBack(),
+    navigate: (path: string) => mockNavigate(path),
   },
 }));
 
@@ -41,13 +57,17 @@ jest.mock("react-native-safe-area-context", () => ({
 }));
 
 jest.mock("@/stores/userStore", () => ({
-  useUserStore: (selector: (state: { user: User | null }) => unknown) =>
+  useUserStore: (
+    selector: (state: { user: User | null; setUser: typeof mockSetUser }) => unknown,
+  ) =>
     selector({
       user: mockActiveUser,
+      setUser: mockSetUser,
     }),
 }));
 
 jest.mock("@/api/queries/user", () => ({
+  useUserProfile: () => ({ refetch: mockRefetchProfile }),
   useUpdateUserProfileMutation: () => ({
     mutateAsync: mockMutate,
     isPending: false,
@@ -325,5 +345,24 @@ describe("프로필 수정 화면", () => {
         }),
       );
     });
+  });
+  it("저장 실패 후에는 오래된 요청을 재전송하지 않고 최신 정보 편집 화면을 연다", async () => {
+    const alert = jest.spyOn(Alert, "alert").mockImplementation(() => {});
+    mockMutate.mockRejectedValueOnce(new Error("저장 실패"));
+    const { getByLabelText } = render(<ProfileEditScreen />);
+    fireEvent.press(getByLabelText("저장"));
+    await waitFor(() => expect(alert).toHaveBeenCalled());
+    mockActiveUser = { ...mockUser, displayName: "다른 화면에서 수정한 이름" };
+    const buttons = alert.mock.calls.at(-1)?.[2];
+    const edit = buttons?.find((button) => button.text === "다시 편집");
+    expect(edit).toBeDefined();
+    await edit?.onPress?.();
+    expect(mockRefetchProfile).toHaveBeenCalledWith({ throwOnError: true });
+    expect(mockSetUser).toHaveBeenCalledWith(
+      expect.objectContaining({ displayName: "서버 최신 이름" }),
+    );
+    expect(mockNavigate).toHaveBeenCalledWith("/profile/edit");
+    expect(mockMutate).toHaveBeenCalledTimes(1);
+    alert.mockRestore();
   });
 });

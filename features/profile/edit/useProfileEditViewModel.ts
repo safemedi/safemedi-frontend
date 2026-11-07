@@ -6,7 +6,7 @@ import { Alert } from "react-native";
 
 import { getApiErrorMessage } from "@/api/error";
 import type { UpdateUserProfileVariables } from "@/api/queries/optimisticUserProfile";
-import { useUpdateUserProfileMutation } from "@/api/queries/user";
+import { useUpdateUserProfileMutation, useUserProfile } from "@/api/queries/user";
 import type { UserProfilePatchAllergyItem } from "@/api/types/user";
 import {
   chronicConditionOptions,
@@ -21,6 +21,7 @@ import {
   buildUserAllergyEditState,
   chronicConditionLabelsToDiseaseCodes,
   profileAllergyLabelsToPatchItems,
+  profileToUser,
 } from "@/utils/user-mapper";
 import type { ProfileTagSearchResult } from "./components/ProfileTagEditorCard";
 import { type ProfileEditFormValues, profileEditSchema } from "./schema";
@@ -93,6 +94,8 @@ function createInitialChronicConditionCodes(
 export function useProfileEditViewModel(): ProfileEditViewModel {
   const user = useUserStore((s) => s.user);
   const saveMutation = useUpdateUserProfileMutation();
+  const profileQuery = useUserProfile();
+  const setUser = useUserStore((state) => state.setUser);
   const isSavingRef = useRef(false);
   const { labels: initialAllergies, mappings: initialAllergyMappings } = useMemo(
     () => buildUserAllergyEditState(user?.allergies ?? [], user?.allergyMappings ?? {}),
@@ -272,7 +275,27 @@ export function useProfileEditViewModel(): ProfileEditViewModel {
           if (useSessionStore.getState().sessionVersion !== sessionVersion) return;
           Alert.alert("저장 실패", message, [
             { text: "닫기", style: "cancel" },
-            { text: "다시 저장", onPress: handleSave },
+            {
+              text: "다시 편집",
+              onPress: async () => {
+                if (useSessionStore.getState().sessionVersion !== sessionVersion) return;
+                try {
+                  const { data: latest } = await profileQuery.refetch({ throwOnError: true });
+                  if (useSessionStore.getState().sessionVersion !== sessionVersion || !latest)
+                    return;
+                  setUser(profileToUser(latest));
+                  router.navigate("/profile/edit");
+                } catch (error) {
+                  if (useSessionStore.getState().sessionVersion !== sessionVersion) return;
+                  const message = await getApiErrorMessage(
+                    error,
+                    "최신 프로필을 불러오지 못했습니다. 다시 시도해주세요.",
+                  );
+                  if (useSessionStore.getState().sessionVersion !== sessionVersion) return;
+                  Alert.alert("조회 실패", message);
+                }
+              },
+            },
           ]);
         })
         .finally(() => {
