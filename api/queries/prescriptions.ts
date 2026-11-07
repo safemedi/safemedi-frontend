@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { type QueryClient, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
   deletePrescription,
@@ -8,6 +8,7 @@ import {
 } from "@/api/endpoints/prescriptions";
 import { invalidateTodaySchedulesAfterWrites } from "@/api/queries/invalidateTodaySchedules";
 import { updatePrescriptionTitleOptimistically } from "@/api/queries/optimisticPrescriptionTitle";
+import { acquireMutationLock } from "@/api/queries/pendingMutationLocks";
 import { queryKeys } from "@/api/query-keys";
 import type {
   UpdatePrescriptionRequest,
@@ -47,6 +48,31 @@ interface UpdatePrescriptionMutationParams {
   readonly body: UpdatePrescriptionRequest;
 }
 
+const pendingInvalidations = new WeakMap<QueryClient, Set<() => void>>();
+
+function invalidatePrescriptionsAfterWrites(client: QueryClient, release: () => void): void {
+  const pending = pendingInvalidations.get(client);
+  if (pending) {
+    pending.add(release);
+    return;
+  }
+  const releases = new Set([release]);
+  pendingInvalidations.set(client, releases);
+  const unsubscribe = client.getMutationCache().subscribe(() => {
+    if (client.isMutating({ mutationKey: queryKeys.prescriptions.update }) > 0) return;
+    unsubscribe();
+    pendingInvalidations.delete(client);
+    void Promise.all([
+      client.invalidateQueries({ queryKey: queryKeys.prescriptions.list }),
+      client.invalidateQueries({ queryKey: ["prescriptions", "detail"] }),
+    ])
+      .finally(() => {
+        for (const unlock of releases) unlock();
+      })
+      .catch(() => undefined);
+  });
+}
+
 export function useUpdatePrescriptionMutation() {
   const queryClient = useQueryClient();
 
@@ -55,14 +81,23 @@ export function useUpdatePrescriptionMutation() {
     mutationFn: ({ prescriptionId, body }: UpdatePrescriptionMutationParams) =>
       updatePrescription(prescriptionId, body),
     onMutate: async ({ prescriptionId, body }) => {
-      if (body.title === undefined) return undefined;
-      return updatePrescriptionTitleOptimistically(queryClient, prescriptionId, body.title);
+      const release = acquireMutationLock(queryClient, `prescription:${prescriptionId}`);
+      try {
+        const rollback =
+          body.title === undefined
+            ? undefined
+            : await updatePrescriptionTitleOptimistically(queryClient, prescriptionId, body.title);
+        return { release, rollback };
+      } catch (error) {
+        release();
+        throw error;
+      }
     },
-    onError: (_error, _variables, rollback) => rollback?.(),
-    onSettled: async () => {
-      await queryClient.invalidateQueries({ queryKey: queryKeys.prescriptions.list });
-      await queryClient.invalidateQueries({ queryKey: ["prescriptions", "detail"] });
+    onError: (_error, _variables, context) => context?.rollback?.(),
+    onSettled: (_data, _error, _variables, context) => {
+      if (!context) return;
       invalidateTodaySchedulesAfterWrites(queryClient);
+      invalidatePrescriptionsAfterWrites(queryClient, context.release);
     },
   });
 }

@@ -1,4 +1,5 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useIsFocused } from "@react-navigation/native";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Alert } from "react-native";
 
 import { getApiErrorMessage } from "@/api/error";
@@ -8,6 +9,7 @@ import {
   useUpdatePrescriptionMutation,
 } from "@/api/queries/prescriptions";
 import type { MedicationTakeSlot } from "@/features/scan/prescription-scan-result/usePrescriptionScanResultViewModel";
+import { useSessionStore } from "@/stores/sessionStore";
 import { getPrescriptionTitleError } from "@/utils/prescription";
 import {
   buildUpdatedMedicationsAfterEdit,
@@ -48,6 +50,16 @@ export function useMedicationManagementViewModel(): MedicationManagementViewMode
   const [editDraft, setEditDraft] = useState<MedicationEditDraft | null>(null);
 
   const prescriptions = prescriptionsQuery.data?.prescriptions ?? [];
+  const isFocused = useIsFocused();
+  const isMounted = useRef(false);
+  const current = useRef({ prescriptions, editingPrescriptionId, editingMedicationKey, isFocused });
+  current.current = { prescriptions, editingPrescriptionId, editingMedicationKey, isFocused };
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   const prescriptionGroups = useMemo(
     () =>
@@ -156,6 +168,11 @@ export function useMedicationManagementViewModel(): MedicationManagementViewMode
       return;
     }
 
+    const sessionVersion = useSessionStore.getState().sessionVersion;
+    const canRestore = () =>
+      isMounted.current &&
+      current.current.isFocused &&
+      useSessionStore.getState().sessionVersion === sessionVersion;
     isSavingTitle.current = true;
     setPendingTitle({ prescriptionId: editingPrescriptionId, title: nextTitle });
     handleCancelEditPrescriptionTitle();
@@ -165,17 +182,28 @@ export function useMedicationManagementViewModel(): MedicationManagementViewMode
         body: { title: nextTitle },
       })
       .catch(async (error) => {
+        if (!canRestore()) return;
         setPendingTitle(null);
         const message = await getApiErrorMessage(
           error,
           "처방전 이름 수정에 실패했습니다. 다시 시도해주세요.",
         );
+        if (!canRestore()) return;
         Alert.alert("저장 실패", message, [
           { text: "닫기", style: "cancel" },
           {
             text: "다시 편집",
             onPress: () => {
-              setEditingPrescriptionId(editingPrescriptionId);
+              if (
+                !canRestore() ||
+                current.current.editingPrescriptionId !== null ||
+                current.current.editingMedicationKey !== null ||
+                !current.current.prescriptions.some(
+                  (item) => item.prescriptionId === editingPrescriptionId,
+                )
+              )
+                return;
+              handleStartEditPrescriptionTitle(editingPrescriptionId);
               setPrescriptionTitleDraft(nextTitle);
             },
           },
@@ -183,11 +211,12 @@ export function useMedicationManagementViewModel(): MedicationManagementViewMode
       })
       .finally(() => {
         isSavingTitle.current = false;
-        setPendingTitle(null);
+        if (isMounted.current) setPendingTitle(null);
       });
   }, [
     editingPrescriptionId,
     handleCancelEditPrescriptionTitle,
+    handleStartEditPrescriptionTitle,
     prescriptionTitleDraft,
     prescriptions,
     updatePrescriptionMutation,

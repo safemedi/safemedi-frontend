@@ -103,6 +103,10 @@ it("처방전 이름을 목록·상세·홈에 즉시 반영하고 실패 시 �
       queryKeys.dashboard.todayMedicationSchedules,
     )?.schedules[0],
   ).toMatchObject({ prescriptionTitle: "처방전1", displayStatus: "SUCCESS" });
+  expect(
+    client.getQueryData<PrescriptionsListResponse>(queryKeys.prescriptions.list)?.prescriptions[0]
+      .title,
+  ).toBe("처방전1");
   client.clear();
 });
 
@@ -138,5 +142,80 @@ it("처방전 수정과 복약 처리가 동시에 끝나도 최종 일정을 �
     ),
   ).toHaveLength(1);
   expect(invalidate).toHaveBeenCalledWith({ queryKey: queryKeys.medications.all });
+  client.clear();
+});
+
+it("같은 처방전의 중첩 저장은 전송하지 않고 실패 시 확정된 이름으로 복원한다", async () => {
+  const { client, wrapper } = setup();
+  client.setQueryData(queryKeys.prescriptions.list, {
+    prescriptions: [{ prescriptionId: 1, title: "확정 이름", medications: [] }],
+  });
+  const request = deferred<unknown>();
+  mockUpdatePrescription.mockReturnValue(request.promise);
+  const first = renderHook(() => useUpdatePrescriptionMutation(), { wrapper });
+  let pending!: Promise<unknown>;
+  await act(async () => {
+    pending = first.result.current
+      .mutateAsync({ prescriptionId: 1, body: { title: "첫 변경" } })
+      .catch(() => undefined);
+  });
+  first.unmount();
+  const second = renderHook(() => useUpdatePrescriptionMutation(), { wrapper });
+  await act(async () => {
+    await expect(
+      second.result.current.mutateAsync({ prescriptionId: 1, body: { title: "둘째 변경" } }),
+    ).rejects.toThrow("이미 저장 중");
+  });
+  expect(mockUpdatePrescription).toHaveBeenCalledTimes(1);
+  await act(async () => {
+    request.reject(new Error("실패"));
+    await pending;
+  });
+  expect(
+    client.getQueryData<PrescriptionsListResponse>(queryKeys.prescriptions.list)?.prescriptions[0]
+      .title,
+  ).toBe("확정 이름");
+  client.clear();
+});
+
+it("다른 처방전이 동시에 완료되어도 목록·상세를 한 번 재조회하고 완료까지 모든 잠금을 유지한다", async () => {
+  const { client, wrapper } = setup();
+  const request = deferred<unknown>();
+  const refetch = deferred<void>();
+  mockUpdatePrescription.mockReturnValue(request.promise);
+  const invalidate = jest
+    .spyOn(client, "invalidateQueries")
+    .mockImplementation((filter) =>
+      filter?.queryKey?.[0] === "prescriptions" ? refetch.promise : Promise.resolve(),
+    );
+  const { result } = renderHook(() => useUpdatePrescriptionMutation(), { wrapper });
+  let first!: Promise<unknown>;
+  let second!: Promise<unknown>;
+  await act(async () => {
+    first = result.current.mutateAsync({ prescriptionId: 1, body: { title: "첫 이름" } });
+    second = result.current.mutateAsync({ prescriptionId: 2, body: { title: "둘째 이름" } });
+  });
+  await act(async () => {
+    request.resolve({});
+    await Promise.all([first, second]);
+  });
+  expect(
+    invalidate.mock.calls.filter(([filter]) => filter?.queryKey?.[0] === "prescriptions"),
+  ).toHaveLength(2);
+  for (const prescriptionId of [1, 2]) {
+    await act(async () => {
+      await expect(
+        result.current.mutateAsync({ prescriptionId, body: { title: "중복 이름" } }),
+      ).rejects.toThrow("이미 저장 중");
+    });
+  }
+  await act(async () => {
+    refetch.resolve();
+    await refetch.promise;
+  });
+  mockUpdatePrescription.mockResolvedValue({});
+  await act(async () => {
+    await result.current.mutateAsync({ prescriptionId: 1, body: { title: "재저장 이름" } });
+  });
   client.clear();
 });
