@@ -63,3 +63,41 @@ it("가족 호칭을 즉시 바꾸고 실패하면 해당 가족만 복구한다
   ]);
   client.clear();
 });
+
+it("화면 재진입 후 같은 가족의 중복 요청을 막고 재조회가 끝나기 전에 실패를 반환한다", async () => {
+  const { client, wrapper } = setup();
+  client.setQueryData(queryKeys.family.list, [{ familyId: 1, name: "가족", relation: "어머니" }]);
+  const request = deferred<unknown>();
+  const refetch = deferred<void>();
+  mockUpdateRelation.mockReturnValue(request.promise);
+  jest.spyOn(client, "invalidateQueries").mockReturnValue(refetch.promise);
+  const first = renderHook(() => useUpdateFamilyRelation(), { wrapper });
+  let pending!: Promise<unknown>;
+  await act(async () => {
+    pending = first.result.current
+      .mutateAsync({ familyId: 1, body: { relation: "엄마" } })
+      .catch(() => undefined);
+  });
+  first.unmount();
+  const second = renderHook(() => useUpdateFamilyRelation(), { wrapper });
+  await act(async () => {
+    await expect(
+      second.result.current.mutateAsync({ familyId: 1, body: { relation: "엄마2" } }),
+    ).rejects.toThrow("이미 저장 중");
+  });
+  expect(mockUpdateRelation).toHaveBeenCalledTimes(1);
+  await act(async () => {
+    request.reject(new Error("실패"));
+    await pending;
+  });
+  await act(async () => {
+    await expect(
+      second.result.current.mutateAsync({ familyId: 1, body: { relation: "엄마3" } }),
+    ).rejects.toThrow("이미 저장 중");
+  });
+  await act(async () => {
+    refetch.resolve();
+    await refetch.promise;
+  });
+  client.clear();
+});

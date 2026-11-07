@@ -1,7 +1,7 @@
 import * as Clipboard from "expo-clipboard";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Alert, Pressable, ScrollView, Share, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Text, YStack } from "tamagui";
@@ -33,6 +33,16 @@ export function FamilyManageScreen() {
 
   const [editingFamilyId, setEditingFamilyId] = useState<number | null>(null);
   const [relationDraft, setRelationDraft] = useState("");
+
+  const currentEdit = useRef({ editingFamilyId, relationDraft, members });
+  currentEdit.current = { editingFamilyId, relationDraft, members };
+  const isMounted = useRef(false);
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (createInvitationMutation.isIdle) {
@@ -92,6 +102,14 @@ export function FamilyManageScreen() {
           {
             text: "다시 편집",
             onPress: () => {
+              const current = currentEdit.current;
+              if (
+                !isMounted.current ||
+                current.editingFamilyId !== null ||
+                current.relationDraft !== "" ||
+                !current.members.some((member) => member.familyId === editingFamilyId)
+              )
+                return;
               setEditingFamilyId(editingFamilyId);
               setRelationDraft(trimmedRelation);
             },

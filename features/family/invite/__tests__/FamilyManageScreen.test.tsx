@@ -1,4 +1,4 @@
-import { fireEvent, render, waitFor } from "@testing-library/react-native";
+import { act, fireEvent, render, waitFor } from "@testing-library/react-native";
 import * as Clipboard from "expo-clipboard";
 import { router } from "expo-router";
 import { Alert, Share } from "react-native";
@@ -18,6 +18,7 @@ interface MockFamilyManageHeaderProps {
 interface MockFamilyMembersSectionProps {
   readonly members: readonly FamilySummary[];
   readonly editingFamilyId: number | null;
+  readonly relationDraft: string;
   readonly onStartEdit: (familyId: number) => void;
   readonly onUnlink: (familyId: number) => void;
   readonly onChangeRelationDraft: (text: string) => void;
@@ -116,6 +117,7 @@ jest.mock("../components/FamilyMembersSection", () => ({
   FamilyMembersSection: ({
     members,
     editingFamilyId,
+    relationDraft,
     onStartEdit,
     onUnlink,
     onChangeRelationDraft,
@@ -128,6 +130,7 @@ jest.mock("../components/FamilyMembersSection", () => ({
       null,
       React.createElement(Text, null, `구성원:${members.length}`),
       React.createElement(Text, null, `편집중:${editingFamilyId ?? "없음"}`),
+      React.createElement(Text, null, `초안:${relationDraft}`),
       React.createElement(
         Pressable,
         {
@@ -325,6 +328,31 @@ describe("FamilyManageScreen", () => {
     });
 
     expect(mockAlert).not.toHaveBeenCalled();
+  });
+
+  it("호칭 저장 실패 후 다시 편집하면 가족 ID와 시도한 호칭을 복원한다", async () => {
+    mockUpdateRelationMutate.mockRejectedValueOnce(new Error("실패"));
+    const { getByLabelText, getByText } = render(<FamilyManageScreen />);
+    fireEvent.press(getByLabelText("호칭 수정 트리거"));
+    fireEvent.press(getByLabelText("호칭 입력 트리거"));
+    fireEvent.press(getByLabelText("호칭 저장 트리거"));
+    await waitFor(() =>
+      expect(mockAlert).toHaveBeenCalledWith(
+        "호칭 수정 실패",
+        expect.any(String),
+        expect.any(Array),
+      ),
+    );
+    const buttons = mockAlert.mock.calls.at(-1)?.[2] as Array<{
+      text: string;
+      onPress?: () => void;
+    }>;
+    act(() => buttons.find((button) => button.text === "다시 편집")?.onPress?.());
+    expect(getByText("편집중:2")).toBeTruthy();
+    expect(getByText("초안:엄마")).toBeTruthy();
+    fireEvent.press(getByLabelText("호칭 수정 트리거"));
+    act(() => buttons.find((button) => button.text === "다시 편집")?.onPress?.());
+    expect(getByText("초안:어머니")).toBeTruthy();
   });
 
   it("연동 해제 트리거 시 확인 알림을 띄우고 확인하면 mutation을 호출한다", () => {

@@ -10,6 +10,7 @@ import {
   updateFamilyRelation,
 } from "@/api/endpoints/family";
 import { getHttpStatus } from "@/api/error";
+import { acquireMutationLock } from "@/api/queries/pendingMutationLocks";
 import { queryKeys } from "@/api/query-keys";
 import type { FamilySummary, UpdateFamilyRelationBody } from "@/api/types/family";
 import { useSessionStore } from "@/stores/sessionStore";
@@ -93,16 +94,22 @@ export function useUpdateFamilyRelation() {
     mutationFn: ({ familyId, body }: { familyId: number; body: UpdateFamilyRelationBody }) =>
       updateFamilyRelation(familyId, body),
     onMutate: async ({ familyId, body }) => {
-      await queryClient.cancelQueries({ queryKey: queryKeys.family.list });
-      const previous = queryClient
-        .getQueryData<FamilySummary[]>(queryKeys.family.list)
-        ?.find((family) => family.familyId === familyId);
-      queryClient.setQueryData<FamilySummary[]>(queryKeys.family.list, (current) =>
-        current?.map((family) =>
-          family.familyId === familyId ? { ...family, relation: body.relation } : family,
-        ),
-      );
-      return { previous };
+      const release = acquireMutationLock(queryClient, `family:${familyId}`);
+      try {
+        await queryClient.cancelQueries({ queryKey: queryKeys.family.list });
+        const previous = queryClient
+          .getQueryData<FamilySummary[]>(queryKeys.family.list)
+          ?.find((family) => family.familyId === familyId);
+        queryClient.setQueryData<FamilySummary[]>(queryKeys.family.list, (current) =>
+          current?.map((family) =>
+            family.familyId === familyId ? { ...family, relation: body.relation } : family,
+          ),
+        );
+        return { previous, release };
+      } catch (error) {
+        release();
+        throw error;
+      }
     },
     onError: (_error, { familyId }, context) => {
       const previous = context?.previous;
@@ -122,7 +129,13 @@ export function useUpdateFamilyRelation() {
         ),
       );
     },
-    onSettled: () => queryClient.invalidateQueries({ queryKey: queryKeys.family.list }),
+    onSettled: (_data, _error, _variables, context) => {
+      if (!context) return;
+      void queryClient
+        .invalidateQueries({ queryKey: queryKeys.family.list })
+        .finally(context.release)
+        .catch(() => undefined);
+    },
   });
 }
 
