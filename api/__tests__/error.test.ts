@@ -100,12 +100,12 @@ describe("api/error", () => {
   it("getApiErrorMessage는 서버 메시지 우선, fallback 대체 규칙을 적용한다", async () => {
     const serverMessageError = createHttpErrorMock(400, {
       code: "VAL_001",
-      message: "닉네임은 최소 5자, 최대 20자 입력 가능합니다.",
+      message: "닉네임은 최소 2자, 최대 20자 입력 가능합니다.",
     });
     const fallbackError = createHttpErrorMock(400, {});
 
     await expect(getApiErrorMessage(serverMessageError, "프로필 저장 실패")).resolves.toBe(
-      "닉네임은 최소 5자, 최대 20자 입력 가능합니다.",
+      "닉네임은 최소 2자, 최대 20자 입력 가능합니다.",
     );
     await expect(getApiErrorMessage(fallbackError, "프로필 저장 실패")).resolves.toBe(
       "프로필 저장 실패",

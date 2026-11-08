@@ -307,7 +307,7 @@ export function useProfileEditViewModel(): ProfileEditViewModel {
   };
 
   const onInvalid = () => {
-    Alert.alert("입력 확인", "닉네임을 입력해주세요.");
+    Alert.alert("입력 확인", "닉네임은 최소 2자, 최대 20자 입력 가능합니다.");
   };
 
   return {
