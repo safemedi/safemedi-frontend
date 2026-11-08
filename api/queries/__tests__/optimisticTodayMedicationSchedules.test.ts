@@ -2,6 +2,7 @@ import type { TodayMedicationSchedulesResponse } from "@/api/types/dashboard";
 import {
   applyOptimisticMedicationRecordsUpdate,
   applyOptimisticMedicationRecordUpdate,
+  rollbackMedicationRecordsUpdate,
 } from "../optimisticTodayMedicationSchedules";
 
 const baseData: TodayMedicationSchedulesResponse = {
@@ -100,4 +101,24 @@ describe("optimisticTodayMedicationSchedules", () => {
     expect(updated.summary.completedCount).toBe(1);
     expect(updated.summary.completionRate).toBe(25);
   });
+});
+
+it("동일 기록을 공유하는 행도 각 행의 원래 상태로 복구한다", () => {
+  const first = {
+    prescriptionId: 1,
+    prescriptionTitle: "처방전",
+    takeTime: "08:00",
+    drugCount: 1,
+    recordIds: [1],
+    displayStatus: "NEED_TAKE" as const,
+  };
+  const previous: TodayMedicationSchedulesResponse = {
+    date: "2026-11-07",
+    summary: { totalCount: 2, completedCount: 1, completionRate: 50 },
+    schedules: [first, { ...first, displayStatus: "SUCCESS" }],
+  };
+  const optimistic = applyOptimisticMedicationRecordsUpdate(previous, [1], { status: "SUCCESS" });
+  const restored = rollbackMedicationRecordsUpdate(optimistic, previous, [1]);
+  expect(restored.schedules.map((row) => row.displayStatus)).toEqual(["NEED_TAKE", "SUCCESS"]);
+  expect(restored.summary.completedCount).toBe(1);
 });

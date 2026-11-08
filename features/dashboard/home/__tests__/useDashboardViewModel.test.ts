@@ -438,3 +438,55 @@ describe("useDashboardViewModel", () => {
     ]);
   });
 });
+
+describe("복약 연속 체크", () => {
+  it("다른 항목은 응답 전에도 처리하고 같은 항목의 연속 탭은 한 번만 요청한다", async () => {
+    let finishFirst = () => {};
+    let finishSecond = () => {};
+    const first = new Promise<object>((resolve) => {
+      finishFirst = () => resolve({});
+    });
+    const second = new Promise<object>((resolve) => {
+      finishSecond = () => resolve({});
+    });
+    mockMutateAsync.mockReset().mockReturnValueOnce(first).mockReturnValueOnce(second);
+    mockUseMarkMedicationRecordsMutation.mockReturnValue({
+      mutateAsync: mockMutateAsync,
+    } as unknown as ReturnType<typeof useMarkMedicationRecordsMutation>);
+    mockUseDashboardTodayMedicationSchedules.mockReturnValue({
+      data: undefined,
+    } as unknown as ReturnType<typeof useDashboardTodayMedicationSchedules>);
+    mockUsePrescriptionsQuery.mockReturnValue({ data: undefined } as unknown as ReturnType<
+      typeof usePrescriptionsQuery
+    >);
+    const { result } = renderHook(() => useDashboardViewModel());
+    const item = {
+      id: "1-08:00",
+      prescriptionId: 1,
+      prescriptionTitle: "아침약",
+      medicationCount: 1,
+      medicationNames: [],
+      recordIds: [1],
+      canMarkAsTaken: true,
+      tone: "required" as const,
+    };
+    const other = { ...item, id: "2-08:00", prescriptionId: 2, recordIds: [2] };
+    act(() => {
+      result.current.markPrescriptionAsTaken(item);
+      result.current.markPrescriptionAsTaken(item);
+      result.current.markPrescriptionAsTaken(other);
+    });
+    expect(mockMutateAsync).toHaveBeenCalledTimes(2);
+    expect(result.current.takingPrescriptionIds).toEqual([item.id, other.id]);
+    await act(async () => {
+      finishFirst();
+      await first;
+    });
+    expect(result.current.takingPrescriptionIds).toEqual([other.id]);
+    await act(async () => {
+      finishSecond();
+      await second;
+    });
+    expect(result.current.takingPrescriptionIds).toEqual([]);
+  });
+});

@@ -1,7 +1,7 @@
 import * as Clipboard from "expo-clipboard";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Alert, Pressable, ScrollView, Share, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Text, YStack } from "tamagui";
@@ -33,6 +33,16 @@ export function FamilyManageScreen() {
 
   const [editingFamilyId, setEditingFamilyId] = useState<number | null>(null);
   const [relationDraft, setRelationDraft] = useState("");
+
+  const currentEdit = useRef({ editingFamilyId, relationDraft, members });
+  currentEdit.current = { editingFamilyId, relationDraft, members };
+  const isMounted = useRef(false);
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (createInvitationMutation.isIdle) {
@@ -77,23 +87,35 @@ export function FamilyManageScreen() {
     if (editingFamilyId === null) return;
     const trimmedRelation = relationDraft.trim();
 
-    updateRelationMutation.mutate(
-      { familyId: editingFamilyId, body: { relation: trimmedRelation } },
-      {
-        onSuccess: () => {
-          Alert.alert("호칭 수정 완료", "가족 호칭을 수정했어요.");
-          setEditingFamilyId(null);
-          setRelationDraft("");
-        },
-        onError: async (error) => {
-          const message = await getApiErrorMessage(
-            error,
-            "가족 호칭 수정에 실패했습니다. 잠시 후 다시 시도해주세요.",
-          );
-          Alert.alert("호칭 수정 실패", message);
-        },
-      },
-    );
+    if (updateRelationMutation.isPending) return;
+    setEditingFamilyId(null);
+    setRelationDraft("");
+    void updateRelationMutation
+      .mutateAsync({ familyId: editingFamilyId, body: { relation: trimmedRelation } })
+      .catch(async (error) => {
+        const message = await getApiErrorMessage(
+          error,
+          "가족 호칭 수정에 실패했습니다. 다시 시도해주세요.",
+        );
+        Alert.alert("호칭 수정 실패", message, [
+          { text: "닫기", style: "cancel" },
+          {
+            text: "다시 편집",
+            onPress: () => {
+              const current = currentEdit.current;
+              if (
+                !isMounted.current ||
+                current.editingFamilyId !== null ||
+                current.relationDraft !== "" ||
+                !current.members.some((member) => member.familyId === editingFamilyId)
+              )
+                return;
+              setEditingFamilyId(editingFamilyId);
+              setRelationDraft(trimmedRelation);
+            },
+          },
+        ]);
+      });
   }, [editingFamilyId, relationDraft, updateRelationMutation]);
 
   const handleUnlink = useCallback(

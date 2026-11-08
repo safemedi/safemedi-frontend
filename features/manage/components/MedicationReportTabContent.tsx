@@ -27,5 +27,10 @@ export function MedicationReportTabContent({ children, header }: MedicationRepor
 
 const styles = StyleSheet.create({
   scroll: { flex: 1 },
-  content: { paddingHorizontal: 14, gap: 14, paddingBottom: layout.tabScreenBottomSpacing },
+  content: {
+    flexGrow: 1,
+    paddingHorizontal: 14,
+    gap: 14,
+    paddingBottom: layout.tabScreenBottomSpacing,
+  },
 });

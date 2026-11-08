@@ -8,6 +8,11 @@ import {
 } from "@/api/queries/prescriptions";
 import { useMedicationManagementViewModel } from "../useMedicationManagementViewModel";
 
+jest.mock("@react-navigation/native", () => ({
+  ...jest.requireActual("@react-navigation/native"),
+  useIsFocused: () => true,
+}));
+
 jest.mock("@/api/queries/prescriptions", () => ({
   usePrescriptionsQuery: jest.fn(),
   useUpdatePrescriptionMutation: jest.fn(),
@@ -26,6 +31,7 @@ const mockUseDeletePrescriptionMutation = useDeletePrescriptionMutation as jest.
 
 const mockRefetch = jest.fn(async () => ({}));
 const mockUpdateMutate = jest.fn();
+const mockUpdateMutateAsync = jest.fn(async () => ({}));
 const mockDeleteMutate = jest.fn();
 
 const prescriptions = [
@@ -91,6 +97,7 @@ describe("데이터가 있으면 데이터를 반환한다.", () => {
     } as unknown as ReturnType<typeof usePrescriptionsQuery>);
     mockUseUpdatePrescriptionMutation.mockReturnValue({
       mutate: mockUpdateMutate,
+      mutateAsync: mockUpdateMutateAsync,
       isPending: false,
     } as unknown as ReturnType<typeof useUpdatePrescriptionMutation>);
     mockUseDeletePrescriptionMutation.mockReturnValue({
@@ -150,13 +157,63 @@ describe("데이터가 있으면 데이터를 반환한다.", () => {
       result.current.savePrescriptionTitle();
     });
 
-    expect(mockUpdateMutate).toHaveBeenCalledWith(
-      {
-        prescriptionId: 11,
-        body: { title: "수정된 신장내과 처방전" },
-      },
-      expect.any(Object),
+    expect(mockUpdateMutateAsync).toHaveBeenCalledWith({
+      prescriptionId: 11,
+      body: { title: "수정된 신장내과 처방전" },
+    });
+  });
+
+  it("캐시 갱신과 서버 응답 전에도 저장한 이름을 표시하고 실패하면 원래 이름을 복원한다", async () => {
+    let rejectSave: (error: Error) => void = () => {};
+    mockUpdateMutateAsync.mockImplementationOnce(
+      () =>
+        new Promise((_, reject) => {
+          rejectSave = reject;
+        }),
     );
+    const { result } = renderHook(() => useMedicationManagementViewModel());
+    act(() => result.current.startEditPrescriptionTitle(11));
+    act(() => result.current.changePrescriptionTitleDraft("즉시 반영 이름"));
+    act(() => {
+      result.current.savePrescriptionTitle();
+      result.current.savePrescriptionTitle();
+    });
+    expect(mockUpdateMutateAsync).toHaveBeenCalledTimes(1);
+    expect(result.current.editingPrescriptionId).toBeNull();
+    expect(
+      result.current.prescriptionGroups.find((group) => group.prescriptionId === 11)?.title,
+    ).toBe("즉시 반영 이름");
+    await act(async () => {
+      rejectSave(new Error("저장 실패"));
+    });
+    expect(
+      result.current.prescriptionGroups.find((group) => group.prescriptionId === 11)?.title,
+    ).toBe("신장내과 처방전");
+    expect(Alert.alert).toHaveBeenCalledWith("저장 실패", expect.any(String), expect.any(Array));
+    act(() => result.current.togglePrescriptionExpanded(11));
+    const buttons = jest.mocked(Alert.alert).mock.calls.at(-1)?.[2];
+    act(() => buttons?.find((button) => button.text === "다시 편집")?.onPress?.());
+    expect(result.current.editingPrescriptionId).toBe(11);
+    expect(result.current.prescriptionTitleDraft).toBe("즉시 반영 이름");
+    expect(result.current.isPrescriptionExpanded(11)).toBe(true);
+    expect(result.current.editingMedicationKey).toBeNull();
+  });
+
+  it("화면을 닫은 뒤 실패한 저장 요청은 알림을 표시하지 않는다", async () => {
+    let rejectSave: (error: Error) => void = () => {};
+    mockUpdateMutateAsync.mockImplementationOnce(
+      () =>
+        new Promise((_, reject) => {
+          rejectSave = reject;
+        }),
+    );
+    const { result, unmount } = renderHook(() => useMedicationManagementViewModel());
+    act(() => result.current.startEditPrescriptionTitle(11));
+    act(() => result.current.changePrescriptionTitleDraft("나중에 실패할 이름"));
+    act(() => result.current.savePrescriptionTitle());
+    unmount();
+    await act(async () => rejectSave(new Error("실패")));
+    expect(Alert.alert).not.toHaveBeenCalled();
   });
 
   it("처방전 이름이 2자 미만이면 저장 버튼을 비활성화한다", () => {
@@ -184,9 +241,6 @@ describe("데이터가 있으면 데이터를 반환한다.", () => {
 
     act(() => result.current.changePrescriptionTitleDraft("수정된 처방전"));
     act(() => result.current.savePrescriptionTitle());
-    const options = mockUpdateMutate.mock.calls[0]?.[1] as { onSuccess?: () => void };
-    act(() => options.onSuccess?.());
-
     expect(result.current.editingPrescriptionId).toBeNull();
     expect(result.current.prescriptionTitleDraft).toBe("");
   });

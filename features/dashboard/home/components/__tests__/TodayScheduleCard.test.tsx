@@ -73,7 +73,7 @@ describe("TodayScheduleCard", () => {
     const { getByText } = render(
       <TodayScheduleCard
         item={BASE_ITEM}
-        takingPrescriptionId={null}
+        takingPrescriptionIds={[]}
         onPressTake={mockOnPressTake}
       />,
     );
@@ -91,7 +91,7 @@ describe("TodayScheduleCard", () => {
     const { getByLabelText, getAllByText, getByText } = render(
       <TodayScheduleCard
         item={BASE_ITEM}
-        takingPrescriptionId={null}
+        takingPrescriptionIds={[]}
         onPressTake={mockOnPressTake}
       />,
     );
@@ -109,7 +109,7 @@ describe("TodayScheduleCard", () => {
           ...BASE_ITEM,
           prescriptions: [{ ...BASE_ITEM.prescriptions[0], medicationNames: [] }],
         }}
-        takingPrescriptionId={null}
+        takingPrescriptionIds={[]}
         onPressTake={mockOnPressTake}
       />,
     );
@@ -122,7 +122,7 @@ describe("TodayScheduleCard", () => {
     const { getByLabelText, queryByLabelText } = render(
       <TodayScheduleCard
         item={BASE_ITEM}
-        takingPrescriptionId={null}
+        takingPrescriptionIds={[]}
         onPressTake={mockOnPressTake}
       />,
     );
@@ -142,7 +142,7 @@ describe("TodayScheduleCard", () => {
     const { getAllByTestId } = render(
       <TodayScheduleCard
         item={BASE_ITEM}
-        takingPrescriptionId={null}
+        takingPrescriptionIds={[]}
         onPressTake={mockOnPressTake}
       />,
     );
@@ -157,7 +157,7 @@ describe("TodayScheduleCard", () => {
     const { getAllByTestId } = render(
       <TodayScheduleCard
         item={BASE_ITEM}
-        takingPrescriptionId={null}
+        takingPrescriptionIds={[]}
         onPressTake={mockOnPressTake}
       />,
     );
@@ -178,7 +178,7 @@ describe("TodayScheduleCard", () => {
           tone: "missed",
           prescriptions: [{ ...BASE_ITEM.prescriptions[0], tone: "missed" }],
         }}
-        takingPrescriptionId={null}
+        takingPrescriptionIds={[]}
         onPressTake={mockOnPressTake}
       />,
     );
@@ -204,7 +204,7 @@ describe("TodayScheduleCard", () => {
           tone: "success",
           prescriptions: [{ ...BASE_ITEM.prescriptions[0], tone: "success" }],
         }}
-        takingPrescriptionId={null}
+        takingPrescriptionIds={[]}
         onPressTake={mockOnPressTake}
       />,
     );

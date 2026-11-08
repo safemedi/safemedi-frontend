@@ -48,13 +48,13 @@ const TONE_STYLES: Record<DashboardScheduleCardItem["tone"], ToneStyle> = {
 
 interface TodayScheduleCardProps {
   readonly item: DashboardScheduleCardItem;
-  readonly takingPrescriptionId: string | null;
+  readonly takingPrescriptionIds: readonly string[];
   readonly onPressTake: (prescription: DashboardSchedulePrescriptionItem) => void;
 }
 
 export function TodayScheduleCard({
   item,
-  takingPrescriptionId,
+  takingPrescriptionIds,
   onPressTake,
 }: TodayScheduleCardProps) {
   const [expandedPrescriptionIds, setExpandedPrescriptionIds] = useState<ReadonlySet<string>>(
@@ -121,7 +121,7 @@ export function TodayScheduleCard({
         {item.prescriptions.map((prescription) => {
           const isExpanded = expandedPrescriptionIds.has(prescription.id);
           const medicationRows = medicationRowsByPrescription.get(prescription.id) ?? [];
-          const isTakeDisabled = takingPrescriptionId !== null;
+          const isTakeDisabled = takingPrescriptionIds.includes(prescription.id);
           const prescriptionToneStyle = TONE_STYLES[prescription.tone];
 
           return (
