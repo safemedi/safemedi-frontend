@@ -5,7 +5,7 @@ const EXPO_BUILD_PROPERTIES_PLUGIN_NAME = "expo-build-properties";
 const EXPO_LOCATION_PLUGIN_NAME = "expo-location";
 const SENTRY_PLUGIN_NAME = "@sentry/react-native/expo";
 const KAKAO_MAVEN_REPOSITORY = "https://devrepo.kakao.com/nexus/content/groups/public/";
-const DEFAULT_APP_NAME = "safeMedi";
+const DEFAULT_APP_NAME = "SafeMedi";
 const DEFAULT_APP_SLUG = "safeMedi";
 // Kakao SDK 모델 및 Retrofit이 리플렉션으로 읽는 타입·어노테이션을 보존한다.
 // https://developers.kakao.com/docs/ko/android/getting-started#proguard

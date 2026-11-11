@@ -171,7 +171,7 @@ describe("app.config", () => {
       } as unknown as ExpoConfig),
     );
 
-    expect(result.name).toBe("safeMedi");
+    expect(result.name).toBe("SafeMedi");
     expect(result.slug).toBe("safeMedi");
     expect(result.ios?.infoPlist).toEqual({});
     expect(result.plugins).toEqual(
