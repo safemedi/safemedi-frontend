@@ -34,7 +34,12 @@
           "data": [
             {
               "scheme": "https",
-              "host": "35.223.15.211.nip.io",
+              "host": "dev-api.safemedi.store",
+              "pathPrefix": "/invite"
+            },
+            {
+              "scheme": "https",
+              "host": "api.safemedi.store",
               "pathPrefix": "/invite"
             }
           ],
