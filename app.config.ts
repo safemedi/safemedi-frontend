@@ -89,6 +89,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       "./plugins/withAndroidR8Optimization.js",
       ...existingPlugins,
       "./plugins/withIosPushDisabled.js",
+      "./plugins/withIosPodDeploymentTarget.js",
       [
         KAKAO_LOGIN_PLUGIN_NAME,
         {

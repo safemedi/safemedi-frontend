@@ -19,7 +19,11 @@
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
     "postinstall": "patch-package",
-    "prepare": "husky"
+    "prepare": "husky",
+    "eas:ios:dev": "eas build -p ios --profile development",
+    "eas:ios:simulator": "eas build -p ios --profile development-simulator",
+    "eas:ios:preview": "eas build -p ios --profile preview",
+    "eas:ios:production": "eas build -p ios --profile production"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
