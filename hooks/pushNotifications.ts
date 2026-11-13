@@ -1,8 +1,15 @@
-import Constants from "expo-constants";
+import { isDevice } from "expo-device";
 import { requireOptionalNativeModule } from "expo-modules-core";
 import { Platform } from "react-native";
-
 import type { DeviceType } from "@/api/types";
+import {
+  getIosFcmToken,
+  isIosFcmAvailable,
+  requestIosFcmPermission,
+  subscribeIosFcmMessage,
+  subscribeIosFcmResponse,
+  subscribeIosFcmTokenRefresh,
+} from "@/hooks/iosFcm";
 import { setRegisteredDeviceToken } from "@/hooks/pushNotificationTokenStore";
 
 export {
@@ -12,10 +19,8 @@ export {
 
 type ExpoNotificationsModule = typeof import("expo-notifications");
 
-type NotificationListener = (notification: import("expo-notifications").Notification) => void;
-type NotificationResponseListener = (
-  response: import("expo-notifications").NotificationResponse,
-) => void;
+type NotificationListener = () => void;
+type NotificationResponseListener = () => void;
 
 type EventSubscription = {
   remove: () => void;
@@ -25,11 +30,7 @@ export type PushTokenRegistrationResult =
   | { readonly status: "registered" }
   | {
       readonly status: "skipped";
-      readonly reason:
-        | "native-module-unavailable"
-        | "ios-simulator"
-        | "ios-remote-push-disabled"
-        | "device-token-unavailable";
+      readonly reason: "native-module-unavailable" | "ios-simulator" | "device-token-unavailable";
     };
 
 const NOOP_SUBSCRIPTION: EventSubscription = { remove: () => {} };
@@ -88,10 +89,13 @@ function loadNotificationsModule(): ExpoNotificationsModule | null {
 }
 
 export function isPushNotificationsNativeModuleAvailable(): boolean {
-  return isPushTokenNativeModuleAvailable();
+  return Platform.OS === "ios" ? isIosFcmAvailable() : isPushTokenNativeModuleAvailable();
 }
 
 export async function requestPushNotificationPermissions(): Promise<boolean> {
+  if (Platform.OS === "ios") {
+    return isIosFcmAvailable() ? requestIosFcmPermission() : false;
+  }
   const notifications = loadNotificationsModule();
   if (!notifications) {
     return false;
@@ -107,17 +111,14 @@ export async function requestPushNotificationPermissions(): Promise<boolean> {
 }
 
 export async function getDevicePushToken(): Promise<string | null> {
-  const notifications = loadNotificationsModule();
-  if (!notifications) {
-    return null;
-  }
-
   const hasPermission = await requestPushNotificationPermissions();
   if (!hasPermission) {
     return null;
   }
 
   if (Platform.OS === "android") {
+    const notifications = loadNotificationsModule();
+    if (!notifications) return null;
     await notifications.setNotificationChannelAsync("default", {
       name: "SafeMedi 알림",
       importance: notifications.AndroidImportance.MAX,
@@ -126,10 +127,14 @@ export async function getDevicePushToken(): Promise<string | null> {
     });
   }
 
-  const tokenResponse = await notifications.getDevicePushTokenAsync();
+  const token =
+    Platform.OS === "ios"
+      ? await getIosFcmToken()
+      : (await loadNotificationsModule()?.getDevicePushTokenAsync())?.data;
+  if (!token) return null;
 
-  await setRegisteredDeviceToken(tokenResponse.data);
-  return tokenResponse.data;
+  await setRegisteredDeviceToken(token);
+  return token;
 }
 
 export async function registerPushTokenWithBackend(
@@ -139,13 +144,8 @@ export async function registerPushTokenWithBackend(
     return { status: "skipped", reason: "native-module-unavailable" };
   }
 
-  if (Platform.OS === "ios" && !Constants.isDevice) {
+  if (Platform.OS === "ios" && !isDevice) {
     return { status: "skipped", reason: "ios-simulator" };
-  }
-
-  // iOS 원격 푸시는 유료 Apple Developer + APNs 설정 후 활성화
-  if (Platform.OS === "ios" && process.env.EXPO_PUBLIC_IOS_ENABLE_REMOTE_PUSH !== "true") {
-    return { status: "skipped", reason: "ios-remote-push-disabled" };
   }
 
   const deviceToken = await getDevicePushToken();
@@ -161,6 +161,9 @@ export async function registerPushTokenWithBackend(
 }
 
 export function addNotificationReceivedListener(listener: NotificationListener): EventSubscription {
+  if (Platform.OS === "ios") {
+    return isIosFcmAvailable() ? { remove: subscribeIosFcmMessage(listener) } : NOOP_SUBSCRIPTION;
+  }
   const notifications = loadNotificationsModule();
   if (!notifications) {
     return NOOP_SUBSCRIPTION;
@@ -172,10 +175,21 @@ export function addNotificationReceivedListener(listener: NotificationListener):
 export function addNotificationResponseListener(
   listener: NotificationResponseListener,
 ): EventSubscription {
+  if (Platform.OS === "ios") {
+    return isIosFcmAvailable() ? { remove: subscribeIosFcmResponse(listener) } : NOOP_SUBSCRIPTION;
+  }
   const notifications = loadNotificationsModule();
   if (!notifications) {
     return NOOP_SUBSCRIPTION;
   }
 
   return notifications.addNotificationResponseReceivedListener(listener);
+}
+
+export function addPushTokenRefreshListener(listener: () => void): EventSubscription {
+  if (Platform.OS === "ios") {
+    if (!isDevice || !isIosFcmAvailable()) return NOOP_SUBSCRIPTION;
+    return { remove: subscribeIosFcmTokenRefresh(listener) };
+  }
+  return loadNotificationsModule()?.addPushTokenListener(listener) ?? NOOP_SUBSCRIPTION;
 }

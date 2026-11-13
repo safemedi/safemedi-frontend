@@ -8,15 +8,27 @@ const mockGetDevicePushTokenAsync = jest.fn();
 const mockAddNotificationReceivedListener = jest.fn();
 const mockAddNotificationResponseReceivedListener = jest.fn();
 
+const mockGetIosFcmToken = jest.fn();
+const mockTokenRefreshUnsubscribe = jest.fn();
+const mockSubscribeIosFcmTokenRefresh = jest.fn(
+  (_listener: () => void) => mockTokenRefreshUnsubscribe,
+);
+jest.mock("@/hooks/iosFcm", () => ({
+  getIosFcmToken: () => mockGetIosFcmToken(),
+  isIosFcmAvailable: () => true,
+  requestIosFcmPermission: () =>
+    mockRequestPermissionsAsync().then((value: { status: string }) => value.status === "granted"),
+  subscribeIosFcmTokenRefresh: (listener: () => void) => mockSubscribeIosFcmTokenRefresh(listener),
+  subscribeIosFcmMessage: jest.fn(() => jest.fn()),
+  subscribeIosFcmResponse: jest.fn(() => jest.fn()),
+}));
+
 let mockPlatformOS: "android" | "ios" = "android";
 let mockIsDevice = true;
 
-jest.mock("expo-constants", () => ({
-  __esModule: true,
-  default: {
-    get isDevice() {
-      return mockIsDevice;
-    },
+jest.mock("expo-device", () => ({
+  get isDevice() {
+    return mockIsDevice;
   },
 }));
 
@@ -63,6 +75,7 @@ describe("pushNotifications", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetIosFcmToken.mockResolvedValue("ios-fcm-token");
     mockPlatformOS = "android";
     mockIsDevice = true;
     process.env.EXPO_PUBLIC_IOS_ENABLE_REMOTE_PUSH = undefined;
@@ -128,27 +141,14 @@ describe("pushNotifications", () => {
     expect(registerFn).not.toHaveBeenCalled();
   });
 
-  it("iOS simulator와 원격 푸시 비활성화 상태를 구분해 스킵한다", async () => {
+  it("iOS 시뮬레이터는 서버 토큰 등록을 생략한다", async () => {
     mockPlatformOS = "ios";
     mockIsDevice = false;
-    const simulatorPushNotifications = loadPushNotifications();
-
-    await expect(
-      simulatorPushNotifications.registerPushTokenWithBackend(jest.fn()),
-    ).resolves.toEqual({
+    await expect(loadPushNotifications().registerPushTokenWithBackend(jest.fn())).resolves.toEqual({
       status: "skipped",
       reason: "ios-simulator",
     });
-
-    mockIsDevice = true;
-    const disabledPushNotifications = loadPushNotifications();
-
-    await expect(
-      disabledPushNotifications.registerPushTokenWithBackend(jest.fn()),
-    ).resolves.toEqual({
-      status: "skipped",
-      reason: "ios-remote-push-disabled",
-    });
+    expect(mockGetIosFcmToken).not.toHaveBeenCalled();
   });
 
   it("iOS 원격 푸시가 활성화되면 IOS deviceType으로 등록한다", async () => {
@@ -162,7 +162,9 @@ describe("pushNotifications", () => {
     });
 
     expect(mockSetNotificationChannelAsync).not.toHaveBeenCalled();
-    expect(registerFn).toHaveBeenCalledWith({ deviceToken: "fcm-token", deviceType: "IOS" });
+    expect(mockGetDevicePushTokenAsync).not.toHaveBeenCalled();
+    expect(mockSetRegisteredDeviceToken).toHaveBeenCalledWith("ios-fcm-token");
+    expect(registerFn).toHaveBeenCalledWith({ deviceToken: "ios-fcm-token", deviceType: "IOS" });
   });
 
   it("알림 수신/응답 listener는 expo-notifications subscription을 반환한다", () => {

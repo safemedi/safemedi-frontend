@@ -100,6 +100,7 @@ describe("app.config", () => {
         [
           "expo-build-properties",
           {
+            ios: { useFrameworks: "static", forceStaticLinking: ["RNFBApp", "RNFBMessaging"] },
             android: {
               extraMavenRepos: ["https://devrepo.kakao.com/nexus/content/groups/public/"],
               enableMinifyInReleaseBuilds: true,
@@ -205,6 +206,7 @@ describe("app.config", () => {
         [
           "expo-build-properties",
           {
+            ios: { useFrameworks: "static", forceStaticLinking: ["RNFBApp", "RNFBMessaging"] },
             android: {
               extraMavenRepos: ["https://devrepo.kakao.com/nexus/content/groups/public/"],
               enableMinifyInReleaseBuilds: true,

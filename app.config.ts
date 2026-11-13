@@ -39,6 +39,7 @@ const LOCATION_USAGE_DESCRIPTION =
   "현재 위치를 기반으로 지도를 표시하기 위해 위치 접근 권한이 필요합니다.";
 const KAKAO_NATIVE_APP_KEY = process.env.EXPO_PUBLIC_KAKAO_NATIVE_APP_KEY ?? "";
 const GOOGLE_SERVICES_JSON = process.env.GOOGLE_SERVICES_JSON;
+const GOOGLE_SERVICES_PLIST = process.env.GOOGLE_SERVICES_PLIST;
 const SENTRY_ORG_SLUG = process.env.SENTRY_ORG_SLUG;
 const SENTRY_PROJECT_SLUG = process.env.SENTRY_PROJECT_SLUG;
 
@@ -75,6 +76,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     slug: config.slug ?? DEFAULT_APP_SLUG,
     ios: {
       ...config.ios,
+      googleServicesFile: GOOGLE_SERVICES_PLIST,
       infoPlist: {
         ...existingInfoPlist,
       },
@@ -88,7 +90,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       "./plugins/withIosKakaoAppDelegateFix.js",
       "./plugins/withAndroidR8Optimization.js",
       ...existingPlugins,
-      "./plugins/withIosPushDisabled.js",
+      "./plugins/withIosFirebase.js",
       "./plugins/withIosPodDeploymentTarget.js",
       [
         KAKAO_LOGIN_PLUGIN_NAME,
@@ -100,6 +102,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       [
         EXPO_BUILD_PROPERTIES_PLUGIN_NAME,
         {
+          ios: { useFrameworks: "static", forceStaticLinking: ["RNFBApp", "RNFBMessaging"] },
           android: {
             extraMavenRepos: [KAKAO_MAVEN_REPOSITORY],
             enableMinifyInReleaseBuilds: true,

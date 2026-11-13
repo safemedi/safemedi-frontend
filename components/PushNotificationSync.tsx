@@ -6,6 +6,7 @@ import { queryKeys } from "@/api/query-keys";
 import {
   addNotificationReceivedListener,
   addNotificationResponseListener,
+  addPushTokenRefreshListener,
   registerPushTokenWithBackend,
 } from "@/hooks/pushNotifications";
 import { useSessionHydrated } from "@/hooks/useSessionHydrated";
@@ -36,22 +37,26 @@ export function PushNotificationSync() {
     let cancelled = false;
     const controller = new AbortController();
 
-    void registerDeviceToken({ accessToken, signal: controller.signal })
-      .then(() =>
-        registerPushTokenWithBackend(async (body) => {
+    let registration: Promise<void> = Promise.resolve();
+    const handleRegisterToken = () => {
+      registration = registration
+        .then(async () => {
           if (cancelled) return;
-          await registerDeviceToken({ body, accessToken, signal: controller.signal });
-        }),
-      )
-      .then((result) => {
-        if (cancelled || result.status === "registered") {
-          return;
-        }
-        warnPushTokenRegistration(`FCM 디바이스 토큰 등록 스킵 (${result.reason})`);
-      })
-      .catch(() => {
-        if (!cancelled) warnPushTokenRegistration("FCM 디바이스 토큰 등록 실패");
-      });
+          await registerDeviceToken({ accessToken, signal: controller.signal });
+          const result = await registerPushTokenWithBackend(async (body) => {
+            if (cancelled) return;
+            await registerDeviceToken({ body, accessToken, signal: controller.signal });
+          });
+          if (!cancelled && result.status !== "registered") {
+            warnPushTokenRegistration(`FCM 디바이스 토큰 등록 스킵 (${result.reason})`);
+          }
+        })
+        .catch(() => {
+          if (!cancelled) warnPushTokenRegistration("FCM 디바이스 토큰 등록 실패");
+        });
+    };
+    handleRegisterToken();
+    const tokenSubscription = addPushTokenRefreshListener(handleRegisterToken);
 
     const invalidatePushDrivenQueries = () => {
       void queryClient.invalidateQueries({ queryKey: ["notification"] });
@@ -70,6 +75,7 @@ export function PushNotificationSync() {
     return () => {
       cancelled = true;
       controller.abort();
+      tokenSubscription.remove();
       receivedSubscription.remove();
       responseSubscription.remove();
     };

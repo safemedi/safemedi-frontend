@@ -15,6 +15,8 @@ const mockResponseRemove = jest.fn();
 
 let mockHydrated = true;
 let mockAccessToken: string | null = "token";
+let tokenListener: (() => void) | undefined;
+const mockTokenRemove = jest.fn();
 let receivedListener: (() => void) | undefined;
 let responseListener: (() => void) | undefined;
 
@@ -29,6 +31,10 @@ jest.mock("@/api/queries/device-token", () => ({
 }));
 
 jest.mock("@/hooks/pushNotifications", () => ({
+  addPushTokenRefreshListener: (listener: () => void) => {
+    tokenListener = listener;
+    return { remove: mockTokenRemove };
+  },
   addNotificationReceivedListener: (listener: () => void) =>
     mockAddNotificationReceivedListener(listener),
   addNotificationResponseListener: (listener: () => void) =>
@@ -53,6 +59,7 @@ describe("PushNotificationSync", () => {
     jest.clearAllMocks();
     mockHydrated = true;
     mockAccessToken = "token";
+    tokenListener = undefined;
     receivedListener = undefined;
     responseListener = undefined;
     mockPostDeviceToken.mockResolvedValue({ message: "ok" });
@@ -107,8 +114,20 @@ describe("PushNotificationSync", () => {
     expect(mockInvalidateQueries).toHaveBeenCalledTimes(4);
 
     unmount();
+    expect(mockTokenRemove).toHaveBeenCalledTimes(1);
     expect(mockReceivedRemove).toHaveBeenCalledTimes(1);
     expect(mockResponseRemove).toHaveBeenCalledTimes(1);
+  });
+
+  it("토큰 갱신 시 재등록하고 로그아웃 후 갱신은 무시한다", async () => {
+    const { unmount } = render(<PushNotificationSync />);
+    await waitFor(() => expect(mockPostDeviceToken).toHaveBeenCalledTimes(1));
+    tokenListener?.();
+    await waitFor(() => expect(mockPostDeviceToken).toHaveBeenCalledTimes(2));
+    unmount();
+    tokenListener?.();
+    await Promise.resolve();
+    expect(mockPostDeviceToken).toHaveBeenCalledTimes(2);
   });
 
   it("토큰 등록이 스킵되면 개발 로그를 남긴다", async () => {
