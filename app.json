@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "safeMedi",
+    "name": "SafeMedi",
     "slug": "safeMedi",
     "version": "1.4.0",
     "orientation": "portrait",
@@ -14,7 +14,11 @@
       "bundleIdentifier": "com.safemedi",
       "infoPlist": {
         "NSCameraUsageDescription": "처방전을 촬영하려면 카메라 접근 권한이 필요합니다.",
-        "NSPhotoLibraryUsageDescription": "처방전 이미지를 선택하려면 사진 접근 권한이 필요합니다."
+        "NSPhotoLibraryUsageDescription": "처방전 이미지를 선택하려면 사진 접근 권한이 필요합니다.",
+        "ITSAppUsesNonExemptEncryption": false
+      },
+      "entitlements": {
+        "aps-environment": "development"
       }
     },
     "android": {
@@ -34,7 +38,12 @@
           "data": [
             {
               "scheme": "https",
-              "host": "35.223.15.211.nip.io",
+              "host": "dev-api.safemedi.store",
+              "pathPrefix": "/invite"
+            },
+            {
+              "scheme": "https",
+              "host": "api.safemedi.store",
               "pathPrefix": "/invite"
             }
           ],

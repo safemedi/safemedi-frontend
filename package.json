@@ -1,5 +1,5 @@
 {
-  "name": "safemedi",
+  "name": "SafeMedi",
   "main": "expo-router/entry",
   "version": "1.4.0",
   "scripts": {
@@ -19,7 +19,11 @@
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
     "postinstall": "patch-package",
-    "prepare": "husky"
+    "prepare": "husky",
+    "eas:ios:dev": "eas build -p ios --profile development",
+    "eas:ios:simulator": "eas build -p ios --profile development-simulator",
+    "eas:ios:preview": "eas build -p ios --profile preview",
+    "eas:ios:production": "eas build -p ios --profile production"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -31,6 +35,8 @@
     "@hookform/resolvers": "^5.2.2",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@react-native-community/datetimepicker": "^9.1.0",
+    "@react-native-firebase/app": "23.8.8",
+    "@react-native-firebase/messaging": "23.8.8",
     "@react-native-menu/menu": "^2.0.0",
     "@react-native-seoul/kakao-login": "^5.4.2",
     "@react-navigation/bottom-tabs": "^7.4.0",
@@ -46,6 +52,7 @@
     "expo-clipboard": "~8.0.8",
     "expo-constants": "~18.0.13",
     "expo-dev-client": "~6.0.21",
+    "expo-device": "~8.0.10",
     "expo-file-system": "~19.0.21",
     "expo-font": "~14.0.11",
     "expo-haptics": "~15.0.8",
@@ -98,5 +105,14 @@
     "typescript": "~5.9.2"
   },
   "private": true,
-  "packageManager": "yarn@1.22.22"
+  "packageManager": "yarn@1.22.22",
+  "expo": {
+    "autolinking": {
+      "ios": {
+        "exclude": [
+          "expo-notifications"
+        ]
+      }
+    }
+  }
 }

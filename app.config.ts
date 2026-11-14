@@ -5,10 +5,8 @@ const EXPO_BUILD_PROPERTIES_PLUGIN_NAME = "expo-build-properties";
 const EXPO_LOCATION_PLUGIN_NAME = "expo-location";
 const SENTRY_PLUGIN_NAME = "@sentry/react-native/expo";
 const KAKAO_MAVEN_REPOSITORY = "https://devrepo.kakao.com/nexus/content/groups/public/";
-const DEFAULT_APP_NAME = "safeMedi";
+const DEFAULT_APP_NAME = "SafeMedi";
 const DEFAULT_APP_SLUG = "safeMedi";
-// Kakao SDK 모델 및 Retrofit이 리플렉션으로 읽는 타입·어노테이션을 보존한다.
-// https://developers.kakao.com/docs/ko/android/getting-started#proguard
 const ANDROID_EXTRA_PROGUARD_RULES = `
 -keep class com.kakao.sdk.**.model.* { <fields>; }
 
@@ -39,13 +37,16 @@ const LOCATION_USAGE_DESCRIPTION =
   "현재 위치를 기반으로 지도를 표시하기 위해 위치 접근 권한이 필요합니다.";
 const KAKAO_NATIVE_APP_KEY = process.env.EXPO_PUBLIC_KAKAO_NATIVE_APP_KEY ?? "";
 const GOOGLE_SERVICES_JSON = process.env.GOOGLE_SERVICES_JSON;
-const SENTRY_ORG_SLUG = process.env.SENTRY_ORG_SLUG;
-const SENTRY_PROJECT_SLUG = process.env.SENTRY_PROJECT_SLUG;
+const GOOGLE_SERVICES_PLIST = process.env.GOOGLE_SERVICES_PLIST;
+const SENTRY_ORG_SLUG = process.env.SENTRY_ORG_SLUG?.trim();
+const SENTRY_PROJECT_SLUG = process.env.SENTRY_PROJECT_SLUG?.trim();
 
-if (!SENTRY_ORG_SLUG || !SENTRY_PROJECT_SLUG) {
-  throw new Error(
-    "SENTRY_ORG_SLUG / SENTRY_PROJECT_SLUG 환경변수가 필요합니다. .env 또는 EAS 환경변수 설정을 확인하세요.",
-  );
+const isProduction =
+  process.env.EXPO_PUBLIC_APP_ENV === "production" ||
+  process.env.EAS_BUILD_PROFILE === "production";
+
+if (isProduction && (!SENTRY_ORG_SLUG || !SENTRY_PROJECT_SLUG)) {
+  throw new Error("production 빌드에는 SENTRY_ORG_SLUG와 SENTRY_PROJECT_SLUG가 필요합니다.");
 }
 
 type PluginEntry = NonNullable<ExpoConfig["plugins"]>[number];
@@ -75,6 +76,15 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     slug: config.slug ?? DEFAULT_APP_SLUG,
     ios: {
       ...config.ios,
+      googleServicesFile: GOOGLE_SERVICES_PLIST,
+      entitlements: {
+        ...config.ios?.entitlements,
+        "aps-environment":
+          process.env.EXPO_PUBLIC_APP_ENV === "preview" ||
+          process.env.EXPO_PUBLIC_APP_ENV === "production"
+            ? "production"
+            : "development",
+      },
       infoPlist: {
         ...existingInfoPlist,
       },
@@ -88,7 +98,8 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       "./plugins/withIosKakaoAppDelegateFix.js",
       "./plugins/withAndroidR8Optimization.js",
       ...existingPlugins,
-      "./plugins/withIosPushDisabled.js",
+      "./plugins/withIosFirebase.js",
+      "./plugins/withIosPodDeploymentTarget.js",
       [
         KAKAO_LOGIN_PLUGIN_NAME,
         {
@@ -99,6 +110,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       [
         EXPO_BUILD_PROPERTIES_PLUGIN_NAME,
         {
+          ios: { useFrameworks: "static", forceStaticLinking: ["RNFBApp", "RNFBMessaging"] },
           android: {
             extraMavenRepos: [KAKAO_MAVEN_REPOSITORY],
             enableMinifyInReleaseBuilds: true,
@@ -117,8 +129,8 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       [
         SENTRY_PLUGIN_NAME,
         {
-          organization: SENTRY_ORG_SLUG,
-          project: SENTRY_PROJECT_SLUG,
+          organization: SENTRY_ORG_SLUG || "safemedi",
+          project: SENTRY_PROJECT_SLUG || "react-native",
           experimental_android: {
             enableAndroidGradlePlugin: true,
             includeProguardMapping: true,
