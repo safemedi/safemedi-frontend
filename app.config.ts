@@ -7,8 +7,6 @@ const SENTRY_PLUGIN_NAME = "@sentry/react-native/expo";
 const KAKAO_MAVEN_REPOSITORY = "https://devrepo.kakao.com/nexus/content/groups/public/";
 const DEFAULT_APP_NAME = "SafeMedi";
 const DEFAULT_APP_SLUG = "safeMedi";
-// Kakao SDK 모델 및 Retrofit이 리플렉션으로 읽는 타입·어노테이션을 보존한다.
-// https://developers.kakao.com/docs/ko/android/getting-started#proguard
 const ANDROID_EXTRA_PROGUARD_RULES = `
 -keep class com.kakao.sdk.**.model.* { <fields>; }
 
@@ -40,8 +38,8 @@ const LOCATION_USAGE_DESCRIPTION =
 const KAKAO_NATIVE_APP_KEY = process.env.EXPO_PUBLIC_KAKAO_NATIVE_APP_KEY ?? "";
 const GOOGLE_SERVICES_JSON = process.env.GOOGLE_SERVICES_JSON;
 const GOOGLE_SERVICES_PLIST = process.env.GOOGLE_SERVICES_PLIST;
-const SENTRY_ORG_SLUG = process.env.SENTRY_ORG_SLUG;
-const SENTRY_PROJECT_SLUG = process.env.SENTRY_PROJECT_SLUG;
+const SENTRY_ORG_SLUG = process.env.SENTRY_ORG_SLUG ?? "safemedi";
+const SENTRY_PROJECT_SLUG = process.env.SENTRY_PROJECT_SLUG ?? "react-native";
 
 if (!SENTRY_ORG_SLUG || !SENTRY_PROJECT_SLUG) {
   throw new Error(

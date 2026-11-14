@@ -126,7 +126,7 @@ describe("app/(tabs)/_layout", () => {
       screenOptions: { tabBarStyle: { height: number; paddingBottom: number } };
     };
 
-    expect(tabsProps.screenOptions.tabBarStyle.height).toBe(70 + 34);
+    expect(tabsProps.screenOptions.tabBarStyle.height).toBe(50 + 34);
     expect(tabsProps.screenOptions.tabBarStyle.paddingBottom).toBe(34);
   });
 });
