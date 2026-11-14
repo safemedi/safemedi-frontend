@@ -38,15 +38,15 @@ const LOCATION_USAGE_DESCRIPTION =
 const KAKAO_NATIVE_APP_KEY = process.env.EXPO_PUBLIC_KAKAO_NATIVE_APP_KEY ?? "";
 const GOOGLE_SERVICES_JSON = process.env.GOOGLE_SERVICES_JSON;
 const GOOGLE_SERVICES_PLIST = process.env.GOOGLE_SERVICES_PLIST;
-const SENTRY_ORG_SLUG = process.env.SENTRY_ORG_SLUG;
-const SENTRY_PROJECT_SLUG = process.env.SENTRY_PROJECT_SLUG;
+const SENTRY_ORG_SLUG = process.env.SENTRY_ORG_SLUG?.trim();
+const SENTRY_PROJECT_SLUG = process.env.SENTRY_PROJECT_SLUG?.trim();
 
 const isProduction =
   process.env.EXPO_PUBLIC_APP_ENV === "production" ||
   process.env.EAS_BUILD_PROFILE === "production";
 
 if (isProduction && (!SENTRY_ORG_SLUG || !SENTRY_PROJECT_SLUG)) {
-  throw new Error("SENTRY_ORG_SLUG와 SENTRY_PROJECT_SLUG가 필요합니다.");
+  throw new Error("production 빌드에는 SENTRY_ORG_SLUG와 SENTRY_PROJECT_SLUG가 필요합니다.");
 }
 
 type PluginEntry = NonNullable<ExpoConfig["plugins"]>[number];
