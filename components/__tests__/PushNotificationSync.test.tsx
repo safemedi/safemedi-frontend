@@ -15,7 +15,7 @@ const mockResponseRemove = jest.fn();
 
 let mockHydrated = true;
 let mockAccessToken: string | null = "token";
-let tokenListener: (() => void) | undefined;
+let tokenListener: ((token: string) => void) | undefined;
 const mockTokenRemove = jest.fn();
 let receivedListener: (() => void) | undefined;
 let responseListener: (() => void) | undefined;
@@ -31,7 +31,7 @@ jest.mock("@/api/queries/device-token", () => ({
 }));
 
 jest.mock("@/hooks/pushNotifications", () => ({
-  addPushTokenRefreshListener: (listener: () => void) => {
+  addPushTokenRefreshListener: (listener: (token: string) => void) => {
     tokenListener = listener;
     return { remove: mockTokenRemove };
   },
@@ -39,8 +39,8 @@ jest.mock("@/hooks/pushNotifications", () => ({
     mockAddNotificationReceivedListener(listener),
   addNotificationResponseListener: (listener: () => void) =>
     mockAddNotificationResponseListener(listener),
-  registerPushTokenWithBackend: (registerFn: unknown) =>
-    mockRegisterPushTokenWithBackend(registerFn),
+  registerPushTokenWithBackend: (registerFn: unknown, refreshedToken?: string) =>
+    mockRegisterPushTokenWithBackend(registerFn, refreshedToken),
 }));
 
 jest.mock("@/hooks/useSessionHydrated", () => ({
@@ -64,8 +64,8 @@ describe("PushNotificationSync", () => {
     responseListener = undefined;
     mockPostDeviceToken.mockResolvedValue({ message: "ok" });
     mockRegisterPushTokenWithBackend.mockImplementation(
-      async (registerFn: (body: unknown) => void) => {
-        await registerFn({ deviceToken: "token", deviceType: "ANDROID" });
+      async (registerFn: (body: unknown) => void, refreshedToken?: string) => {
+        await registerFn({ deviceToken: refreshedToken ?? "token", deviceType: "ANDROID" });
         return { status: "registered" };
       },
     );
@@ -122,10 +122,15 @@ describe("PushNotificationSync", () => {
   it("토큰 갱신 시 재등록하고 로그아웃 후 갱신은 무시한다", async () => {
     const { unmount } = render(<PushNotificationSync />);
     await waitFor(() => expect(mockPostDeviceToken).toHaveBeenCalledTimes(1));
-    tokenListener?.();
+    tokenListener?.("token");
+    tokenListener?.("rotated");
     await waitFor(() => expect(mockPostDeviceToken).toHaveBeenCalledTimes(2));
+    expect(mockPostDeviceToken).toHaveBeenLastCalledWith({
+      deviceToken: "rotated",
+      deviceType: "ANDROID",
+    });
     unmount();
-    tokenListener?.();
+    tokenListener?.("after-logout");
     await Promise.resolve();
     expect(mockPostDeviceToken).toHaveBeenCalledTimes(2);
   });

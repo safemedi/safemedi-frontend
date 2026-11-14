@@ -44,15 +44,21 @@ describe("app.config", () => {
   const originalKakaoAppKey = process.env.EXPO_PUBLIC_KAKAO_NATIVE_APP_KEY;
   const originalApiBaseUrl = process.env.EXPO_PUBLIC_API_BASE_URL;
   const originalGoogleServicesJson = process.env.GOOGLE_SERVICES_JSON;
+  const originalAppEnv = process.env.EXPO_PUBLIC_APP_ENV;
+  const originalBuildProfile = process.env.EAS_BUILD_PROFILE;
   const originalSentryOrgSlug = process.env.SENTRY_ORG_SLUG;
   const originalSentryProjectSlug = process.env.SENTRY_PROJECT_SLUG;
 
   beforeEach(() => {
+    delete process.env.EXPO_PUBLIC_APP_ENV;
+    delete process.env.EAS_BUILD_PROFILE;
     process.env.SENTRY_ORG_SLUG = "test-org";
     process.env.SENTRY_PROJECT_SLUG = "test-project";
   });
 
   afterEach(() => {
+    restoreEnvValue("EXPO_PUBLIC_APP_ENV", originalAppEnv);
+    restoreEnvValue("EAS_BUILD_PROFILE", originalBuildProfile);
     restoreEnvValue("EXPO_PUBLIC_KAKAO_NATIVE_APP_KEY", originalKakaoAppKey);
     restoreEnvValue("EXPO_PUBLIC_API_BASE_URL", originalApiBaseUrl);
     restoreEnvValue("GOOGLE_SERVICES_JSON", originalGoogleServicesJson);
@@ -251,11 +257,26 @@ describe("app.config", () => {
     );
   });
 
-  it("SENTRY_ORG_SLUG/SENTRY_PROJECT_SLUG가 없으면 config 평가 시 에러를 던진다", () => {
-    delete process.env.SENTRY_ORG_SLUG;
+  it.each([
+    ["EXPO_PUBLIC_APP_ENV", "SENTRY_ORG_SLUG"],
+    ["EAS_BUILD_PROFILE", "SENTRY_PROJECT_SLUG"],
+  ])("운영 환경 %s에서 %s 값이 비어 있으면 설정 평가에 실패한다", (envKey, slugKey) => {
+    process.env[envKey] = "production";
+    process.env[slugKey] = "  ";
+    expect(() => loadAppConfigModule()).toThrow("production 빌드에는");
+  });
 
-    expect(() => loadAppConfigModule()).toThrow(
-      "SENTRY_ORG_SLUG / SENTRY_PROJECT_SLUG 환경변수가 필요합니다",
+  it("환경변수 주입 전에도 SafeMedi 기본값으로 Sentry 플러그인을 구성한다", () => {
+    delete process.env.SENTRY_ORG_SLUG;
+    delete process.env.SENTRY_PROJECT_SLUG;
+
+    const result = loadAppConfigModule().default(
+      createConfigContext({ name: "SafeMedi", slug: "safeMedi" }),
     );
+
+    expect(result.plugins).toContainEqual([
+      "@sentry/react-native/expo",
+      expect.objectContaining({ organization: "safemedi", project: "react-native" }),
+    ]);
   });
 });

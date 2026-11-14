@@ -8,6 +8,7 @@ const mockGetDevicePushTokenAsync = jest.fn();
 const mockAddNotificationReceivedListener = jest.fn();
 const mockAddNotificationResponseReceivedListener = jest.fn();
 
+const mockAddPushTokenListener = jest.fn();
 const mockGetIosFcmToken = jest.fn();
 const mockTokenRefreshUnsubscribe = jest.fn();
 const mockSubscribeIosFcmTokenRefresh = jest.fn(
@@ -45,6 +46,7 @@ jest.mock("react-native", () => ({
 }));
 
 jest.mock("expo-notifications", () => ({
+  addPushTokenListener: mockAddPushTokenListener,
   AndroidImportance: {
     MAX: "max",
   },
@@ -139,6 +141,23 @@ describe("pushNotifications", () => {
 
     expect(mockRequestPermissionsAsync).toHaveBeenCalledTimes(1);
     expect(registerFn).not.toHaveBeenCalled();
+  });
+
+  it("Android 갱신 이벤트의 토큰을 다시 조회하지 않고 등록한다", async () => {
+    const push = loadPushNotifications();
+    const register = jest.fn();
+    let onToken: ((token: { data: string }) => Promise<void>) | undefined;
+    mockAddPushTokenListener.mockImplementation((callback) => {
+      onToken = callback;
+      return { remove: jest.fn() };
+    });
+    const listener = jest.fn();
+    push.addPushTokenRefreshListener(listener);
+    await onToken?.({ data: "rotated" });
+    expect(listener).toHaveBeenCalledWith("rotated");
+    await push.registerPushTokenWithBackend(register, "rotated");
+    expect(mockGetDevicePushTokenAsync).not.toHaveBeenCalled();
+    expect(register).toHaveBeenCalledWith({ deviceToken: "rotated", deviceType: "ANDROID" });
   });
 
   it("iOS 시뮬레이터에서도 FCM 토큰을 서버에 등록하고 토큰 갱신을 구독한다", async () => {

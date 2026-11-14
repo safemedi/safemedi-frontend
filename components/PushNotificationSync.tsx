@@ -38,15 +38,17 @@ export function PushNotificationSync() {
     const controller = new AbortController();
 
     let registration: Promise<void> = Promise.resolve();
-    const handleRegisterToken = () => {
+    let lastRegisteredToken: string | undefined;
+    const handleRegisterToken = (refreshedToken?: string) => {
       registration = registration
         .then(async () => {
-          if (cancelled) return;
+          if (cancelled || (refreshedToken && refreshedToken === lastRegisteredToken)) return;
           await registerDeviceToken({ accessToken, signal: controller.signal });
           const result = await registerPushTokenWithBackend(async (body) => {
             if (cancelled) return;
             await registerDeviceToken({ body, accessToken, signal: controller.signal });
-          });
+            lastRegisteredToken = body.deviceToken;
+          }, refreshedToken);
           if (!cancelled && result.status !== "registered") {
             warnPushTokenRegistration(`FCM 디바이스 토큰 등록 스킵 (${result.reason})`);
           }

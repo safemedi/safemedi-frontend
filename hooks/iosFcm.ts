@@ -35,7 +35,7 @@ export async function getIosFcmToken(): Promise<string> {
   return api.getToken(messaging);
 }
 
-export function subscribeIosFcmTokenRefresh(listener: () => void): () => void {
+export function subscribeIosFcmTokenRefresh(listener: (token: string) => void): () => void {
   const api = loadMessaging();
   return api.onTokenRefresh(api.getMessaging(), listener);
 }

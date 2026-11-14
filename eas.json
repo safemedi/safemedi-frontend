@@ -37,9 +37,7 @@
       "node": "22.14.0",
       "environment": "production",
       "env": {
-        "EXPO_PUBLIC_APP_ENV": "production",
-        "SENTRY_ORG_SLUG": "safemedi",
-        "SENTRY_PROJECT_SLUG": "react-native"
+        "EXPO_PUBLIC_APP_ENV": "production"
       },
       "android": {
         "buildType": "app-bundle",

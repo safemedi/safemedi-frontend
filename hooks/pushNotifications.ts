@@ -109,7 +109,7 @@ export async function requestPushNotificationPermissions(): Promise<boolean> {
   return status === "granted";
 }
 
-export async function getDevicePushToken(): Promise<string | null> {
+export async function getDevicePushToken(refreshedToken?: string): Promise<string | null> {
   const hasPermission = await requestPushNotificationPermissions();
   if (!hasPermission) {
     return null;
@@ -127,9 +127,10 @@ export async function getDevicePushToken(): Promise<string | null> {
   }
 
   const token =
-    Platform.OS === "ios"
+    refreshedToken ??
+    (Platform.OS === "ios"
       ? await getIosFcmToken()
-      : (await loadNotificationsModule()?.getDevicePushTokenAsync())?.data;
+      : (await loadNotificationsModule()?.getDevicePushTokenAsync())?.data);
   if (!token) return null;
 
   await setRegisteredDeviceToken(token);
@@ -138,12 +139,13 @@ export async function getDevicePushToken(): Promise<string | null> {
 
 export async function registerPushTokenWithBackend(
   registerFn: (body: { deviceToken: string; deviceType: DeviceType }) => Promise<unknown>,
+  refreshedToken?: string,
 ): Promise<PushTokenRegistrationResult> {
   if (!isPushNotificationsNativeModuleAvailable()) {
     return { status: "skipped", reason: "native-module-unavailable" };
   }
 
-  const deviceToken = await getDevicePushToken();
+  const deviceToken = await getDevicePushToken(refreshedToken);
   if (!deviceToken) {
     return { status: "skipped", reason: "device-token-unavailable" };
   }
@@ -181,10 +183,14 @@ export function addNotificationResponseListener(
   return notifications.addNotificationResponseReceivedListener(listener);
 }
 
-export function addPushTokenRefreshListener(listener: () => void): EventSubscription {
+export function addPushTokenRefreshListener(listener: (token: string) => void): EventSubscription {
   if (Platform.OS === "ios") {
     if (!isIosFcmAvailable()) return NOOP_SUBSCRIPTION;
     return { remove: subscribeIosFcmTokenRefresh(listener) };
   }
-  return loadNotificationsModule()?.addPushTokenListener(listener) ?? NOOP_SUBSCRIPTION;
+  return (
+    loadNotificationsModule()?.addPushTokenListener((token) => {
+      if (typeof token.data === "string") listener(token.data);
+    }) ?? NOOP_SUBSCRIPTION
+  );
 }
