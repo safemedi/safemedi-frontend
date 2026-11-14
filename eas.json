@@ -28,6 +28,9 @@
       },
       "android": {
         "buildType": "apk"
+      },
+      "ios": {
+        "buildConfiguration": "Release"
       }
     },
     "production": {
@@ -43,6 +46,8 @@
         "autoIncrement": true
       },
       "ios": {
+        "distribution": "store",
+        "buildConfiguration": "Release",
         "autoIncrement": true
       }
     },

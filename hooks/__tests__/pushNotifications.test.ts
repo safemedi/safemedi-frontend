@@ -141,14 +141,22 @@ describe("pushNotifications", () => {
     expect(registerFn).not.toHaveBeenCalled();
   });
 
-  it("iOS 시뮬레이터는 서버 토큰 등록을 생략한다", async () => {
+  it("iOS 시뮬레이터에서도 FCM 토큰을 서버에 등록하고 토큰 갱신을 구독한다", async () => {
     mockPlatformOS = "ios";
     mockIsDevice = false;
-    await expect(loadPushNotifications().registerPushTokenWithBackend(jest.fn())).resolves.toEqual({
-      status: "skipped",
-      reason: "ios-simulator",
+    const pushNotifications = loadPushNotifications();
+    const register = jest.fn();
+    const listener = jest.fn();
+
+    await expect(pushNotifications.registerPushTokenWithBackend(register)).resolves.toEqual({
+      status: "registered",
     });
-    expect(mockGetIosFcmToken).not.toHaveBeenCalled();
+    expect(register).toHaveBeenCalledWith({ deviceToken: "ios-fcm-token", deviceType: "IOS" });
+
+    const subscription = pushNotifications.addPushTokenRefreshListener(listener);
+    expect(mockSubscribeIosFcmTokenRefresh).toHaveBeenCalledWith(listener);
+    subscription.remove();
+    expect(mockTokenRefreshUnsubscribe).toHaveBeenCalledTimes(1);
   });
 
   it("iOS 원격 푸시가 활성화되면 IOS deviceType으로 등록한다", async () => {

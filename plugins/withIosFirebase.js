@@ -1,9 +1,4 @@
-const {
-  withPlugins,
-  withPodfile,
-  withEntitlementsPlist,
-  withInfoPlist,
-} = require("@expo/config-plugins");
+const { withPlugins, withPodfile, withInfoPlist } = require("@expo/config-plugins");
 const path = require("node:path");
 const firebaseRoot = path.dirname(require.resolve("@react-native-firebase/app/package.json"));
 const { withFirebaseAppDelegate, withIosGoogleServicesFile } = require(
@@ -18,10 +13,6 @@ function withIosFirebase(config) {
     if (!config.modResults.contents.includes(flag)) {
       config.modResults.contents = `${flag}\n${config.modResults.contents}`;
     }
-    return config;
-  });
-  config = withEntitlementsPlist(config, (config) => {
-    config.modResults["aps-environment"] = "development";
     return config;
   });
   return withInfoPlist(config, (config) => {

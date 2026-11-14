@@ -1,4 +1,3 @@
-import { isDevice } from "expo-device";
 import { requireOptionalNativeModule } from "expo-modules-core";
 import { Platform } from "react-native";
 import type { DeviceType } from "@/api/types";
@@ -30,7 +29,7 @@ export type PushTokenRegistrationResult =
   | { readonly status: "registered" }
   | {
       readonly status: "skipped";
-      readonly reason: "native-module-unavailable" | "ios-simulator" | "device-token-unavailable";
+      readonly reason: "native-module-unavailable" | "device-token-unavailable";
     };
 
 const NOOP_SUBSCRIPTION: EventSubscription = { remove: () => {} };
@@ -144,10 +143,6 @@ export async function registerPushTokenWithBackend(
     return { status: "skipped", reason: "native-module-unavailable" };
   }
 
-  if (Platform.OS === "ios" && !isDevice) {
-    return { status: "skipped", reason: "ios-simulator" };
-  }
-
   const deviceToken = await getDevicePushToken();
   if (!deviceToken) {
     return { status: "skipped", reason: "device-token-unavailable" };
@@ -188,7 +183,7 @@ export function addNotificationResponseListener(
 
 export function addPushTokenRefreshListener(listener: () => void): EventSubscription {
   if (Platform.OS === "ios") {
-    if (!isDevice || !isIosFcmAvailable()) return NOOP_SUBSCRIPTION;
+    if (!isIosFcmAvailable()) return NOOP_SUBSCRIPTION;
     return { remove: subscribeIosFcmTokenRefresh(listener) };
   }
   return loadNotificationsModule()?.addPushTokenListener(listener) ?? NOOP_SUBSCRIPTION;

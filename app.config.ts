@@ -77,6 +77,14 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     ios: {
       ...config.ios,
       googleServicesFile: GOOGLE_SERVICES_PLIST,
+      entitlements: {
+        ...config.ios?.entitlements,
+        "aps-environment":
+          process.env.EXPO_PUBLIC_APP_ENV === "preview" ||
+          process.env.EXPO_PUBLIC_APP_ENV === "production"
+            ? "production"
+            : "development",
+      },
       infoPlist: {
         ...existingInfoPlist,
       },
