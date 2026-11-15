@@ -11,8 +11,16 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-android-preview:
-    name: Android preview APK
+  build-preview:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: android
+            name: Android preview APK
+          - platform: ios
+            name: iOS preview IPA
+    name: ${{ matrix.name }}
     runs-on: ubuntu-latest
     timeout-minutes: 60
     permissions:
@@ -48,10 +56,10 @@ jobs:
       - name: Run tests
         run: yarn test
 
-      - name: Build Android preview
+      - name: Build ${{ matrix.name }}
         id: eas_build
         run: |
-          eas build --platform android --profile preview --non-interactive --json > eas-build.json
+          eas build --platform ${{ matrix.platform }} --profile preview --non-interactive --json > eas-build.json
 
           node <<'NODE' >> "$GITHUB_OUTPUT"
           const fs = require("node:fs");
@@ -97,9 +105,9 @@ jobs:
         uses: sarisia/actions-status-discord@v1
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          title: "SafeMedi EAS Preview 배포 성공"
+          title: "SafeMedi ${{ matrix.name }} 배포 성공"
           description: |
-            설치 URL: ${{ steps.eas_build.outputs.install_url }}
+            설치 링크: ${{ matrix.platform == 'ios' && steps.eas_build.outputs.details_url || steps.eas_build.outputs.install_url }}
             빌드 상세: ${{ steps.eas_build.outputs.details_url }}
             커밋: ${{ github.sha }}
             작성자: ${{ github.actor }}
