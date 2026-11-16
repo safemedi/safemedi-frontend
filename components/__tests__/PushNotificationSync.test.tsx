@@ -161,19 +161,13 @@ describe("PushNotificationSync", () => {
   });
 
   it("cleanup 이후 완료된 등록 callback은 서버 요청을 생략한다", async () => {
-    let resolveRegistration: (value: { status: "registered" }) => void = () => {};
-    mockRegisterPushTokenWithBackend.mockImplementation(
-      (registerFn: (body: unknown) => Promise<void>) =>
-        new Promise((resolve) => {
-          resolveRegistration = resolve;
-          void registerFn({ deviceToken: "late-token", deviceType: "ANDROID" });
-        }),
-    );
-
     const { unmount } = render(<PushNotificationSync />);
-    unmount();
-    resolveRegistration({ status: "registered" });
-
+    mockRegisterPushTokenWithBackend.mockImplementationOnce(async (register) => {
+      unmount();
+      await register({ deviceToken: "late-token", deviceType: "ANDROID" });
+      return { status: "registered" };
+    });
     await waitFor(() => expect(mockReceivedRemove).toHaveBeenCalledTimes(1));
+    expect(mockPostDeviceToken).not.toHaveBeenCalled();
   });
 });

@@ -1,4 +1,5 @@
 const mockMessaging = { isDeviceRegisteredForRemoteMessages: false };
+const mockGetMessaging = jest.fn(() => mockMessaging);
 const mockRegister = jest.fn();
 const mockPermission = jest.fn();
 const mockGetToken = jest.fn();
@@ -8,7 +9,7 @@ const mockOpened = jest.fn();
 const mockInitial = jest.fn();
 
 jest.mock("@react-native-firebase/messaging", () => ({
-  getMessaging: () => mockMessaging,
+  getMessaging: () => mockGetMessaging(),
   requestPermission: (...args: unknown[]) => mockPermission(...args),
   AuthorizationStatus: { AUTHORIZED: 1, PROVISIONAL: 2, EPHEMERAL: 3 },
   registerDeviceForRemoteMessages: (...args: unknown[]) => mockRegister(...args),
@@ -21,7 +22,9 @@ jest.mock("@react-native-firebase/messaging", () => ({
 
 import {
   getIosFcmToken,
+  isIosFcmAvailable,
   requestIosFcmPermission,
+  subscribeIosFcmMessage,
   subscribeIosFcmResponse,
   subscribeIosFcmTokenRefresh,
 } from "../iosFcm";
@@ -95,5 +98,34 @@ describe("iOS FCM 연결", () => {
     resolve({ messageId: "late" });
     await Promise.resolve();
     expect(listener).not.toHaveBeenCalled();
+  });
+
+  it("메시징 초기화 성공 여부로 FCM 사용 가능 여부를 판단한다", () => {
+    expect(isIosFcmAvailable()).toBe(true);
+    mockGetMessaging.mockImplementationOnce(() => {
+      throw new Error("unavailable");
+    });
+    expect(isIosFcmAvailable()).toBe(false);
+  });
+
+  it("포그라운드 메시지를 구독하고 해제 함수를 반환한다", () => {
+    const listener = jest.fn();
+    const unsubscribe = jest.fn();
+    mockOnMessage.mockReturnValue(unsubscribe);
+    expect(subscribeIosFcmMessage(listener)).toBe(unsubscribe);
+    expect(mockOnMessage).toHaveBeenCalledWith(mockMessaging, listener);
+  });
+
+  it("초기 알림 조회가 실패해도 이후 알림 응답 구독을 유지한다", async () => {
+    mockInitial.mockRejectedValue(new Error("unavailable"));
+    const listener = jest.fn();
+    const unsubscribe = jest.fn();
+    mockOpened.mockReturnValue(unsubscribe);
+    const remove = subscribeIosFcmResponse(listener);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(listener).not.toHaveBeenCalled();
+    expect(mockOpened).toHaveBeenCalledWith(mockMessaging, listener);
+    remove();
+    expect(unsubscribe).toHaveBeenCalledTimes(1);
   });
 });
