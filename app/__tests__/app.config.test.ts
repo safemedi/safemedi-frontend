@@ -258,12 +258,18 @@ describe("app.config", () => {
   });
 
   it.each([
-    ["EXPO_PUBLIC_APP_ENV", "SENTRY_ORG_SLUG"],
-    ["EAS_BUILD_PROFILE", "SENTRY_PROJECT_SLUG"],
-  ])("운영 환경 %s에서 %s 값이 비어 있으면 설정 평가에 실패한다", (envKey, slugKey) => {
+    ["EXPO_PUBLIC_APP_ENV", "SENTRY_ORG_SLUG", "safemedi", "test-project"],
+    ["EAS_BUILD_PROFILE", "SENTRY_PROJECT_SLUG", "test-org", "react-native"],
+  ])("운영 환경 %s에서 %s 값이 공백이면 해당 기본값을 사용한다", (envKey, slugKey, org, project) => {
     process.env[envKey] = "production";
     process.env[slugKey] = "  ";
-    expect(() => loadAppConfigModule()).toThrow("production 빌드에는");
+    const result = loadAppConfigModule().default(
+      createConfigContext({ name: "SafeMedi", slug: "safeMedi" }),
+    );
+    expect(result.plugins).toContainEqual([
+      "@sentry/react-native/expo",
+      expect.objectContaining({ organization: org, project }),
+    ]);
   });
 
   it("환경변수 주입 전에도 SafeMedi 기본값으로 Sentry 플러그인을 구성한다", () => {
