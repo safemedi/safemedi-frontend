@@ -104,7 +104,7 @@ jobs:
         if: success()
         uses: sarisia/actions-status-discord@v1
         with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          webhook: ${{ secrets.DISCORD_FE_WEBHOOK_URL }}
           title: "SafeMedi ${{ matrix.name }} 배포 성공"
           description: |
             설치 링크: ${{ matrix.platform == 'ios' && steps.eas_build.outputs.details_url || steps.eas_build.outputs.install_url }}
