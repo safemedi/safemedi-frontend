@@ -39,7 +39,12 @@ function maskSensitiveFieldsForLog(value: unknown, seen: WeakSet<object> = new W
   return masked;
 }
 
+function isPrescriptionExtraction(request: Request): boolean {
+  return new URL(request.url).pathname === apiPaths.prescriptionsExtract;
+}
+
 async function readRequestBodyForLog(request: Request): Promise<unknown> {
+  if (isPrescriptionExtraction(request)) return undefined;
   if (request.method === "GET" || request.method === "HEAD") {
     return undefined;
   }
@@ -158,13 +163,25 @@ function captureServerError(error: HTTPError): void {
  */
 const baseUrl = apiConfig.baseUrl.endsWith("/") ? apiConfig.baseUrl : `${apiConfig.baseUrl}/`;
 
+function hasSessionChanged(context: Record<string, unknown> | undefined): boolean {
+  const expected = context?.requiredSessionVersion;
+  return typeof expected === "number" && expected !== useSessionStore.getState().sessionVersion;
+}
+
+function assertRequestSession(context: Record<string, unknown> | undefined): void {
+  if (hasSessionChanged(context)) {
+    throw new Error("로그인 상태가 변경되었습니다. 다시 시도해 주세요.");
+  }
+}
+
 export const api: KyInstance = ky.create({
   baseUrl,
   timeout: apiConfig.timeoutMs,
   fetch: fetchImpl,
   hooks: {
     beforeRequest: [
-      async ({ request }) => {
+      async ({ request, options }) => {
+        assertRequestSession(options?.context);
         if (!request.headers.has("Authorization")) {
           const token = useSessionStore.getState().accessToken;
           if (token) {
@@ -180,9 +197,10 @@ export const api: KyInstance = ky.create({
         }
       },
     ],
+    beforeRetry: [({ options }) => assertRequestSession(options.context)],
     afterResponse: [
       async ({ request, response }) => {
-        if (!__DEV__ || !response.ok) {
+        if (!__DEV__ || !response.ok || isPrescriptionExtraction(request)) {
           return response;
         }
 
@@ -199,13 +217,14 @@ export const api: KyInstance = ky.create({
           response.status !== 401 ||
           retryCount > 0 ||
           isReissueRequest ||
-          options?.context?.skipAuthRefresh
+          options?.context?.skipAuthRefresh ||
+          hasSessionChanged(options?.context)
         ) {
           return;
         }
 
         const newAccessToken = await refreshAccessToken();
-        if (!newAccessToken) {
+        if (!newAccessToken || hasSessionChanged(options?.context)) {
           return;
         }
 
@@ -225,7 +244,7 @@ export const api: KyInstance = ky.create({
 
         const label = formatApiErrorForLog(error);
 
-        if (error instanceof HTTPError) {
+        if (error instanceof HTTPError && !isPrescriptionExtraction(error.request)) {
           const body = await readResponseBodyForLog(error.response);
           logApiDev(`[api] ✕ ${label}`, body);
         } else {

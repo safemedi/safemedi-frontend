@@ -31,7 +31,7 @@ const mockKyCreate = jest.fn();
 const mockKyRetry = jest.fn((..._args: unknown[]) => "RETRY_MARKER");
 const mockRefreshAccessToken = jest.fn<Promise<string | null>, []>();
 
-type KyHookOptions = Record<string, never>;
+type KyHookOptions = { context?: Record<string, unknown> };
 
 type BeforeRequestHookArg = {
   request: Request;
@@ -89,13 +89,18 @@ describe("api/client", () => {
   beforeEach(() => {
     jest.resetModules();
     jest.clearAllMocks();
+    mockRefreshAccessToken.mockReset();
   });
 
   afterAll(() => {
     (global as { __DEV__?: boolean }).__DEV__ = originalDev;
   });
 
-  function loadClient(options?: { readonly token?: string | null; readonly baseUrl?: string }) {
+  function loadClient(options?: {
+    readonly token?: string | null;
+    readonly baseUrl?: string;
+    readonly sessionVersion?: () => number;
+  }) {
     jest.doMock("@/api/mock", () => ({
       mockRegistry: {},
       resolveFetchImplementation: () => jest.fn(),
@@ -108,18 +113,75 @@ describe("api/client", () => {
       },
     }));
     jest.doMock("@/stores/sessionStore", () => ({
-      useSessionStore: { getState: () => ({ accessToken: options?.token ?? null }) },
+      useSessionStore: {
+        getState: () => ({
+          accessToken: options?.token ?? null,
+          sessionVersion: options?.sessionVersion?.(),
+        }),
+      },
     }));
     jest.isolateModules(() => {
       require("../client");
     });
     return mockKyCreate.mock.calls[0]?.[0] as {
       hooks: {
+        beforeRetry: Array<(arg: { options: KyHookOptions }) => void>;
+        beforeRequest: Array<(arg: BeforeRequestHookArg) => Promise<void>>;
         afterResponse: Array<(arg: AfterResponseHookArg) => Promise<Response | string | undefined>>;
         beforeError: Array<(arg: BeforeErrorHookArg) => Promise<Error>>;
       };
     };
   }
+
+  it.each([
+    "same",
+    "before",
+    "during",
+  ])("사진 업로드의 세션 변경 시점에 따라 재전송을 판단한다 (%s)", async (change) => {
+    let sessionVersion = change === "before" ? 2 : 1;
+    const { hooks } = loadClient({ sessionVersion: () => sessionVersion });
+    const request = new Request("https://api.example.com/api/v1/prescriptions/extract");
+    const options = { context: { requiredSessionVersion: 1 } };
+    mockRefreshAccessToken.mockImplementationOnce(async () => {
+      if (change === "during") sessionVersion = 2;
+      return "refreshed";
+    });
+
+    const result = await hooks.afterResponse[1]({
+      ...createAfterResponseState(request, new Response(null, { status: 401 })),
+      options,
+    });
+
+    if (change === "same") {
+      expect(result).toBe("RETRY_MARKER");
+      expect(request.headers.get("Authorization")).toBe("Bearer refreshed");
+      expect(() => hooks.beforeRetry[0]({ options })).not.toThrow();
+      sessionVersion = 2;
+    } else {
+      expect(result).toBeUndefined();
+      expect(request.headers.get("Authorization")).toBeNull();
+      expect(mockRefreshAccessToken).toHaveBeenCalledTimes(change === "before" ? 0 : 1);
+    }
+    expect(() => hooks.beforeRetry[0]({ options })).toThrow("로그인 상태가 변경되었습니다");
+    await expect(
+      hooks.beforeRequest[0]({ ...createBeforeRequestState(request), options }),
+    ).rejects.toThrow("로그인 상태가 변경되었습니다");
+  });
+
+  it("처방전 추출 요청과 성공 응답의 본문을 읽거나 기록하지 않는다", async () => {
+    const options = loadClient();
+    const request = new Request("https://api.example.com/api/v1/prescriptions/extract", {
+      method: "POST",
+      body: "private-image",
+    });
+    const response = new Response('{"drugName":"private-medication"}', { status: 200 });
+    const requestClone = jest.spyOn(request, "clone");
+    const responseClone = jest.spyOn(response, "clone");
+    await options.hooks.beforeRequest[0](createBeforeRequestState(request));
+    await options.hooks.afterResponse[0](createAfterResponseState(request, response));
+    expect(requestClone).not.toHaveBeenCalled();
+    expect(responseClone).not.toHaveBeenCalled();
+  });
 
   it("baseUrl 끝에 슬래시가 없으면 자동으로 붙여서 ky.create를 호출한다", () => {
     const mockFetch = jest.fn();

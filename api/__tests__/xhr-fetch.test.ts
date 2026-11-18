@@ -58,4 +58,25 @@ describe("createXhrFetch", () => {
     expect(response.status).toBe(200);
     await expect(response.json()).resolves.toEqual({ ok: true });
   });
+  it("FormData는 텍스트로 읽지 않고 원본을 XHR로 전달하며 재전송한다", async () => {
+    const body = new FormData();
+    body.append("image", "image-placeholder");
+    const request = new Request("https://api.example.com/api/v1/prescriptions/extract", {
+      method: "POST",
+      body,
+    });
+    const send = jest.spyOn(MockXMLHttpRequest.prototype, "send");
+    const text = jest.spyOn(Request.prototype, "text");
+    try {
+      const xhrFetch = createXhrFetch();
+      await xhrFetch(request.clone());
+      await xhrFetch(request.clone());
+      expect(text).not.toHaveBeenCalled();
+      expect(send).toHaveBeenCalledTimes(2);
+      expect(send.mock.calls[0][0]).toBeInstanceOf(FormData);
+    } finally {
+      send.mockRestore();
+      text.mockRestore();
+    }
+  });
 });
