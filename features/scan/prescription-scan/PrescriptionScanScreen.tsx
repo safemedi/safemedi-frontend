@@ -57,14 +57,6 @@ export function PrescriptionScanScreen() {
           />
         </YStack>
       </ScrollView>
-      {viewModel.selectedImageUri && !isBusy ? (
-        <Text accessibilityRole="button" onPress={viewModel.retryExtract} style={styles.retryText}>
-          이 사진으로 다시 분석
-        </Text>
-      ) : null}
-      <Text style={styles.feedbackText}>
-        사진을 서버와 AI 분석 서비스로 전송해 처방전 정보를 추출합니다.
-      </Text>
       <PrescriptionScanActions
         isBusy={isBusy}
         onPressGallery={viewModel.extractFromGallery}

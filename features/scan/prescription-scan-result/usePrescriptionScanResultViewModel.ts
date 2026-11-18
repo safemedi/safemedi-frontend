@@ -33,8 +33,6 @@ export interface EditableMedicationItem {
   readonly atcCode: string;
   readonly takeSlots: MedicationTakeSlot[];
   readonly additionalTakeTimes?: string;
-  readonly dailyDoseCount?: number;
-  readonly instructions?: string;
 }
 
 export interface PrescriptionScanResultFormValues {
@@ -52,6 +50,12 @@ const DRUG_NAME_NOT_SELECTED_ERROR = "약물명은 검색 결과에서 선택해
 const INVALID_DATE_RANGE_ERROR = "복약 종료일은 시작일보다 빠를 수 없습니다.";
 
 type PrescriptionDateField = "startDate" | "endDate";
+
+function defaultTakeSlots(dailyDoseCount: number | undefined): MedicationTakeSlot[] {
+  if (dailyDoseCount === 3) return ["MORNING", "LUNCH", "DINNER"];
+  if (dailyDoseCount === 2) return ["MORNING", "LUNCH"];
+  return [];
+}
 
 function convertTakeSlotsToTimes(takeSlots: readonly MedicationTakeSlot[]): string[] {
   const selected = new Set(takeSlots);
@@ -90,7 +94,6 @@ function createRequestTakeTimes(medications: readonly CreatePrescriptionMedicati
 }
 
 export interface PrescriptionScanResultViewModel {
-  readonly imageUri: string | null | undefined;
   readonly control: Control<PrescriptionScanResultFormValues>;
   readonly fields: UseFieldArrayReturn<PrescriptionScanResultFormValues, "medications">["fields"];
   readonly editingMedicationIndex: number | null;
@@ -135,9 +138,7 @@ export function usePrescriptionScanResultViewModel(): PrescriptionScanResultView
         drugName: item.drugName,
         drugCode: item.drugCode ?? "",
         atcCode: item.atcCode,
-        takeSlots: [],
-        dailyDoseCount: item.dailyDoseCount,
-        instructions: item.instructions,
+        takeSlots: defaultTakeSlots(item.dailyDoseCount),
       })),
     };
   }, [result]);
@@ -360,7 +361,6 @@ export function usePrescriptionScanResultViewModel(): PrescriptionScanResultView
   const isAnalyzeDisabled = !isDateRangeReady;
 
   return {
-    imageUri: isManualInputMode ? null : result?.imageUri,
     control,
     fields,
     editingMedicationIndex,

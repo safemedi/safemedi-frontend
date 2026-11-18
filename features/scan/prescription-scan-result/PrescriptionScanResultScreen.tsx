@@ -1,6 +1,6 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Controller } from "react-hook-form";
-import { Image, Pressable, ScrollView, StyleSheet, TextInput, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, TextInput, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Text, YStack } from "tamagui";
 import { GradientCard } from "@/components/ui/GradientCard";
@@ -43,14 +43,6 @@ export function PrescriptionScanResultScreen() {
         keyboardShouldPersistTaps="handled"
       >
         <YStack gap={12}>
-          {viewModel.imageUri ? (
-            <Image
-              source={{ uri: viewModel.imageUri }}
-              accessibilityLabel="확인할 처방전 원본"
-              resizeMode="contain"
-              style={{ width: "100%", height: 240 }}
-            />
-          ) : null}
           {viewModel.isManualInputMode ? null : viewModel.hasLowConfidenceExtraction ? (
             <SurfaceCard style={styles.lowConfidenceCard}>
               <View style={styles.lowConfidenceRow}>

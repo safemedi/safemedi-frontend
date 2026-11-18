@@ -185,7 +185,7 @@ describe("usePrescriptionScanResultViewModel", () => {
     expect(result.current.endDate).toBe("2026-07-19");
   });
 
-  it("하루 3회여도 복용 시간을 임의로 지정하지 않는다", () => {
+  it("하루 3회면 아침·점심·저녁을 기본 선택한다", () => {
     mockResult = {
       imageUri: "file://image.png",
       draft: {
@@ -199,11 +199,11 @@ describe("usePrescriptionScanResultViewModel", () => {
     const { result } = renderHook(() => usePrescriptionScanResultViewModel());
 
     expect(result.current.fields[0]).toMatchObject({
-      takeSlots: [],
+      takeSlots: ["MORNING", "LUNCH", "DINNER"],
     });
   });
 
-  it("하루 2회여도 복용 시간을 임의로 지정하지 않는다", () => {
+  it("하루 2회면 아침·점심을 기본 선택한다", () => {
     mockResult = {
       imageUri: "file://image.png",
       draft: {
@@ -217,7 +217,7 @@ describe("usePrescriptionScanResultViewModel", () => {
     const { result } = renderHook(() => usePrescriptionScanResultViewModel());
 
     expect(result.current.fields[0]).toMatchObject({
-      takeSlots: [],
+      takeSlots: ["MORNING", "LUNCH"],
     });
   });
 
