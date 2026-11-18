@@ -8,7 +8,7 @@ import type { AnalyzeIngredientsRequest, AnalyzeIngredientsResponse } from "@/ap
 import { useIngredientAnalysisViewModel } from "../useIngredientAnalysisViewModel";
 
 const mockClearRequest = jest.fn();
-const mockClearOcrResult = jest.fn();
+const mockClearDraftResult = jest.fn();
 const mockAnalyzeMutateAsync = jest.fn();
 const mockCreateMutateAsync = jest.fn();
 
@@ -78,10 +78,10 @@ jest.mock("@/api/queries/prescription-scan", () => ({
   useCreatePrescriptionByScanMutation: jest.fn(),
 }));
 
-jest.mock("../../prescription-scan/usePrescriptionOcrResultStore", () => ({
-  usePrescriptionOcrResultStore: (selector: (state: { clearResult: () => void }) => unknown) =>
+jest.mock("../../prescription-scan/usePrescriptionDraftStore", () => ({
+  usePrescriptionDraftStore: (selector: (state: { clearResult: () => void }) => unknown) =>
     selector({
-      clearResult: mockClearOcrResult,
+      clearResult: mockClearDraftResult,
     }),
 }));
 
@@ -223,7 +223,7 @@ describe("useIngredientAnalysisViewModel", () => {
     });
 
     expect(mockClearRequest).toHaveBeenCalledTimes(1);
-    expect(mockClearOcrResult).toHaveBeenCalledTimes(1);
+    expect(mockClearDraftResult).toHaveBeenCalledTimes(1);
     expect(mockRouterReplace).toHaveBeenCalledWith("/(tabs)/dashboard");
   });
 

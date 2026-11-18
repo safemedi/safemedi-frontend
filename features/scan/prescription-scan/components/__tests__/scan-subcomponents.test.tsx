@@ -1,6 +1,5 @@
 import { fireEvent, render } from "@testing-library/react-native";
 import { StyleSheet } from "react-native";
-import { ExtractedDraftCard } from "../ExtractedDraftCard";
 import { PrescriptionFrameCard } from "../PrescriptionFrameCard";
 import { PrescriptionScanActions } from "../PrescriptionScanActions";
 
@@ -14,25 +13,6 @@ jest.mock("tamagui", () => {
 });
 
 describe("prescription scan subcomponents", () => {
-  it("ExtractedDraftCard는 JSON과 등록 버튼 상태를 표시한다", () => {
-    const onPressSubmit = jest.fn();
-    const { getByText, rerender } = render(
-      <ExtractedDraftCard
-        draftJson='{"title":"처방전"}'
-        isSubmitting={false}
-        onPressSubmit={onPressSubmit}
-      />,
-    );
-
-    expect(getByText("추출된 JSON")).toBeTruthy();
-    expect(getByText('{"title":"처방전"}')).toBeTruthy();
-    fireEvent.press(getByText("추출 결과로 등록"));
-    expect(onPressSubmit).toHaveBeenCalledTimes(1);
-
-    rerender(<ExtractedDraftCard draftJson="{}" isSubmitting onPressSubmit={onPressSubmit} />);
-    expect(getByText("등록 중...")).toBeTruthy();
-  });
-
   it("PrescriptionFrameCard는 직접 입력 버튼 이벤트를 전달한다", () => {
     const onPressManualInput = jest.fn();
     const { getByText, rerender } = render(

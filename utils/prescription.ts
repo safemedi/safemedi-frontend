@@ -19,3 +19,7 @@ export function getPrescriptionTitleError(
 
   return null;
 }
+
+export function isConfirmedAtcCode(atcCode: string): boolean {
+  return atcCode.trim().length > 0 && atcCode !== "UNKNOWN";
+}

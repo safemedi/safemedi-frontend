@@ -5,7 +5,7 @@ import { getApiErrorMessage } from "@/api/error";
 import { useAnalyzeIngredientsMutation } from "@/api/queries/ingredient-analysis";
 import { useCreatePrescriptionByScanMutation } from "@/api/queries/prescription-scan";
 import type { AnalyzeIngredientsResponse } from "@/api/types";
-import { usePrescriptionOcrResultStore } from "../prescription-scan/usePrescriptionOcrResultStore";
+import { usePrescriptionDraftStore } from "../prescription-scan/usePrescriptionDraftStore";
 import type { IngredientAnalysisViewModel } from "./types";
 import { useIngredientAnalysisStore } from "./useIngredientAnalysisStore";
 
@@ -14,7 +14,7 @@ const EMPTY_REQUEST_ERROR = "분석할 약물 정보가 없습니다. 스캔 결
 export function useIngredientAnalysisViewModel(): IngredientAnalysisViewModel {
   const request = useIngredientAnalysisStore((state) => state.request);
   const clearRequest = useIngredientAnalysisStore((state) => state.clearRequest);
-  const clearOcrResult = usePrescriptionOcrResultStore((state) => state.clearResult);
+  const clearDraftResult = usePrescriptionDraftStore((state) => state.clearResult);
   const analyzeMutation = useAnalyzeIngredientsMutation();
   const createMutation = useCreatePrescriptionByScanMutation();
   const shouldIgnoreMissingRequestAlertRef = useRef<boolean>(false);
@@ -92,7 +92,7 @@ export function useIngredientAnalysisViewModel(): IngredientAnalysisViewModel {
           onPress: () => {
             shouldIgnoreMissingRequestAlertRef.current = true;
             clearRequest();
-            clearOcrResult();
+            clearDraftResult();
             router.replace("/(tabs)/dashboard");
           },
         },
@@ -104,7 +104,7 @@ export function useIngredientAnalysisViewModel(): IngredientAnalysisViewModel {
       );
       Alert.alert("복약 등록 실패", message);
     }
-  }, [clearOcrResult, clearRequest, createMutation, request]);
+  }, [clearDraftResult, clearRequest, createMutation, request]);
 
   return useMemo(
     () => ({

@@ -1,6 +1,6 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Controller } from "react-hook-form";
-import { Pressable, ScrollView, StyleSheet, TextInput, View } from "react-native";
+import { Image, Pressable, ScrollView, StyleSheet, TextInput, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Text, YStack } from "tamagui";
 import { GradientCard } from "@/components/ui/GradientCard";
@@ -43,6 +43,14 @@ export function PrescriptionScanResultScreen() {
         keyboardShouldPersistTaps="handled"
       >
         <YStack gap={12}>
+          {viewModel.imageUri ? (
+            <Image
+              source={{ uri: viewModel.imageUri }}
+              accessibilityLabel="확인할 처방전 원본"
+              resizeMode="contain"
+              style={{ width: "100%", height: 240 }}
+            />
+          ) : null}
           {viewModel.isManualInputMode ? null : viewModel.hasLowConfidenceExtraction ? (
             <SurfaceCard style={styles.lowConfidenceCard}>
               <View style={styles.lowConfidenceRow}>
@@ -64,7 +72,7 @@ export function PrescriptionScanResultScreen() {
               <View style={styles.successRow}>
                 <Ionicons name="checkmark-circle-outline" size={20} color={palette.white} />
                 <YStack gap={2}>
-                  <Text style={styles.successTitle}>텍스트 인식 완료!</Text>
+                  <Text style={styles.successTitle}>사진 분석 완료!</Text>
                   <Text style={styles.successDescription}>
                     {viewModel.recognizedMedicationCount}개의 약물을 찾았어요
                   </Text>
@@ -144,9 +152,10 @@ export function PrescriptionScanResultScreen() {
             <View style={styles.noticeRow}>
               <Ionicons name="alert-circle-outline" size={16} color={palette.orange} />
               <YStack gap={4} flex={1}>
-                <Text style={styles.noticeTitle}>약물 정보 수정 가능</Text>
+                <Text style={styles.noticeTitle}>원본과 비교하고 확인해 주세요</Text>
                 <Text style={styles.noticeDescription}>
-                  약물명은 검색 결과에서 선택하고, 복약 시간을 입력해 주세요.
+                  AI가 잘못 읽거나 약물을 누락할 수 있어요. 원본의 약물·날짜·복용법을 확인하고 복용
+                  시간을 선택해 주세요.
                 </Text>
               </YStack>
             </View>

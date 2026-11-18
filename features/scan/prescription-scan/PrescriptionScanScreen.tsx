@@ -29,7 +29,7 @@ export function PrescriptionScanScreen() {
     ]);
   }, [viewModel.error, viewModel.resetError]);
 
-  const isBusy = viewModel.isExtracting || viewModel.isSubmitting;
+  const isBusy = viewModel.isExtracting;
 
   return (
     <YStack style={styles.screen}>
@@ -57,6 +57,14 @@ export function PrescriptionScanScreen() {
           />
         </YStack>
       </ScrollView>
+      {viewModel.selectedImageUri && !isBusy ? (
+        <Text accessibilityRole="button" onPress={viewModel.retryExtract} style={styles.retryText}>
+          이 사진으로 다시 분석
+        </Text>
+      ) : null}
+      <Text style={styles.feedbackText}>
+        사진을 서버와 AI 분석 서비스로 전송해 처방전 정보를 추출합니다.
+      </Text>
       <PrescriptionScanActions
         isBusy={isBusy}
         onPressGallery={viewModel.extractFromGallery}
@@ -66,8 +74,8 @@ export function PrescriptionScanScreen() {
       {viewModel.isExtracting ? (
         <View style={styles.extractingOverlay}>
           <YStack style={styles.extractingDialog} gap={10}>
-            <LoadingSpinner accessibilityLabel="OCR 텍스트 추출 중" />
-            <Text style={styles.feedbackText}>OCR로 텍스트를 추출하는 중입니다.</Text>
+            <LoadingSpinner accessibilityLabel="사진 분석 중" />
+            <Text style={styles.feedbackText}>사진에서 처방전 정보를 읽는 중입니다.</Text>
           </YStack>
         </View>
       ) : null}

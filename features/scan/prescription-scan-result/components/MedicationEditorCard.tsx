@@ -1,10 +1,11 @@
 import { useMemo } from "react";
 import { type Control, useWatch } from "react-hook-form";
 import { StyleSheet } from "react-native";
+import { Text } from "tamagui";
 import type { DrugSearchItem } from "@/api/types";
 import { SurfaceCard } from "@/components/ui/SurfaceCard";
 import { palette } from "@/constants/design-tokens";
-import { isConfirmedAtcCode } from "@/features/scan/prescription-scan/ocr-parser";
+import { isConfirmedAtcCode } from "@/utils/prescription";
 import type {
   MedicationTakeSlot,
   PrescriptionScanResultFormValues,
@@ -53,12 +54,19 @@ export function MedicationEditorCard({
     defaultValue: [],
   });
 
+  const dailyDoseCount = useWatch({ control, name: `medications.${index}.dailyDoseCount` });
+  const instructions = useWatch({ control, name: `medications.${index}.instructions` });
+
+  const additionalTakeTimes = useWatch({
+    control,
+    name: `medications.${index}.additionalTakeTimes`,
+  });
   const isCompleteEnabled = useMemo(() => {
     const hasMedicationName = medicationName.trim().length > 0;
     const hasMedicationCode = isConfirmedAtcCode(atcCode);
-    const hasTakeSlot = selectedTakeSlots.length > 0;
+    const hasTakeSlot = selectedTakeSlots.length > 0 || !!additionalTakeTimes?.trim();
     return hasMedicationName && hasMedicationCode && hasTakeSlot;
-  }, [atcCode, medicationName, selectedTakeSlots]);
+  }, [atcCode, medicationName, selectedTakeSlots, additionalTakeTimes]);
 
   return (
     <SurfaceCard style={styles.card}>
@@ -71,11 +79,18 @@ export function MedicationEditorCard({
         onPressRemove={onPressRemove}
       />
 
+      {dailyDoseCount || instructions ? (
+        <Text style={{ color: palette.icon, fontSize: 12 }}>
+          {dailyDoseCount ? `사진에서 읽은 횟수: 하루 ${dailyDoseCount}회. ` : ""}
+          {instructions ?? ""} 복용 시간을 확인해 주세요.
+        </Text>
+      ) : null}
       {!isExpanded ? (
         <MedicationEditorSummary
           medicationName={medicationName}
           atcCode={atcCode}
           selectedTakeSlots={selectedTakeSlots}
+          additionalTakeTimes={additionalTakeTimes}
         />
       ) : null}
 
