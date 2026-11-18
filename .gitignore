@@ -50,3 +50,5 @@ app-example
 
 # Google Services JSON 파일
 google-services.json
+# Firebase iOS app configuration
+GoogleService-Info*.plist

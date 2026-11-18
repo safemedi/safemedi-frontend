@@ -28,19 +28,31 @@
       },
       "android": {
         "buildType": "apk"
+      },
+      "ios": {
+        "buildConfiguration": "Release"
       }
     },
     "production": {
       "node": "22.14.0",
       "environment": "production",
       "env": {
-        "EXPO_PUBLIC_APP_ENV": "production",
-        "SENTRY_ORG_SLUG": "safemedi",
-        "SENTRY_PROJECT_SLUG": "react-native"
+        "EXPO_PUBLIC_APP_ENV": "production"
       },
       "android": {
         "buildType": "app-bundle",
         "autoIncrement": true
+      },
+      "ios": {
+        "distribution": "store",
+        "buildConfiguration": "Release",
+        "autoIncrement": true
+      }
+    },
+    "development-simulator": {
+      "extends": "development",
+      "ios": {
+        "simulator": true
       }
     }
   }

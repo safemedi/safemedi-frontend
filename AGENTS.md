@@ -1,4 +1,4 @@
-# safeMedi
+# SafeMedi
 
 Expo Router · React Native · Tamagui · TanStack Query · Zustand.
 

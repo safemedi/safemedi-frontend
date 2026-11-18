@@ -239,7 +239,7 @@ export function registerSaf26Mocks(registry: MockRegistry): void {
         const invitationId = mockState.nextFamilyInvitationId++;
         mockState.currentFamilyInvitation = {
           invitationId,
-          inviteUrl: `https://35.223.15.211.nip.io/invite/mock-token-${invitationId}`,
+          inviteUrl: `https://dev-api.safemedi.store/invite/mock-token-${invitationId}`,
           status: "PENDING",
           createdAt: "2026-07-14T06:00:00Z",
           expiresAt: "2026-07-15T06:00:00Z",

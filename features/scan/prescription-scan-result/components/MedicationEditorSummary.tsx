@@ -30,7 +30,9 @@ export function MedicationEditorSummary({
     <YStack gap={6}>
       <View style={styles.summaryRow}>
         <Text style={styles.summaryLabel}>약물이름</Text>
-        <Text style={styles.summaryValue}>{medicationName || "미입력"}</Text>
+        <Text style={styles.summaryValue} numberOfLines={1} ellipsizeMode="tail">
+          {medicationName || "미입력"}
+        </Text>
       </View>
       <View style={styles.summaryRow}>
         <Text style={styles.summaryLabel}>복약 시간</Text>
@@ -59,6 +61,8 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   summaryValue: {
+    flexShrink: 1,
+    textAlign: "right",
     color: palette.black,
     fontSize: 12,
     lineHeight: 16,

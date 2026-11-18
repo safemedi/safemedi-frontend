@@ -11,8 +11,16 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-android-production:
-    name: Android production AAB
+  build-production:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: android
+            name: Android production AAB
+          - platform: ios
+            name: iOS production IPA
+    name: ${{ matrix.name }}
     runs-on: ubuntu-latest
     timeout-minutes: 60
     permissions:
@@ -48,10 +56,10 @@ jobs:
       - name: Run tests
         run: yarn test
 
-      - name: Build Android production
+      - name: Build ${{ matrix.name }}
         id: eas_build
         run: |
-          eas build --platform android --profile production --non-interactive --json > eas-build.json
+          eas build --platform ${{ matrix.platform }} --profile production --non-interactive --json > eas-build.json
 
           node <<'NODE' >> "$GITHUB_OUTPUT"
           const fs = require("node:fs");
@@ -97,7 +105,7 @@ jobs:
         uses: sarisia/actions-status-discord@v1
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          title: "SafeMedi EAS Production 배포 성공"
+          title: "SafeMedi ${{ matrix.name }} 빌드 성공"
           description: |
             아카이브 URL: ${{ steps.eas_build.outputs.archive_url }}
             빌드 상세: ${{ steps.eas_build.outputs.details_url }}

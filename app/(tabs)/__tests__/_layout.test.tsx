@@ -126,7 +126,28 @@ describe("app/(tabs)/_layout", () => {
       screenOptions: { tabBarStyle: { height: number; paddingBottom: number } };
     };
 
-    expect(tabsProps.screenOptions.tabBarStyle.height).toBe(70 + 34);
+    expect(tabsProps.screenOptions.tabBarStyle.height).toBe(50 + 34);
     expect(tabsProps.screenOptions.tabBarStyle.paddingBottom).toBe(34);
+  });
+
+  it("Android 탭바는 기본 높이 70에 하단 인셋을 더한다", () => {
+    mockInsets.bottom = 24;
+    jest.isolateModules(() => {
+      const { Platform } = require("react-native") as typeof import("react-native");
+      const platform = jest.replaceProperty(Platform, "OS", "android");
+      try {
+        const AndroidLayout = require("../_layout").default as typeof TabLayout;
+        render(<AndroidLayout />);
+        expect(mockTabsProps).toHaveBeenCalledWith(
+          expect.objectContaining({
+            screenOptions: expect.objectContaining({
+              tabBarStyle: expect.objectContaining({ height: 94, paddingBottom: 24 }),
+            }),
+          }),
+        );
+      } finally {
+        platform.restore();
+      }
+    });
   });
 });
