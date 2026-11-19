@@ -39,6 +39,7 @@ export const queryKeys = {
     detail: (prescriptionId: number) => ["prescriptions", "detail", prescriptionId] as const,
   },
   scan: {
+    extractPrescription: ["scan", "prescription", "extract"] as const,
     createPrescription: ["scan", "prescription", "create"] as const,
     analyzeIngredients: ["scan", "ingredients", "analyze"] as const,
     searchDrugs: (keyword: string) => ["scan", "drugs", "search", keyword] as const,

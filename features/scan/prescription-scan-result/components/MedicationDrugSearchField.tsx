@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { type Control, Controller } from "react-hook-form";
+import { type Control, Controller, useWatch } from "react-hook-form";
 import { StyleSheet, TextInput } from "react-native";
 import { Text, YStack } from "tamagui";
 import type { DrugSearchItem } from "@/api/types";
 import { DrugSearchResultList } from "@/components/ui/DrugSearchResultList";
 import { palette } from "@/constants/design-tokens";
 import { useDrugSearch } from "@/hooks/useDrugSearch";
+import { hasConfirmedDrugCode } from "@/utils/prescription";
 import type { PrescriptionScanResultFormValues } from "../usePrescriptionScanResultViewModel";
 
 interface MedicationDrugSearchFieldProps {
@@ -25,6 +26,7 @@ export function MedicationDrugSearchField({
   onChangeMedicationName,
   onSelectMedicationDrug,
 }: MedicationDrugSearchFieldProps) {
+  const drugCode = useWatch({ control, name: `medications.${index}.drugCode` });
   const [keyword, setKeyword] = useState<string>("");
   const [isInputFocused, setIsInputFocused] = useState<boolean>(false);
 
@@ -69,11 +71,21 @@ export function MedicationDrugSearchField({
       <Controller
         control={control}
         name={`medications.${index}.atcCode`}
-        render={({ field: { value } }) => (
-          <Text style={[styles.metaText, value ? styles.verifiedText : styles.unverifiedText]}>
-            {value ? `약물 코드: ${value}` : "검색 결과에서 약물을 선택해야 등록됩니다."}
-          </Text>
-        )}
+        render={({ field: { value } }) => {
+          const isDrugConfirmed = hasConfirmedDrugCode({ atcCode: value, drugCode });
+          return (
+            <Text
+              style={[
+                styles.metaText,
+                isDrugConfirmed ? styles.verifiedText : styles.unverifiedText,
+              ]}
+            >
+              {isDrugConfirmed
+                ? `약물 코드: ${value}`
+                : "검색 결과에서 약물을 선택해야 등록됩니다."}
+            </Text>
+          );
+        }}
       />
       {shouldShowSuggestions ? (
         <DrugSearchResultList<DrugSearchItem>

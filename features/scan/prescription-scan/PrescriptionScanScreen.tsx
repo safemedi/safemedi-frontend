@@ -22,14 +22,17 @@ export function PrescriptionScanScreen() {
   useEffect(() => {
     if (!viewModel.error) return;
     Alert.alert("처방전 스캔 오류", viewModel.error.message, [
+      ...(viewModel.selectedImageUri
+        ? [{ text: "다시 시도", onPress: () => void viewModel.retryExtract() }]
+        : []),
       {
         text: "확인",
         onPress: () => viewModel.resetError(),
       },
     ]);
-  }, [viewModel.error, viewModel.resetError]);
+  }, [viewModel.error, viewModel.resetError, viewModel.retryExtract, viewModel.selectedImageUri]);
 
-  const isBusy = viewModel.isExtracting || viewModel.isSubmitting;
+  const isBusy = viewModel.isExtracting;
 
   return (
     <YStack style={styles.screen}>
@@ -66,8 +69,8 @@ export function PrescriptionScanScreen() {
       {viewModel.isExtracting ? (
         <View style={styles.extractingOverlay}>
           <YStack style={styles.extractingDialog} gap={10}>
-            <LoadingSpinner accessibilityLabel="OCR 텍스트 추출 중" />
-            <Text style={styles.feedbackText}>OCR로 텍스트를 추출하는 중입니다.</Text>
+            <LoadingSpinner accessibilityLabel="사진 분석 중" />
+            <Text style={styles.feedbackText}>사진에서 처방전 정보를 읽는 중입니다.</Text>
           </YStack>
         </View>
       ) : null}

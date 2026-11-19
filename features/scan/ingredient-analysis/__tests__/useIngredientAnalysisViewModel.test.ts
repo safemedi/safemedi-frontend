@@ -8,7 +8,7 @@ import type { AnalyzeIngredientsRequest, AnalyzeIngredientsResponse } from "@/ap
 import { useIngredientAnalysisViewModel } from "../useIngredientAnalysisViewModel";
 
 const mockClearRequest = jest.fn();
-const mockClearOcrResult = jest.fn();
+const mockClearDraftResult = jest.fn();
 const mockAnalyzeMutateAsync = jest.fn();
 const mockCreateMutateAsync = jest.fn();
 
@@ -78,24 +78,27 @@ jest.mock("@/api/queries/prescription-scan", () => ({
   useCreatePrescriptionByScanMutation: jest.fn(),
 }));
 
-jest.mock("../../prescription-scan/usePrescriptionOcrResultStore", () => ({
-  usePrescriptionOcrResultStore: (selector: (state: { clearResult: () => void }) => unknown) =>
+jest.mock("../../prescription-scan/usePrescriptionDraftStore", () => ({
+  usePrescriptionDraftStore: (selector: (state: { clearResult: () => void }) => unknown) =>
     selector({
-      clearResult: mockClearOcrResult,
+      clearResult: mockClearDraftResult,
     }),
 }));
 
 jest.mock("../useIngredientAnalysisStore", () => ({
-  useIngredientAnalysisStore: (
-    selector: (state: {
-      request: AnalyzeIngredientsRequest | null;
-      clearRequest: () => void;
-    }) => unknown,
-  ) =>
-    selector({
-      request: mockRequest,
-      clearRequest: mockClearRequest,
-    }),
+  useIngredientAnalysisStore: Object.assign(
+    (
+      selector: (state: {
+        request: AnalyzeIngredientsRequest | null;
+        clearRequest: () => void;
+      }) => unknown,
+    ) =>
+      selector({
+        request: mockRequest,
+        clearRequest: mockClearRequest,
+      }),
+    { getState: () => ({ request: mockRequest }) },
+  ),
 }));
 
 describe("useIngredientAnalysisViewModel", () => {
@@ -149,7 +152,7 @@ describe("useIngredientAnalysisViewModel", () => {
     mockAnalyzeMutateAsync.mockReturnValueOnce(deferred.promise);
 
     const { result } = renderHook(() => useIngredientAnalysisViewModel());
-    expect(mockAnalyzeMutateAsync).toHaveBeenCalledWith(BASE_REQUEST);
+    expect(mockAnalyzeMutateAsync).toHaveBeenCalledWith({ body: BASE_REQUEST, sessionVersion: 0 });
 
     await act(async () => {
       deferred.resolve(BASE_ANALYSIS_RESPONSE);
@@ -167,7 +170,7 @@ describe("useIngredientAnalysisViewModel", () => {
     mockAnalyzeMutateAsync.mockReturnValueOnce(deferred.promise);
 
     const { result } = renderHook(() => useIngredientAnalysisViewModel());
-    expect(mockAnalyzeMutateAsync).toHaveBeenCalledWith(BASE_REQUEST);
+    expect(mockAnalyzeMutateAsync).toHaveBeenCalledWith({ body: BASE_REQUEST, sessionVersion: 0 });
 
     await act(async () => {
       deferred.reject(new Error("network down"));
@@ -223,7 +226,7 @@ describe("useIngredientAnalysisViewModel", () => {
     });
 
     expect(mockClearRequest).toHaveBeenCalledTimes(1);
-    expect(mockClearOcrResult).toHaveBeenCalledTimes(1);
+    expect(mockClearDraftResult).toHaveBeenCalledTimes(1);
     expect(mockRouterReplace).toHaveBeenCalledWith("/(tabs)/dashboard");
   });
 
@@ -314,6 +317,28 @@ describe("useIngredientAnalysisViewModel", () => {
     renderHook(() => useIngredientAnalysisViewModel());
 
     expect(mockAnalyzeMutateAsync).not.toHaveBeenCalled();
+  });
+
+  it("등록 요청이 끝나기 전에 취소하거나 닫아도 완료 응답을 처리한다", async () => {
+    const confirmation = createDeferred<{ message: string }>();
+    mockCreateMutateAsync.mockReturnValueOnce(confirmation.promise);
+    const { result } = renderHook(() => useIngredientAnalysisViewModel());
+    let pending: Promise<void> | undefined;
+
+    await act(async () => {
+      pending = result.current.handlePressConfirm();
+      result.current.handlePressCancel();
+      result.current.handlePressClose();
+    });
+    expect(mockClearRequest).not.toHaveBeenCalled();
+    expect(mockRouterBack).not.toHaveBeenCalled();
+    expect(mockRouterReplace).not.toHaveBeenCalled();
+
+    await act(async () => {
+      confirmation.resolve({ message: "등록 완료" });
+      await pending;
+    });
+    expect(mockAlert).toHaveBeenCalledWith("복약 등록 완료", "등록 완료", expect.any(Array));
   });
 
   it("취소 버튼 핸들러는 back 라우팅을 호출한다", () => {

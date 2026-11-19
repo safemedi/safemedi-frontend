@@ -131,9 +131,10 @@ describe("IngredientAnalysisScreen", () => {
       isSubmitting: true,
     };
 
-    const { getByText } = render(<IngredientAnalysisScreen />);
+    const { getByText, getByLabelText } = render(<IngredientAnalysisScreen />);
 
     expect(getByText("등록 중...")).toBeTruthy();
+    expect(getByLabelText("분석 취소")).toBeDisabled();
   });
 
   it("분석 중이면 로딩 상태 문구를 노출한다", () => {

@@ -85,3 +85,18 @@ export interface AnalyzeIngredientsResponse {
   readonly shouldConsultDoctor: boolean;
   readonly doctorConsultationMessage: string | null;
 }
+
+export interface ExtractedPrescriptionMedication {
+  readonly drugName: string;
+  readonly drugCode: string | null;
+  readonly atcCode: string | null;
+  readonly dailyDoseCount: number | null;
+  readonly instructions: string | null;
+}
+
+export interface ExtractPrescriptionResponse {
+  readonly title: string;
+  readonly startDate: string | null;
+  readonly endDate: string | null;
+  readonly medications: readonly ExtractedPrescriptionMedication[];
+}

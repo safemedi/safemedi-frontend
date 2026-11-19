@@ -130,7 +130,7 @@ describe("데이터가 있으면 데이터를 반환한다.", () => {
           medications: expect.arrayContaining([
             {
               prescriptionDrugId: 101,
-              takeTimes: ["08:00", "13:00", "19:00"],
+              takeTimes: ["08:00", "13:00", "18:00", "22:00"],
             },
           ]),
         }),
@@ -272,16 +272,20 @@ describe("데이터가 있으면 데이터를 반환한다.", () => {
     expect(mockDeleteMutate).toHaveBeenCalledWith(11, expect.any(Object));
   });
 
-  it("약물 수정 성공 시 편집을 닫고, 유효하지 않은 입력은 안내한다", () => {
+  it("슬롯을 모두 해제해도 추가 시각만 저장할 수 있다", () => {
     const { result } = renderHook(() => useMedicationManagementViewModel());
     act(() => result.current.startEditMedication(11, 101));
     act(() => result.current.toggleEditTakeSlot("MORNING"));
     act(() => result.current.toggleEditTakeSlot("DINNER"));
     act(() => result.current.saveEditMedication());
-    expect(Alert.alert).toHaveBeenCalledWith("입력 확인", expect.any(String));
-
-    act(() => result.current.toggleEditTakeSlot("MORNING"));
-    act(() => result.current.saveEditMedication());
+    expect(mockUpdateMutate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        body: expect.objectContaining({
+          medications: expect.arrayContaining([{ prescriptionDrugId: 101, takeTimes: ["22:00"] }]),
+        }),
+      }),
+      expect.any(Object),
+    );
     const options = mockUpdateMutate.mock.calls[0]?.[1] as { onSuccess?: () => void };
     act(() => options.onSuccess?.());
     expect(result.current.editDraft).toBeNull();

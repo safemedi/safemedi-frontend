@@ -54,7 +54,9 @@ export function PrescriptionScanResultScreen() {
                 <YStack gap={2} flex={1}>
                   <Text style={styles.lowConfidenceTitle}>약물을 정확히 인식하지 못했어요</Text>
                   <Text style={styles.lowConfidenceDescription}>
-                    약물명을 검색해서 선택하거나, 사진이 흐릿하다면 다시 스캔해 주세요.
+                    {viewModel.recognizedMedicationCount === 0
+                      ? "약물을 직접 추가하거나 처방전을 다시 스캔해 주세요."
+                      : "약물명을 검색해서 선택하거나, 사진이 흐릿하다면 다시 스캔해 주세요."}
                   </Text>
                 </YStack>
               </View>
@@ -64,7 +66,7 @@ export function PrescriptionScanResultScreen() {
               <View style={styles.successRow}>
                 <Ionicons name="checkmark-circle-outline" size={20} color={palette.white} />
                 <YStack gap={2}>
-                  <Text style={styles.successTitle}>텍스트 인식 완료!</Text>
+                  <Text style={styles.successTitle}>사진 분석 완료!</Text>
                   <Text style={styles.successDescription}>
                     {viewModel.recognizedMedicationCount}개의 약물을 찾았어요
                   </Text>
@@ -140,17 +142,20 @@ export function PrescriptionScanResultScreen() {
             })}
           </YStack>
 
-          <SurfaceCard style={styles.noticeCard}>
-            <View style={styles.noticeRow}>
-              <Ionicons name="alert-circle-outline" size={16} color={palette.orange} />
-              <YStack gap={4} flex={1}>
-                <Text style={styles.noticeTitle}>약물 정보 수정 가능</Text>
-                <Text style={styles.noticeDescription}>
-                  약물명은 검색 결과에서 선택하고, 복약 시간을 입력해 주세요.
-                </Text>
-              </YStack>
-            </View>
-          </SurfaceCard>
+          {!viewModel.isManualInputMode ? (
+            <SurfaceCard style={styles.noticeCard}>
+              <View style={styles.noticeRow}>
+                <Ionicons name="alert-circle-outline" size={16} color={palette.orange} />
+                <YStack gap={4} flex={1}>
+                  <Text style={styles.noticeTitle}>원본과 비교하고 확인해 주세요</Text>
+                  <Text style={styles.noticeDescription}>
+                    AI가 잘못 읽거나 약물을 누락할 수 있어요. 원본의 약물·날짜·복용법을 확인하고
+                    복용 시간을 선택해 주세요.
+                  </Text>
+                </YStack>
+              </View>
+            </SurfaceCard>
+          ) : null}
         </YStack>
       </ScrollView>
 

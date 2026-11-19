@@ -5921,11 +5921,6 @@ expo-system-ui@~6.0.9:
     "@react-native/normalize-colors" "0.81.5"
     debug "^4.3.2"
 
-expo-text-extractor@2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/expo-text-extractor/-/expo-text-extractor-2.0.0.tgz#64a872185f8c08830e00034ffd229344828e5851"
-  integrity sha512-HgB3YwPreQWZ2A/zg3bW4mj1yaSXoM3ttCVswSvablSzJ7Qj6txYe9LnBh8cHVCyJsgOhr9ndj0Gsq8hmYUaiA==
-
 expo-updates-interface@~2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/expo-updates-interface/-/expo-updates-interface-2.0.0.tgz#7721cb64c37bcb46b23827b2717ef451a9378749"

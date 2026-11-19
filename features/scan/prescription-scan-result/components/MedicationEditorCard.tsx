@@ -1,10 +1,13 @@
-import { useMemo } from "react";
 import { type Control, useWatch } from "react-hook-form";
 import { StyleSheet } from "react-native";
 import type { DrugSearchItem } from "@/api/types";
 import { SurfaceCard } from "@/components/ui/SurfaceCard";
 import { palette } from "@/constants/design-tokens";
-import { isConfirmedAtcCode } from "@/features/scan/prescription-scan/ocr-parser";
+import {
+  hasConfirmedDrugCode,
+  hasInvalidAdditionalTakeTimes,
+  parseAdditionalTakeTimes,
+} from "@/utils/prescription";
 import type {
   MedicationTakeSlot,
   PrescriptionScanResultFormValues,
@@ -47,18 +50,23 @@ export function MedicationEditorCard({
     name: `medications.${index}.atcCode`,
     defaultValue: "",
   });
+  const drugCode = useWatch({ control, name: `medications.${index}.drugCode` });
+  const isDrugConfirmed = hasConfirmedDrugCode({ atcCode, drugCode });
   const selectedTakeSlots = useWatch({
     control,
     name: `medications.${index}.takeSlots`,
     defaultValue: [],
   });
 
-  const isCompleteEnabled = useMemo(() => {
-    const hasMedicationName = medicationName.trim().length > 0;
-    const hasMedicationCode = isConfirmedAtcCode(atcCode);
-    const hasTakeSlot = selectedTakeSlots.length > 0;
-    return hasMedicationName && hasMedicationCode && hasTakeSlot;
-  }, [atcCode, medicationName, selectedTakeSlots]);
+  const additionalTakeTimes = useWatch({
+    control,
+    name: `medications.${index}.additionalTakeTimes`,
+  });
+  const isAdditionalTimeInvalid = hasInvalidAdditionalTakeTimes(additionalTakeTimes);
+  const hasTakeTime =
+    selectedTakeSlots.length > 0 || parseAdditionalTakeTimes(additionalTakeTimes).length > 0;
+  const isCompleteEnabled =
+    medicationName.trim().length > 0 && isDrugConfirmed && hasTakeTime && !isAdditionalTimeInvalid;
 
   return (
     <SurfaceCard style={styles.card}>
@@ -74,8 +82,9 @@ export function MedicationEditorCard({
       {!isExpanded ? (
         <MedicationEditorSummary
           medicationName={medicationName}
-          atcCode={atcCode}
+          atcCode={isDrugConfirmed ? atcCode : ""}
           selectedTakeSlots={selectedTakeSlots}
+          additionalTakeTimes={additionalTakeTimes}
         />
       ) : null}
 
@@ -88,6 +97,8 @@ export function MedicationEditorCard({
             onSelectMedicationDrug={onSelectMedicationDrug}
           />
           <MedicationTakeSlotSelector
+            hasTakeTime={hasTakeTime}
+            isAdditionalTimeInvalid={isAdditionalTimeInvalid}
             index={index}
             control={control}
             onToggleMedicationTakeSlot={onToggleMedicationTakeSlot}

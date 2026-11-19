@@ -1,6 +1,6 @@
 import { fireEvent, render } from "@testing-library/react-native";
 import { Alert } from "react-native";
-import { usePrescriptionOcrResultStore } from "../../prescription-scan/usePrescriptionOcrResultStore";
+import { usePrescriptionDraftStore } from "../../prescription-scan/usePrescriptionDraftStore";
 import { PrescriptionScanResultScreen } from "../PrescriptionScanResultScreen";
 
 jest.mock("expo-router", () => ({
@@ -64,10 +64,10 @@ jest.mock("@/api/error", () => ({
 describe("PrescriptionScanResultScreen", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    usePrescriptionOcrResultStore.setState({ result: null });
+    usePrescriptionDraftStore.setState({ result: null });
   });
 
-  it("OCR 결과가 없으면 스캔 화면으로 리다이렉트한다", () => {
+  it("AI 결과가 없으면 스캔 화면으로 리다이렉트한다", () => {
     const alertSpy = jest.spyOn(Alert, "alert").mockImplementation(() => {});
     render(<PrescriptionScanResultScreen />);
     expect(alertSpy).toHaveBeenCalledWith(
@@ -78,8 +78,8 @@ describe("PrescriptionScanResultScreen", () => {
     alertSpy.mockRestore();
   });
 
-  it("OCR 결과가 있으면 복약 등록 폼과 약물 목록을 노출한다", () => {
-    usePrescriptionOcrResultStore.setState({
+  it("AI 결과가 있으면 복약 등록 폼과 약물 목록을 노출한다", () => {
+    usePrescriptionDraftStore.setState({
       result: {
         imageUri: "file://prescription.jpg",
         draft: {
@@ -87,7 +87,6 @@ describe("PrescriptionScanResultScreen", () => {
           startDate: "2026-05-14",
           endDate: "2026-05-20",
           medications: [{ atcCode: "UNKNOWN", drugName: "아세트아미노펜정" }],
-          rawText: "아세트아미노펜정 500mg",
         },
       },
     });
@@ -99,8 +98,27 @@ describe("PrescriptionScanResultScreen", () => {
     expect(getByText("검색 결과에서 약물을 선택해야 등록됩니다.")).toBeTruthy();
   });
 
+  it("ATC 코드만 있으면 약품 재선택을 안내하고 수정 완료를 막는다", () => {
+    usePrescriptionDraftStore.setState({
+      result: {
+        imageUri: "file://prescription.jpg",
+        draft: {
+          title: "처방전",
+          startDate: "",
+          endDate: "",
+          medications: [{ atcCode: "N02BE01", drugName: "타이레놀정", dailyDoseCount: 3 }],
+        },
+      },
+    });
+    const { getByText, getByLabelText, queryByText } = render(<PrescriptionScanResultScreen />);
+    expect(getByText("검색 결과에서 약물을 선택해야 등록됩니다.")).toBeTruthy();
+    fireEvent.press(getByLabelText("약물 1 수정"));
+    expect(getByLabelText("약물 1 수정 완료")).toBeDisabled();
+    expect(queryByText("약물 코드: N02BE01")).toBeNull();
+  });
+
   it("약물 코드가 정상 매칭되면 코드를 노출한다", () => {
-    usePrescriptionOcrResultStore.setState({
+    usePrescriptionDraftStore.setState({
       result: {
         imageUri: "file://prescription.jpg",
         draft: {
@@ -108,7 +126,6 @@ describe("PrescriptionScanResultScreen", () => {
           startDate: "2026-05-14",
           endDate: "2026-05-20",
           medications: [{ atcCode: "N02BE01", drugName: "타이레놀정", drugCode: "195700007" }],
-          rawText: "타이레놀정 500mg",
         },
       },
     });
@@ -119,7 +136,7 @@ describe("PrescriptionScanResultScreen", () => {
   });
 
   it("약물을 인식하지 못했으면 저신뢰 안내 배너를 노출한다", () => {
-    usePrescriptionOcrResultStore.setState({
+    usePrescriptionDraftStore.setState({
       result: {
         imageUri: "file://prescription.jpg",
         draft: {
@@ -127,18 +144,31 @@ describe("PrescriptionScanResultScreen", () => {
           startDate: "2026-05-14",
           endDate: "2026-05-20",
           medications: [{ atcCode: "UNKNOWN", drugName: "미확인 약물" }],
-          rawText: "인식 실패",
         },
       },
     });
 
     const { getByText, queryByText } = render(<PrescriptionScanResultScreen />);
     expect(getByText("약물을 정확히 인식하지 못했어요")).toBeTruthy();
-    expect(queryByText("텍스트 인식 완료!")).toBeNull();
+    expect(queryByText("사진 분석 완료!")).toBeNull();
+  });
+
+  it.each([
+    ["file://prescription.jpg", true],
+    ["manual://input", false],
+  ])("빈 약물 목록의 복구 안내는 사진 분석에서만 노출된다 (%s)", (imageUri, showsNotice) => {
+    usePrescriptionDraftStore.setState({
+      result: { imageUri, draft: { title: "", startDate: "", endDate: "", medications: [] } },
+    });
+    const { queryByText } = render(<PrescriptionScanResultScreen />);
+    expect(queryByText("사진 분석 완료!")).toBeNull();
+    expect(Boolean(queryByText("약물을 직접 추가하거나 처방전을 다시 스캔해 주세요."))).toBe(
+      showsNotice,
+    );
   });
 
   it("약물 추가 버튼 클릭 시 약물 입력 카드가 추가된다", () => {
-    usePrescriptionOcrResultStore.setState({
+    usePrescriptionDraftStore.setState({
       result: {
         imageUri: "file://prescription.jpg",
         draft: {
@@ -146,7 +176,6 @@ describe("PrescriptionScanResultScreen", () => {
           startDate: "2026-05-14",
           endDate: "2026-05-20",
           medications: [{ atcCode: "UNKNOWN", drugName: "아세트아미노펜정" }],
-          rawText: "아세트아미노펜정 500mg",
         },
       },
     });

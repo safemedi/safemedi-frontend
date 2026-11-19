@@ -120,6 +120,7 @@ export function IngredientAnalysisScreen() {
             variant="outline"
             onPress={viewModel.handlePressCancel}
             accessibilityLabel="분석 취소"
+            disabled={viewModel.isSubmitting}
             borderColor={palette.border_muted}
             backgroundColor={palette.surface_subtle}
           >
