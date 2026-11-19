@@ -54,7 +54,9 @@ export function PrescriptionScanResultScreen() {
                 <YStack gap={2} flex={1}>
                   <Text style={styles.lowConfidenceTitle}>약물을 정확히 인식하지 못했어요</Text>
                   <Text style={styles.lowConfidenceDescription}>
-                    약물명을 검색해서 선택하거나, 사진이 흐릿하다면 다시 스캔해 주세요.
+                    {viewModel.recognizedMedicationCount === 0
+                      ? "약물을 직접 추가하거나 처방전을 다시 스캔해 주세요."
+                      : "약물명을 검색해서 선택하거나, 사진이 흐릿하다면 다시 스캔해 주세요."}
                   </Text>
                 </YStack>
               </View>

@@ -134,6 +134,20 @@ describe("PrescriptionScanResultScreen", () => {
     expect(queryByText("사진 분석 완료!")).toBeNull();
   });
 
+  it.each([
+    ["file://prescription.jpg", true],
+    ["manual://input", false],
+  ])("빈 약물 목록의 복구 안내는 사진 분석에서만 노출된다 (%s)", (imageUri, showsNotice) => {
+    usePrescriptionDraftStore.setState({
+      result: { imageUri, draft: { title: "", startDate: "", endDate: "", medications: [] } },
+    });
+    const { queryByText } = render(<PrescriptionScanResultScreen />);
+    expect(queryByText("사진 분석 완료!")).toBeNull();
+    expect(Boolean(queryByText("약물을 직접 추가하거나 처방전을 다시 스캔해 주세요."))).toBe(
+      showsNotice,
+    );
+  });
+
   it("약물 추가 버튼 클릭 시 약물 입력 카드가 추가된다", () => {
     usePrescriptionDraftStore.setState({
       result: {

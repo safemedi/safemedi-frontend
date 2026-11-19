@@ -345,7 +345,8 @@ export function usePrescriptionScanResultViewModel(): PrescriptionScanResultView
   const recognizedMedicationCount = result?.draft.medications.length ?? 0;
   const isManualInputMode = result?.imageUri.startsWith(MANUAL_INPUT_IMAGE_URI_PREFIX) ?? false;
   const hasLowConfidenceExtraction = result
-    ? result.draft.medications.some((item) => !isConfirmedAtcCode(item.atcCode))
+    ? recognizedMedicationCount === 0 ||
+      result.draft.medications.some((item) => !isConfirmedAtcCode(item.atcCode))
     : false;
   const startDate = form.watch("startDate");
   const endDate = form.watch("endDate");
