@@ -109,7 +109,7 @@ export const mockState: MockOnlyState & {
           takeTimes: ["14:00"],
           mainIngredient: "암로디핀베실산염",
           hasWarning: true,
-          warningMessage: "이 약물은 주의가 필요합니다. 의사와 상담 후 복용하세요.",
+          warningMessage: "이 약물은 주의가 필요합니다. 의료진과 상담 후 복용하세요.",
         },
       ],
     },

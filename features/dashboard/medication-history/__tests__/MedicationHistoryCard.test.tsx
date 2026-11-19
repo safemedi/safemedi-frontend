@@ -66,7 +66,7 @@ describe("MedicationHistoryCard", () => {
 
     expect(getByText("안전")).toBeTruthy();
     expect(getByText("타이레놀")).toBeTruthy();
-    expect(queryByLabelText("의사 상담 후 승인 버튼")).toBeNull();
+    expect(queryByLabelText("의료진 상담 후 승인 버튼")).toBeNull();
   });
 
   it("warning 톤에서는 경고 메시지와 승인 버튼을 노출한다", () => {
@@ -87,7 +87,7 @@ describe("MedicationHistoryCard", () => {
     expect(getByText("경고")).toBeTruthy();
     expect(getByText("경고 사항")).toBeTruthy();
     expect(getByText("알레르기 유의")).toBeTruthy();
-    fireEvent.press(getByLabelText("의사 상담 후 승인 버튼"));
+    fireEvent.press(getByLabelText("의료진 상담 후 승인 버튼"));
     expect(mockApprove).toHaveBeenCalledTimes(1);
   });
 });

@@ -45,6 +45,7 @@ function createBaseViewModel(): IngredientAnalysisViewModel {
     result: BASE_RESULT,
     isAnalyzing: false,
     isSubmitting: false,
+    hasMedicalStaffApproval: false,
     errorMessage: null,
     handlePressClose: mockHandlePressClose,
     handlePressCancel: mockHandlePressCancel,
@@ -162,7 +163,7 @@ describe("IngredientAnalysisScreen", () => {
     expect(getByText("분석 결과 필요")).toBeTruthy();
   });
 
-  it("의사 상담이 필요하면 상담 CTA 문구를 노출한다", () => {
+  it("의료진 확인을 승인하기 전에는 의료진 확인 버튼을 노출한다", () => {
     mockViewModel = {
       ...mockViewModel,
       result: {
@@ -174,15 +175,28 @@ describe("IngredientAnalysisScreen", () => {
 
     const { getByText } = render(<IngredientAnalysisScreen />);
 
-    expect(getByText("의사 확인 필요")).toBeTruthy();
+    expect(getByText("의료진 확인")).toBeTruthy();
     expect(getByText("전문가 상담이 필요합니다.")).toBeTruthy();
+  });
+
+  it("의료진 확인을 승인하면 저장 버튼으로 변경한다", () => {
+    mockViewModel = {
+      ...mockViewModel,
+      result: { ...BASE_RESULT, shouldConsultDoctor: true },
+    };
+    const { getByText, queryByText, rerender } = render(<IngredientAnalysisScreen />);
+    expect(getByText("의료진 확인")).toBeTruthy();
+    mockViewModel = { ...mockViewModel, hasMedicalStaffApproval: true };
+    rerender(<IngredientAnalysisScreen />);
+    expect(getByText("저장")).toBeTruthy();
+    expect(queryByText("의료진 확인")).toBeNull();
   });
 
   it("하단 취소/확정 액션이 각 핸들러를 호출한다", () => {
     const { getByText } = render(<IngredientAnalysisScreen />);
 
     fireEvent.press(getByText("취소"));
-    fireEvent.press(getByText("복약 등록 완료"));
+    fireEvent.press(getByText("저장"));
 
     expect(mockHandlePressCancel).toHaveBeenCalledTimes(1);
     expect(mockHandlePressConfirm).toHaveBeenCalledTimes(1);

@@ -26,7 +26,7 @@ interface MockAnalysisContext {
 interface AnalyzeIngredientsApiMedication {
   readonly atcCode: string;
   readonly drugName: string;
-  readonly status: AnalysisRiskLevel;
+  readonly status: AnalysisRiskLevel | "WARNING";
   readonly efficacy: string | readonly string[];
   readonly precautions: readonly string[];
   readonly warnings: readonly {
@@ -93,7 +93,7 @@ function createRiskPreset(
     return {
       riskLevel: "CAUTION",
       efficacy: [`${item.drugName} 복용 후 증상 변화를 확인해 주세요.`],
-      precautions: ["장기 복용 시 의사 또는 약사 상담을 권장합니다."],
+      precautions: ["장기 복용 시 의료진 상담을 권장합니다."],
       warningType: context.warningType,
       warningTitle: "복용 주의",
       warningMessage: `${item.drugName} 복용 시 개인 상태에 따라 추가 확인이 필요합니다.`,
@@ -103,7 +103,7 @@ function createRiskPreset(
   return {
     riskLevel: "DANGER",
     efficacy: [`${item.drugName}은 치료 이점 대비 위험 평가가 우선입니다.`],
-    precautions: ["복용 전 반드시 의사 또는 약사와 상담하세요."],
+    precautions: ["복용 전 반드시 의료진과 상담하세요."],
     warningType: context.warningType,
     warningTitle: "전문가 상담 필요",
     warningMessage: `${item.drugName} 복용 전 알러지 및 병용 위험을 반드시 확인해 주세요.`,
@@ -148,8 +148,8 @@ function normalizeAnalyzeResponse(
   const medications = response.analyzedMedications.map((item) => ({
     atcCode: item.atcCode,
     drugName: item.drugName,
-    riskLevel: item.status,
-    status: item.status,
+    riskLevel: item.status === "WARNING" ? ("CAUTION" as const) : item.status,
+    status: item.status === "WARNING" ? ("CAUTION" as const) : item.status,
     efficacy: normalizeTextList(item.efficacy),
     precautions: item.precautions,
     warnings: item.warnings,
@@ -168,7 +168,7 @@ function normalizeAnalyzeResponse(
     medications,
     shouldConsultDoctor,
     doctorConsultationMessage: shouldConsultDoctor
-      ? "주의가 필요한 약물이 있습니다. 복용 전 의사 또는 약사 상담 여부를 확인해 주세요."
+      ? "주의가 필요한 약물이 있습니다. 복용 전 의료진 상담 여부를 확인해 주세요."
       : null,
   };
 }
@@ -191,7 +191,7 @@ function createMockResponse(body: AnalyzeIngredientsRequest): AnalyzeIngredients
     medications,
     shouldConsultDoctor,
     doctorConsultationMessage: shouldConsultDoctor
-      ? "위험 요소가 발견되었습니다. 복용 전 반드시 의사 또는 약사와 상담해 주세요."
+      ? "위험 요소가 발견되었습니다. 복용 전 반드시 의료진과 상담해 주세요."
       : null,
   };
 }

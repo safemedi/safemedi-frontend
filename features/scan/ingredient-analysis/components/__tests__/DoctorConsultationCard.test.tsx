@@ -16,7 +16,7 @@ describe("DoctorConsultationCard", () => {
       <DoctorConsultationCard message="병용 위험이 있어 상담이 필요합니다." />,
     );
 
-    expect(getByText("의사 상담 필수")).toBeTruthy();
+    expect(getByText("의료진 상담 필수")).toBeTruthy();
     expect(getByText("병용 위험이 있어 상담이 필요합니다.")).toBeTruthy();
   });
 });

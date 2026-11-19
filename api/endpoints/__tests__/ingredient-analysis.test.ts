@@ -81,6 +81,38 @@ describe("api/endpoints/ingredient-analysis", () => {
     });
   });
 
+  it("백엔드 WARNING 등급과 제목 없는 DUR 경고를 화면 모델로 변환한다", async () => {
+    const warnings = [
+      { type: "DUR_ELDERLY", message: "고령자 주의" },
+      { type: "DUR_AGE", message: "연령 주의" },
+      { type: "DUR_PREGNANCY", message: "임신 중 주의" },
+      { type: "DUR_INTERACTION", message: "병용 주의" },
+    ];
+    mockApiPost.mockReturnValue({
+      json: async () => ({
+        safetySummary: { safeCount: 0, warningCount: 1, dangerCount: 0 },
+        analyzedMedications: [
+          {
+            atcCode: "A01",
+            drugName: "타이레놀",
+            status: "WARNING",
+            efficacy: "해열",
+            precautions: [],
+            warnings,
+          },
+        ],
+      }),
+    });
+    const result = await analyzePrescriptionIngredients(BASE_REQUEST);
+    expect(result.medications[0]).toMatchObject({
+      riskLevel: "CAUTION",
+      status: "CAUTION",
+      warnings,
+    });
+    expect(result.summary.cautionCount).toBe(1);
+    expect(result.shouldConsultDoctor).toBe(true);
+  });
+
   it("mock 모드에서 API 실패 시 mock 응답을 생성한다", async () => {
     setMockMode(true);
     mockApiPost.mockImplementation(() => {

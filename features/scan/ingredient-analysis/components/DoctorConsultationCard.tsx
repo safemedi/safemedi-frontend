@@ -15,7 +15,7 @@ export function DoctorConsultationCard({ message }: DoctorConsultationCardProps)
         <Ionicons name="warning-outline" size={16} color={palette.white} />
       </View>
       <View style={styles.content}>
-        <Text style={styles.title}>의사 상담 필수</Text>
+        <Text style={styles.title}>의료진 상담 필수</Text>
         <Text style={styles.message}>{message}</Text>
       </View>
     </GradientCard>

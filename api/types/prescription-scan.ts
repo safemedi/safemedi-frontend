@@ -45,7 +45,13 @@ export interface DrugSearchPage {
 
 export type AnalysisRiskLevel = "SAFE" | "CAUTION" | "DANGER";
 
-export type AnalysisWarningType = "ALLERGY" | "INTERACTION";
+export type AnalysisWarningType =
+  | "ALLERGY"
+  | "INTERACTION"
+  | "DUR_ELDERLY"
+  | "DUR_AGE"
+  | "DUR_PREGNANCY"
+  | "DUR_INTERACTION";
 
 export interface AnalyzeIngredientWarning {
   readonly type: AnalysisWarningType;
