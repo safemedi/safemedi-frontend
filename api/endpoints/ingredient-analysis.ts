@@ -26,7 +26,7 @@ interface MockAnalysisContext {
 interface AnalyzeIngredientsApiMedication {
   readonly atcCode: string;
   readonly drugName: string;
-  readonly status: AnalysisRiskLevel;
+  readonly status: AnalysisRiskLevel | "WARNING";
   readonly efficacy: string | readonly string[];
   readonly precautions: readonly string[];
   readonly warnings: readonly {
@@ -148,8 +148,8 @@ function normalizeAnalyzeResponse(
   const medications = response.analyzedMedications.map((item) => ({
     atcCode: item.atcCode,
     drugName: item.drugName,
-    riskLevel: item.status,
-    status: item.status,
+    riskLevel: item.status === "WARNING" ? ("CAUTION" as const) : item.status,
+    status: item.status === "WARNING" ? ("CAUTION" as const) : item.status,
     efficacy: normalizeTextList(item.efficacy),
     precautions: item.precautions,
     warnings: item.warnings,
