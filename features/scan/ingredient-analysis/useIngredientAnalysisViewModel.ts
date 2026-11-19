@@ -18,6 +18,8 @@ export function useIngredientAnalysisViewModel(): IngredientAnalysisViewModel {
   const clearDraftResult = usePrescriptionDraftStore((state) => state.clearResult);
   const analyzeMutation = useAnalyzeIngredientsMutation();
   const createMutation = useCreatePrescriptionByScanMutation();
+  const isConfirmingRef = useRef(false);
+  const isSubmitting = createMutation.isPending;
   const shouldIgnoreMissingRequestAlertRef = useRef<boolean>(false);
   const [result, setResult] = useState<AnalyzeIngredientsResponse | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -61,16 +63,18 @@ export function useIngredientAnalysisViewModel(): IngredientAnalysisViewModel {
   }, [analyzeMutation.isPending, errorMessage, request, result, runIngredientAnalysis]);
 
   const handlePressClose = useCallback(() => {
+    if (isSubmitting || isConfirmingRef.current) return;
     shouldIgnoreMissingRequestAlertRef.current = true;
     clearRequest();
     router.replace("/(tabs)/dashboard");
-  }, [clearRequest]);
+  }, [clearRequest, isSubmitting]);
 
   const handlePressCancel = useCallback(() => {
+    if (isSubmitting || isConfirmingRef.current) return;
     shouldIgnoreMissingRequestAlertRef.current = true;
     clearRequest();
     router.back();
-  }, [clearRequest]);
+  }, [clearRequest, isSubmitting]);
 
   const handlePressRetryAnalysis = useCallback(async () => {
     if (!request) {
@@ -83,10 +87,11 @@ export function useIngredientAnalysisViewModel(): IngredientAnalysisViewModel {
   }, [request, runIngredientAnalysis]);
 
   const handlePressConfirm = useCallback(async () => {
-    if (!request || !isCurrentRequest()) {
+    if (!request || !isCurrentRequest() || isSubmitting || isConfirmingRef.current) {
       return;
     }
 
+    isConfirmingRef.current = true;
     try {
       const sessionVersion = useSessionStore.getState().sessionVersion;
       const response = await createMutation.mutateAsync({
@@ -119,15 +124,17 @@ export function useIngredientAnalysisViewModel(): IngredientAnalysisViewModel {
         "복약 등록에 실패했습니다. 잠시 후 다시 시도해주세요.",
       );
       if (isCurrentRequest()) Alert.alert("복약 등록 실패", message);
+    } finally {
+      isConfirmingRef.current = false;
     }
-  }, [clearDraftResult, clearRequest, createMutation, isCurrentRequest, request]);
+  }, [clearDraftResult, clearRequest, createMutation, isCurrentRequest, isSubmitting, request]);
 
   return useMemo(
     () => ({
       request,
       result: request ? result : null,
       isAnalyzing: analyzeMutation.isPending || (!!request && !result && !errorMessage),
-      isSubmitting: createMutation.isPending,
+      isSubmitting,
       errorMessage,
       handlePressClose,
       handlePressCancel,
@@ -136,7 +143,7 @@ export function useIngredientAnalysisViewModel(): IngredientAnalysisViewModel {
     }),
     [
       analyzeMutation.isPending,
-      createMutation.isPending,
+      isSubmitting,
       errorMessage,
       handlePressCancel,
       handlePressClose,

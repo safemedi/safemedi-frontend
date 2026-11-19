@@ -319,6 +319,28 @@ describe("useIngredientAnalysisViewModel", () => {
     expect(mockAnalyzeMutateAsync).not.toHaveBeenCalled();
   });
 
+  it("등록 요청이 끝나기 전에 취소하거나 닫아도 완료 응답을 처리한다", async () => {
+    const confirmation = createDeferred<{ message: string }>();
+    mockCreateMutateAsync.mockReturnValueOnce(confirmation.promise);
+    const { result } = renderHook(() => useIngredientAnalysisViewModel());
+    let pending: Promise<void> | undefined;
+
+    await act(async () => {
+      pending = result.current.handlePressConfirm();
+      result.current.handlePressCancel();
+      result.current.handlePressClose();
+    });
+    expect(mockClearRequest).not.toHaveBeenCalled();
+    expect(mockRouterBack).not.toHaveBeenCalled();
+    expect(mockRouterReplace).not.toHaveBeenCalled();
+
+    await act(async () => {
+      confirmation.resolve({ message: "등록 완료" });
+      await pending;
+    });
+    expect(mockAlert).toHaveBeenCalledWith("복약 등록 완료", "등록 완료", expect.any(Array));
+  });
+
   it("취소 버튼 핸들러는 back 라우팅을 호출한다", () => {
     const { result } = renderHook(() => useIngredientAnalysisViewModel());
 
