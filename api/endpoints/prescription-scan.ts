@@ -1,3 +1,4 @@
+import { Platform } from "react-native";
 import { api } from "@/api/client";
 import { apiPaths } from "@/api/paths";
 import type { CreatePrescriptionRequest, CreatePrescriptionResponse } from "@/api/types";
@@ -21,9 +22,16 @@ export async function extractPrescription(
   sessionVersion: number,
 ): Promise<ExtractPrescriptionResponse> {
   const body = new FormData();
-  // React Native는 Blob 대신 { uri, name, type } 파일 항목을 받는다.
-  const image = { uri: imageUri, name: "prescription.jpg", type: "image/jpeg" };
-  body.append("image", image as unknown as Blob);
+  const fileName = "prescription.jpg";
+  if (Platform.OS === "web") {
+    const fileResponse = await fetch(imageUri);
+    if (!fileResponse.ok) throw new Error("선택한 사진을 불러오지 못했습니다.");
+    body.append("image", await fileResponse.blob(), fileName);
+  } else {
+    // React Native의 multipart 전송기는 로컬 파일 URI를 받는다.
+    const image = { uri: imageUri, name: fileName, type: "image/jpeg" };
+    body.append("image", image as unknown as Blob);
+  }
   return api
     .post(apiPaths.prescriptionsExtract, {
       body,
