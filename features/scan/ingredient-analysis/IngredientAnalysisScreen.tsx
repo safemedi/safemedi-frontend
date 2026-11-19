@@ -27,9 +27,9 @@ export function IngredientAnalysisScreen() {
     ? "등록 중..."
     : !viewModel.result || viewModel.errorMessage
       ? "분석 결과 필요"
-      : viewModel.result.shouldConsultDoctor
-        ? "의사 확인 필요"
-        : "복약 등록 완료";
+      : viewModel.result.shouldConsultDoctor && !viewModel.hasMedicalStaffApproval
+        ? "의료진 확인"
+        : "저장";
 
   if (viewModel.isAnalyzing) {
     return (

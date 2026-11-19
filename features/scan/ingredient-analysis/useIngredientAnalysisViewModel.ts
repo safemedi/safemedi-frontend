@@ -19,6 +19,7 @@ export function useIngredientAnalysisViewModel(): IngredientAnalysisViewModel {
   const analyzeMutation = useAnalyzeIngredientsMutation();
   const createMutation = useCreatePrescriptionByScanMutation();
   const isConfirmingRef = useRef(false);
+  const [approvedResult, setApprovedResult] = useState<AnalyzeIngredientsResponse | null>(null);
   const isSubmitting = createMutation.isPending;
   const shouldIgnoreMissingRequestAlertRef = useRef<boolean>(false);
   const [result, setResult] = useState<AnalyzeIngredientsResponse | null>(null);
@@ -81,13 +82,46 @@ export function useIngredientAnalysisViewModel(): IngredientAnalysisViewModel {
       return;
     }
 
+    setApprovedResult(null);
     setErrorMessage(null);
     setResult(null);
     await runIngredientAnalysis();
   }, [request, runIngredientAnalysis]);
 
   const handlePressConfirm = useCallback(async () => {
-    if (!request || !isCurrentRequest() || isSubmitting || isConfirmingRef.current) {
+    if (
+      !request ||
+      !result ||
+      errorMessage ||
+      analyzeMutation.isPending ||
+      !isCurrentRequest() ||
+      isSubmitting ||
+      isConfirmingRef.current
+    ) {
+      return;
+    }
+
+    if (result.shouldConsultDoctor && approvedResult !== result) {
+      Alert.alert(
+        "의료진 확인 필요",
+        `${
+          result.doctorConsultationMessage
+            ?.replace(/의사와/g, "의료진과")
+            .replace(/의사는/g, "의료진은")
+            .replace(/의사가/g, "의료진이")
+            .replace(/의사를/g, "의료진을")
+            .replace(/의사/g, "의료진") || "복약 전 의료진과 상담이 필요합니다."
+        }\n\n안내를 확인한 후 승인해주세요. 승인 후 저장 버튼을 다시 누르면 복약이 등록됩니다.`,
+        [
+          { text: "취소", style: "cancel" },
+          {
+            text: "승인",
+            onPress: () => {
+              if (isCurrentRequest()) setApprovedResult(result);
+            },
+          },
+        ],
+      );
       return;
     }
 
@@ -127,7 +161,18 @@ export function useIngredientAnalysisViewModel(): IngredientAnalysisViewModel {
     } finally {
       isConfirmingRef.current = false;
     }
-  }, [clearDraftResult, clearRequest, createMutation, isCurrentRequest, isSubmitting, request]);
+  }, [
+    analyzeMutation.isPending,
+    approvedResult,
+    clearDraftResult,
+    clearRequest,
+    createMutation,
+    errorMessage,
+    isCurrentRequest,
+    isSubmitting,
+    request,
+    result,
+  ]);
 
   return useMemo(
     () => ({
@@ -135,6 +180,7 @@ export function useIngredientAnalysisViewModel(): IngredientAnalysisViewModel {
       result: request ? result : null,
       isAnalyzing: analyzeMutation.isPending || (!!request && !result && !errorMessage),
       isSubmitting,
+      hasMedicalStaffApproval: !!result && approvedResult === result,
       errorMessage,
       handlePressClose,
       handlePressCancel,
@@ -143,6 +189,7 @@ export function useIngredientAnalysisViewModel(): IngredientAnalysisViewModel {
     }),
     [
       analyzeMutation.isPending,
+      approvedResult,
       isSubmitting,
       errorMessage,
       handlePressCancel,
