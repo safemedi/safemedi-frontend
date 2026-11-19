@@ -17,7 +17,7 @@ export function ProfileEditNoticeCard() {
         <View style={styles.textWrap}>
           <Text style={styles.title}>주의사항</Text>
           <Text style={styles.description}>
-            정확한 알러지와 기저질환 정보는 안전한 약물 분석에 매우 중요합니다. 의사나 약사와 상담한
+            정확한 알러지와 기저질환 정보는 안전한 약물 분석에 매우 중요합니다. 의료진과 상담한
             내용을 정확히 입력해주세요.
           </Text>
         </View>

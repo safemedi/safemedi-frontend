@@ -592,7 +592,7 @@ export function registerSaf26Mocks(registry: MockRegistry): void {
           mainIngredient: medication.drugName,
           hasWarning,
           warningMessage: hasWarning
-            ? "알러지 충돌이 발견되었습니다. 의사와 상담 후 복용하세요."
+            ? "알러지 충돌이 발견되었습니다. 의료진과 상담 후 복용하세요."
             : null,
         };
       });

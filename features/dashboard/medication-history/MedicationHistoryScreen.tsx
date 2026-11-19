@@ -25,7 +25,7 @@ export function MedicationHistoryScreen() {
   const viewModel = useMedicationHistoryViewModel(prescriptionIdParam);
 
   const handlePressApprove = useCallback(() => {
-    Alert.alert("의사 상담 후 승인", "이번 버전에서는 승인 기능이 준비 중입니다.");
+    Alert.alert("의료진 상담 후 승인", "이번 버전에서는 승인 기능이 준비 중입니다.");
   }, []);
 
   if (viewModel.isLoading) {

@@ -128,7 +128,7 @@ function createViewModel(
 ): MedicationHistoryViewModel {
   return {
     displayDate: "2026.04.06",
-    warningSummary: "일부 약물에 경고 사항이 있습니다. 의사와 상담 후 복용하세요.",
+    warningSummary: "일부 약물에 경고 사항이 있습니다. 의료진과 상담 후 복용하세요.",
     medications: [
       {
         id: "500",
@@ -166,7 +166,7 @@ describe("MedicationHistoryScreen", () => {
 
     expect(getByText("스캔 기록 상세:2026.04.06")).toBeTruthy();
     expect(
-      getByText("경고배너:일부 약물에 경고 사항이 있습니다. 의사와 상담 후 복용하세요."),
+      getByText("경고배너:일부 약물에 경고 사항이 있습니다. 의료진과 상담 후 복용하세요."),
     ).toBeTruthy();
     expect(getByText("섹션:등록된 약물")).toBeTruthy();
     expect(getByText("약물카드:타이레놀정 500mg")).toBeTruthy();

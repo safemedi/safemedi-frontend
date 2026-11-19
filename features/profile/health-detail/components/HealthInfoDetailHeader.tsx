@@ -21,7 +21,7 @@ export function HealthInfoDetailHeader({ onBack }: HealthInfoDetailHeaderProps) 
       </Pressable>
       <View style={styles.textWrap}>
         <Text style={styles.title}>건강 정보 확인</Text>
-        <Text style={styles.subtitle}>의사에게 제공할 정보</Text>
+        <Text style={styles.subtitle}>의료진에게 제공할 정보</Text>
       </View>
     </View>
   );
