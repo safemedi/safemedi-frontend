@@ -10,8 +10,8 @@ import type {
 import { formatDateLabel, formatDateToIso, parseIsoDate } from "@/utils/date";
 import {
   getPrescriptionTitleError,
+  hasConfirmedDrugCode,
   hasInvalidAdditionalTakeTimes,
-  isConfirmedAtcCode,
   parseAdditionalTakeTimes,
 } from "@/utils/prescription";
 import { useIngredientAnalysisStore } from "../ingredient-analysis/useIngredientAnalysisStore";
@@ -308,11 +308,7 @@ export function usePrescriptionScanResultViewModel(): PrescriptionScanResultView
       Alert.alert("입력 확인", "약물명을 모두 입력해주세요.");
       return;
     }
-    if (medications.some((item) => !isConfirmedAtcCode(item.atcCode))) {
-      Alert.alert("입력 확인", DRUG_NAME_NOT_SELECTED_ERROR);
-      return;
-    }
-    if (medications.some((item) => item.drugCode.length === 0)) {
+    if (medications.some((item) => !hasConfirmedDrugCode(item))) {
       Alert.alert("입력 확인", DRUG_NAME_NOT_SELECTED_ERROR);
       return;
     }
@@ -346,7 +342,7 @@ export function usePrescriptionScanResultViewModel(): PrescriptionScanResultView
   const isManualInputMode = result?.imageUri.startsWith(MANUAL_INPUT_IMAGE_URI_PREFIX) ?? false;
   const hasLowConfidenceExtraction = result
     ? recognizedMedicationCount === 0 ||
-      result.draft.medications.some((item) => !isConfirmedAtcCode(item.atcCode))
+      result.draft.medications.some((item) => !hasConfirmedDrugCode(item))
     : false;
   const startDate = form.watch("startDate");
   const endDate = form.watch("endDate");

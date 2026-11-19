@@ -37,3 +37,7 @@ export function hasInvalidAdditionalTakeTimes(input?: string): boolean {
   const times = parseAdditionalTakeTimes(input);
   return times.length === 0 || times.some((time) => !/^([01]\d|2[0-3]):[0-5]\d$/.test(time));
 }
+
+export function hasConfirmedDrugCode(item: { drugCode?: string | null; atcCode: string }): boolean {
+  return !!item.drugCode?.trim() && isConfirmedAtcCode(item.atcCode);
+}

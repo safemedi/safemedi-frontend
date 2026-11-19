@@ -98,6 +98,25 @@ describe("PrescriptionScanResultScreen", () => {
     expect(getByText("검색 결과에서 약물을 선택해야 등록됩니다.")).toBeTruthy();
   });
 
+  it("ATC 코드만 있으면 약품 재선택을 안내하고 수정 완료를 막는다", () => {
+    usePrescriptionDraftStore.setState({
+      result: {
+        imageUri: "file://prescription.jpg",
+        draft: {
+          title: "처방전",
+          startDate: "",
+          endDate: "",
+          medications: [{ atcCode: "N02BE01", drugName: "타이레놀정", dailyDoseCount: 3 }],
+        },
+      },
+    });
+    const { getByText, getByLabelText, queryByText } = render(<PrescriptionScanResultScreen />);
+    expect(getByText("검색 결과에서 약물을 선택해야 등록됩니다.")).toBeTruthy();
+    fireEvent.press(getByLabelText("약물 1 수정"));
+    expect(getByLabelText("약물 1 수정 완료")).toBeDisabled();
+    expect(queryByText("약물 코드: N02BE01")).toBeNull();
+  });
+
   it("약물 코드가 정상 매칭되면 코드를 노출한다", () => {
     usePrescriptionDraftStore.setState({
       result: {

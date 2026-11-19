@@ -378,6 +378,14 @@ describe("usePrescriptionScanResultViewModel", () => {
   });
 
   it("약물을 정상 인식했으면 저신뢰 결과가 아니다", () => {
+    if (!mockResult) throw new Error("테스트 초안이 필요합니다.");
+    mockResult = {
+      ...mockResult,
+      draft: {
+        ...mockResult.draft,
+        medications: [{ atcCode: "N02BE01", drugCode: "D01", drugName: "타이레놀" }],
+      },
+    };
     const { result } = renderHook(() => usePrescriptionScanResultViewModel());
 
     expect(result.current.hasLowConfidenceExtraction).toBe(false);

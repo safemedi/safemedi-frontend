@@ -4,8 +4,8 @@ import type { DrugSearchItem } from "@/api/types";
 import { SurfaceCard } from "@/components/ui/SurfaceCard";
 import { palette } from "@/constants/design-tokens";
 import {
+  hasConfirmedDrugCode,
   hasInvalidAdditionalTakeTimes,
-  isConfirmedAtcCode,
   parseAdditionalTakeTimes,
 } from "@/utils/prescription";
 import type {
@@ -50,6 +50,8 @@ export function MedicationEditorCard({
     name: `medications.${index}.atcCode`,
     defaultValue: "",
   });
+  const drugCode = useWatch({ control, name: `medications.${index}.drugCode` });
+  const isDrugConfirmed = hasConfirmedDrugCode({ atcCode, drugCode });
   const selectedTakeSlots = useWatch({
     control,
     name: `medications.${index}.takeSlots`,
@@ -64,10 +66,7 @@ export function MedicationEditorCard({
   const hasTakeTime =
     selectedTakeSlots.length > 0 || parseAdditionalTakeTimes(additionalTakeTimes).length > 0;
   const isCompleteEnabled =
-    medicationName.trim().length > 0 &&
-    isConfirmedAtcCode(atcCode) &&
-    hasTakeTime &&
-    !isAdditionalTimeInvalid;
+    medicationName.trim().length > 0 && isDrugConfirmed && hasTakeTime && !isAdditionalTimeInvalid;
 
   return (
     <SurfaceCard style={styles.card}>
@@ -83,7 +82,7 @@ export function MedicationEditorCard({
       {!isExpanded ? (
         <MedicationEditorSummary
           medicationName={medicationName}
-          atcCode={atcCode}
+          atcCode={isDrugConfirmed ? atcCode : ""}
           selectedTakeSlots={selectedTakeSlots}
           additionalTakeTimes={additionalTakeTimes}
         />
