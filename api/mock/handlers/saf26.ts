@@ -1,6 +1,7 @@
 import type { MockRegistry } from "@/api/mock/registry";
 import { mockState } from "@/api/mock/state";
 import { apiPaths } from "@/api/paths";
+import type { ExtractPrescriptionResponse } from "@/api/types/prescription-scan";
 import type { UpdateUserProfileBody } from "@/api/types/user";
 
 const SUPPORTED_PROVIDERS = new Set(["kakao", "naver"]);
@@ -477,6 +478,25 @@ export function registerSaf26Mocks(registry: MockRegistry): void {
   });
 
   // --- Prescriptions ---
+  registry.register(
+    "POST",
+    apiPaths.prescriptionsExtract,
+    () =>
+      ({
+        title: "테스트 처방전",
+        startDate: null,
+        endDate: null,
+        medications: [
+          {
+            drugCode: "202000123",
+            atcCode: "J01CA04",
+            drugName: "종근당아목시실린캡슐500mg",
+            dailyDoseCount: 3,
+            instructions: null,
+          },
+        ],
+      }) satisfies ExtractPrescriptionResponse,
+  );
   registry.register("GET", apiPaths.prescriptions, () => ({
     content: clonePrescriptions().map((prescription) => ({
       prescriptionId: prescription.prescriptionId,

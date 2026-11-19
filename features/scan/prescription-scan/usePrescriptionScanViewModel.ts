@@ -44,6 +44,7 @@ export function usePrescriptionScanViewModel(): PrescriptionScanViewModel {
     isBusy.current = true;
     setIsExtracting(true);
     setError(null);
+    setSelection(null);
     try {
       const imageUri = await selectImage();
       if (!imageUri || !isMounted.current) return;

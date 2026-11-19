@@ -29,7 +29,7 @@ export function useExtractPrescriptionMutation() {
   return useMutation({
     mutationKey: queryKeys.scan.extractPrescription,
     retry: false,
-    gcTime: 0,
+    gcTime: 1_000,
     mutationFn: async ({
       imageUri,
       sessionVersion,

@@ -73,7 +73,10 @@ describe("createXhrFetch", () => {
       await xhrFetch(request.clone());
       expect(text).not.toHaveBeenCalled();
       expect(send).toHaveBeenCalledTimes(2);
-      expect(send.mock.calls[0][0]).toBeInstanceOf(FormData);
+      for (const [sentBody] of send.mock.calls) {
+        expect(sentBody).toBeInstanceOf(FormData);
+        expect(sentBody).toEqual(body);
+      }
     } finally {
       send.mockRestore();
       text.mockRestore();

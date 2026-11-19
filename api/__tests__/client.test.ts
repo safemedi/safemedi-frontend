@@ -168,19 +168,37 @@ describe("api/client", () => {
     ).rejects.toThrow("로그인 상태가 변경되었습니다");
   });
 
-  it("처방전 추출 요청과 성공 응답의 본문을 읽거나 기록하지 않는다", async () => {
-    const options = loadClient();
-    const request = new Request("https://api.example.com/api/v1/prescriptions/extract", {
-      method: "POST",
-      body: "private-image",
-    });
-    const response = new Response('{"drugName":"private-medication"}', { status: 200 });
-    const requestClone = jest.spyOn(request, "clone");
-    const responseClone = jest.spyOn(response, "clone");
-    await options.hooks.beforeRequest[0](createBeforeRequestState(request));
-    await options.hooks.afterResponse[0](createAfterResponseState(request, response));
-    expect(requestClone).not.toHaveBeenCalled();
-    expect(responseClone).not.toHaveBeenCalled();
+  it("처방전 추출의 요청과 성공·실패 응답 본문을 읽거나 기록하지 않는다", async () => {
+    const originalDev = global.__DEV__;
+    global.__DEV__ = true;
+    const log = jest.spyOn(console, "log").mockImplementation(() => {});
+    try {
+      const { hooks } = loadClient();
+      const request = new Request("https://api.example.com/api/v1/prescriptions/extract", {
+        method: "POST",
+        body: "private-image",
+      });
+      const response = new Response('{"drugName":"private-medication"}', { status: 200 });
+      const failure = new Response("private-error", { status: 400 });
+      const bodies = [request, response, failure];
+      const reads = bodies.flatMap((body) => [
+        jest.spyOn(body, "clone"),
+        jest.spyOn(body, "text"),
+        jest.spyOn(body, "json"),
+      ]);
+
+      await hooks.beforeRequest[0](createBeforeRequestState(request));
+      await hooks.afterResponse[0](createAfterResponseState(request, response));
+      await hooks.beforeError[0](
+        createBeforeErrorState(request, new MockHTTPError(failure, request)),
+      );
+
+      for (const read of reads) expect(read).not.toHaveBeenCalled();
+      expect(log.mock.calls.map((args) => args.length)).toEqual([1, 1]);
+    } finally {
+      log.mockRestore();
+      global.__DEV__ = originalDev;
+    }
   });
 
   it("baseUrl 끝에 슬래시가 없으면 자동으로 붙여서 ky.create를 호출한다", () => {

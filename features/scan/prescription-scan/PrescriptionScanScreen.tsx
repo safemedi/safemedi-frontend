@@ -22,12 +22,15 @@ export function PrescriptionScanScreen() {
   useEffect(() => {
     if (!viewModel.error) return;
     Alert.alert("처방전 스캔 오류", viewModel.error.message, [
+      ...(viewModel.selectedImageUri
+        ? [{ text: "다시 시도", onPress: () => void viewModel.retryExtract() }]
+        : []),
       {
         text: "확인",
         onPress: () => viewModel.resetError(),
       },
     ]);
-  }, [viewModel.error, viewModel.resetError]);
+  }, [viewModel.error, viewModel.resetError, viewModel.retryExtract, viewModel.selectedImageUri]);
 
   const isBusy = viewModel.isExtracting;
 
