@@ -79,10 +79,12 @@ describe("데이터가 없으면 기본값을 반환한다.", () => {
       isValid: false,
       message: "약물 코드가 없는 약물은 수정할 수 없습니다.",
     });
-    expect(validateMedicationEditDraft({ ...draft, takeSlots: [] })).toEqual({
-      isValid: false,
-      message: "복약 시간을 최소 1개 이상 선택해주세요.",
-    });
+    expect(validateMedicationEditDraft({ ...draft, takeSlots: [], originalTakeTimes: [] })).toEqual(
+      {
+        isValid: false,
+        message: "복약 시간을 최소 1개 이상 선택해주세요.",
+      },
+    );
   });
 
   it("복약 시간 슬롯을 토글한다", () => {
@@ -112,7 +114,7 @@ describe("데이터가 없으면 기본값을 반환한다.", () => {
     expect(buildUpdatedMedicationsAfterEdit(prescription, 101, draft)).toEqual([
       {
         prescriptionDrugId: 101,
-        takeTimes: ["08:00", "13:00"],
+        takeTimes: ["08:00", "13:00", "22:00"],
       },
       {
         prescriptionDrugId: 102,
