@@ -140,18 +140,20 @@ export function PrescriptionScanResultScreen() {
             })}
           </YStack>
 
-          <SurfaceCard style={styles.noticeCard}>
-            <View style={styles.noticeRow}>
-              <Ionicons name="alert-circle-outline" size={16} color={palette.orange} />
-              <YStack gap={4} flex={1}>
-                <Text style={styles.noticeTitle}>원본과 비교하고 확인해 주세요</Text>
-                <Text style={styles.noticeDescription}>
-                  AI가 잘못 읽거나 약물을 누락할 수 있어요. 원본의 약물·날짜·복용법을 확인하고 복용
-                  시간을 선택해 주세요.
-                </Text>
-              </YStack>
-            </View>
-          </SurfaceCard>
+          {!viewModel.isManualInputMode ? (
+            <SurfaceCard style={styles.noticeCard}>
+              <View style={styles.noticeRow}>
+                <Ionicons name="alert-circle-outline" size={16} color={palette.orange} />
+                <YStack gap={4} flex={1}>
+                  <Text style={styles.noticeTitle}>원본과 비교하고 확인해 주세요</Text>
+                  <Text style={styles.noticeDescription}>
+                    AI가 잘못 읽거나 약물을 누락할 수 있어요. 원본의 약물·날짜·복용법을 확인하고
+                    복용 시간을 선택해 주세요.
+                  </Text>
+                </YStack>
+              </View>
+            </SurfaceCard>
+          ) : null}
         </YStack>
       </ScrollView>
 

@@ -1,10 +1,13 @@
-import { useMemo } from "react";
 import { type Control, useWatch } from "react-hook-form";
 import { StyleSheet } from "react-native";
 import type { DrugSearchItem } from "@/api/types";
 import { SurfaceCard } from "@/components/ui/SurfaceCard";
 import { palette } from "@/constants/design-tokens";
-import { isConfirmedAtcCode } from "@/utils/prescription";
+import {
+  hasInvalidAdditionalTakeTimes,
+  isConfirmedAtcCode,
+  parseAdditionalTakeTimes,
+} from "@/utils/prescription";
 import type {
   MedicationTakeSlot,
   PrescriptionScanResultFormValues,
@@ -57,12 +60,14 @@ export function MedicationEditorCard({
     control,
     name: `medications.${index}.additionalTakeTimes`,
   });
-  const isCompleteEnabled = useMemo(() => {
-    const hasMedicationName = medicationName.trim().length > 0;
-    const hasMedicationCode = isConfirmedAtcCode(atcCode);
-    const hasTakeSlot = selectedTakeSlots.length > 0 || !!additionalTakeTimes?.trim();
-    return hasMedicationName && hasMedicationCode && hasTakeSlot;
-  }, [atcCode, medicationName, selectedTakeSlots, additionalTakeTimes]);
+  const isAdditionalTimeInvalid = hasInvalidAdditionalTakeTimes(additionalTakeTimes);
+  const hasTakeTime =
+    selectedTakeSlots.length > 0 || parseAdditionalTakeTimes(additionalTakeTimes).length > 0;
+  const isCompleteEnabled =
+    medicationName.trim().length > 0 &&
+    isConfirmedAtcCode(atcCode) &&
+    hasTakeTime &&
+    !isAdditionalTimeInvalid;
 
   return (
     <SurfaceCard style={styles.card}>
@@ -93,6 +98,8 @@ export function MedicationEditorCard({
             onSelectMedicationDrug={onSelectMedicationDrug}
           />
           <MedicationTakeSlotSelector
+            hasTakeTime={hasTakeTime}
+            isAdditionalTimeInvalid={isAdditionalTimeInvalid}
             index={index}
             control={control}
             onToggleMedicationTakeSlot={onToggleMedicationTakeSlot}

@@ -8,7 +8,12 @@ import type {
   DrugSearchItem,
 } from "@/api/types";
 import { formatDateLabel, formatDateToIso, parseIsoDate } from "@/utils/date";
-import { getPrescriptionTitleError, isConfirmedAtcCode } from "@/utils/prescription";
+import {
+  getPrescriptionTitleError,
+  hasInvalidAdditionalTakeTimes,
+  isConfirmedAtcCode,
+  parseAdditionalTakeTimes,
+} from "@/utils/prescription";
 import { useIngredientAnalysisStore } from "../ingredient-analysis/useIngredientAnalysisStore";
 import { usePrescriptionDraftStore } from "../prescription-scan/usePrescriptionDraftStore";
 
@@ -74,10 +79,7 @@ function createRequestMedications(
     takeTimes: [
       ...new Set([
         ...convertTakeSlotsToTimes(item.takeSlots),
-        ...(item.additionalTakeTimes ?? "")
-          .split(",")
-          .map((value) => value.trim())
-          .filter(Boolean),
+        ...parseAdditionalTakeTimes(item.additionalTakeTimes),
       ]),
     ].sort(),
   }));
@@ -306,7 +308,7 @@ export function usePrescriptionScanResultViewModel(): PrescriptionScanResultView
       Alert.alert("입력 확인", "약물명을 모두 입력해주세요.");
       return;
     }
-    if (medications.some((item) => item.atcCode.length === 0)) {
+    if (medications.some((item) => !isConfirmedAtcCode(item.atcCode))) {
       Alert.alert("입력 확인", DRUG_NAME_NOT_SELECTED_ERROR);
       return;
     }
@@ -318,7 +320,9 @@ export function usePrescriptionScanResultViewModel(): PrescriptionScanResultView
       Alert.alert("입력 확인", "각 약물마다 복약 시간을 최소 1개 선택해주세요.");
       return;
     }
-    if (takeTimes.some((time) => !/^([01]\d|2[0-3]):[0-5]\d$/.test(time))) {
+    if (
+      values.medications.some((item) => hasInvalidAdditionalTakeTimes(item.additionalTakeTimes))
+    ) {
       Alert.alert("입력 확인", "복용 시간은 HH:mm 형식으로 입력해주세요. 예: 22:00");
       return;
     }
