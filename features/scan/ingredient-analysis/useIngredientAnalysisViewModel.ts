@@ -19,10 +19,15 @@ export function useIngredientAnalysisViewModel(): IngredientAnalysisViewModel {
   const analyzeMutation = useAnalyzeIngredientsMutation();
   const createMutation = useCreatePrescriptionByScanMutation();
   const isConfirmingRef = useRef(false);
+  const approvedResultRef = useRef<AnalyzeIngredientsResponse | null>(null);
   const [approvedResult, setApprovedResult] = useState<AnalyzeIngredientsResponse | null>(null);
   const isSubmitting = createMutation.isPending;
   const shouldIgnoreMissingRequestAlertRef = useRef<boolean>(false);
-  const [result, setResult] = useState<AnalyzeIngredientsResponse | null>(null);
+  const [analysis, setAnalysis] = useState<{
+    request: NonNullable<typeof request>;
+    result: AnalyzeIngredientsResponse;
+  } | null>(null);
+  const result = analysis?.request === request ? analysis.result : null;
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const isCurrentRequest = useCallback(
@@ -39,7 +44,7 @@ export function useIngredientAnalysisViewModel(): IngredientAnalysisViewModel {
       const sessionVersion = useSessionStore.getState().sessionVersion;
       const response = await analyzeMutation.mutateAsync({ body: request, sessionVersion });
       if (!isCurrentRequest()) return;
-      setResult(response);
+      setAnalysis({ request, result: response });
       setErrorMessage(null);
     } catch (error) {
       const message = await getApiErrorMessage(error, "성분 분석 결과를 불러오지 못했습니다.");
@@ -82,9 +87,10 @@ export function useIngredientAnalysisViewModel(): IngredientAnalysisViewModel {
       return;
     }
 
+    approvedResultRef.current = null;
     setApprovedResult(null);
     setErrorMessage(null);
-    setResult(null);
+    setAnalysis(null);
     await runIngredientAnalysis();
   }, [request, runIngredientAnalysis]);
 
@@ -101,7 +107,7 @@ export function useIngredientAnalysisViewModel(): IngredientAnalysisViewModel {
       return;
     }
 
-    if (result.shouldConsultDoctor && approvedResult !== result) {
+    if (result.shouldConsultDoctor && approvedResultRef.current !== result) {
       Alert.alert(
         "의료진 확인 필요",
         `${
@@ -117,7 +123,10 @@ export function useIngredientAnalysisViewModel(): IngredientAnalysisViewModel {
           {
             text: "승인",
             onPress: () => {
-              if (isCurrentRequest()) setApprovedResult(result);
+              if (isCurrentRequest()) {
+                approvedResultRef.current = result;
+                setApprovedResult(result);
+              }
             },
           },
         ],
@@ -163,7 +172,6 @@ export function useIngredientAnalysisViewModel(): IngredientAnalysisViewModel {
     }
   }, [
     analyzeMutation.isPending,
-    approvedResult,
     clearDraftResult,
     clearRequest,
     createMutation,
