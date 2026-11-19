@@ -9,7 +9,13 @@ export function useCreatePrescriptionByScanMutation() {
 
   return useMutation({
     mutationKey: queryKeys.scan.createPrescription,
-    mutationFn: (body: CreatePrescriptionRequest) => createPrescriptionByScan(body),
+    mutationFn: ({
+      body,
+      sessionVersion,
+    }: {
+      body: CreatePrescriptionRequest;
+      sessionVersion: number;
+    }) => createPrescriptionByScan(body, sessionVersion),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: queryKeys.prescriptions.list });
       await queryClient.invalidateQueries({
@@ -24,11 +30,20 @@ export function useExtractPrescriptionMutation() {
     mutationKey: queryKeys.scan.extractPrescription,
     retry: false,
     gcTime: 0,
-    mutationFn: async (imageUri: string) => {
+    mutationFn: async ({
+      imageUri,
+      sessionVersion,
+    }: {
+      imageUri: string;
+      sessionVersion: number;
+    }) => {
       const session = useSessionStore.getState();
       if (!session.accessToken) throw new Error("로그인이 필요합니다.");
-      const response = await extractPrescription(imageUri, session.sessionVersion);
-      if (useSessionStore.getState().sessionVersion !== session.sessionVersion) {
+      if (session.sessionVersion !== sessionVersion) {
+        throw new Error("로그인 상태가 변경되었습니다. 다시 시도해 주세요.");
+      }
+      const response = await extractPrescription(imageUri, sessionVersion);
+      if (useSessionStore.getState().sessionVersion !== sessionVersion) {
         throw new Error("로그인 상태가 변경되었습니다. 다시 시도해 주세요.");
       }
       return response;

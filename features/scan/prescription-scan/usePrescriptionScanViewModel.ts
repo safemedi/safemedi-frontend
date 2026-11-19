@@ -5,6 +5,8 @@ import { useExtractPrescriptionMutation } from "@/api/queries/prescription-scan"
 import { pickPrescriptionImage } from "@/features/scan/prescription-scan/prescription-image";
 import { usePrescriptionDraftStore } from "@/features/scan/prescription-scan/usePrescriptionDraftStore";
 
+import { useSessionStore } from "@/stores/sessionStore";
+
 export interface PrescriptionScanViewModel {
   readonly isExtracting: boolean;
   readonly error: Error | null;
@@ -20,7 +22,12 @@ export function usePrescriptionScanViewModel(): PrescriptionScanViewModel {
   const extraction = useExtractPrescriptionMutation();
   const setResult = usePrescriptionDraftStore((state) => state.setResult);
   const [error, setError] = useState<Error | null>(null);
-  const [selectedImageUri, setSelectedImageUri] = useState<string | null>(null);
+  const sessionVersion = useSessionStore((state) => state.sessionVersion);
+  const [selection, setSelection] = useState<{ imageUri: string; sessionVersion: number } | null>(
+    null,
+  );
+  const selectedImageUri =
+    selection?.sessionVersion === sessionVersion ? (selection?.imageUri ?? null) : null;
   const [isExtracting, setIsExtracting] = useState(false);
   const isBusy = useRef(false);
   const isMounted = useRef(true);
@@ -33,15 +40,17 @@ export function usePrescriptionScanViewModel(): PrescriptionScanViewModel {
 
   const runExtraction = async (selectImage: () => Promise<string | null>) => {
     if (isBusy.current) return;
+    const originVersion = useSessionStore.getState().sessionVersion;
     isBusy.current = true;
     setIsExtracting(true);
     setError(null);
     try {
       const imageUri = await selectImage();
       if (!imageUri || !isMounted.current) return;
-      setSelectedImageUri(imageUri);
-      const response = await extraction.mutateAsync(imageUri);
-      if (!isMounted.current) return;
+      if (useSessionStore.getState().sessionVersion !== originVersion) return;
+      setSelection({ imageUri, sessionVersion: originVersion });
+      const response = await extraction.mutateAsync({ imageUri, sessionVersion: originVersion });
+      if (!isMounted.current || useSessionStore.getState().sessionVersion !== originVersion) return;
       // 서버 응답을 화면에서 수정할 초안으로 변환한다. 원문 전체는 보관하지 않는다.
       setResult({
         imageUri,
@@ -65,7 +74,8 @@ export function usePrescriptionScanViewModel(): PrescriptionScanViewModel {
         cause,
         cause instanceof Error ? cause.message : "사진 분석에 실패했습니다. 다시 시도해 주세요.",
       );
-      if (isMounted.current) setError(new Error(message));
+      if (isMounted.current && useSessionStore.getState().sessionVersion === originVersion)
+        setError(new Error(message));
     } finally {
       isBusy.current = false;
       if (isMounted.current) {
@@ -83,8 +93,9 @@ export function usePrescriptionScanViewModel(): PrescriptionScanViewModel {
     extractFromCamera: () => runExtraction(() => pickPrescriptionImage("camera")),
     retryExtract: () =>
       runExtraction(async () => {
-        if (!selectedImageUri) throw new Error("다시 시도할 사진을 선택해 주세요.");
-        return selectedImageUri;
+        if (!selection || selection.sessionVersion !== useSessionStore.getState().sessionVersion)
+          throw new Error("다시 시도할 사진을 선택해 주세요.");
+        return selection.imageUri;
       }),
     openManualInput: () => {
       if (isBusy.current) return;

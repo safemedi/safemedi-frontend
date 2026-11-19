@@ -5,6 +5,7 @@ import { getApiErrorMessage } from "@/api/error";
 import { useAnalyzeIngredientsMutation } from "@/api/queries/ingredient-analysis";
 import { useCreatePrescriptionByScanMutation } from "@/api/queries/prescription-scan";
 import type { AnalyzeIngredientsResponse } from "@/api/types";
+import { useSessionStore } from "@/stores/sessionStore";
 import { usePrescriptionDraftStore } from "../prescription-scan/usePrescriptionDraftStore";
 import type { IngredientAnalysisViewModel } from "./types";
 import { useIngredientAnalysisStore } from "./useIngredientAnalysisStore";
@@ -21,20 +22,27 @@ export function useIngredientAnalysisViewModel(): IngredientAnalysisViewModel {
   const [result, setResult] = useState<AnalyzeIngredientsResponse | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  const isCurrentRequest = useCallback(
+    () => !!request && useIngredientAnalysisStore.getState().request === request,
+    [request],
+  );
+
   const runIngredientAnalysis = useCallback(async () => {
-    if (!request || analyzeMutation.isPending) {
+    if (!request || !isCurrentRequest() || analyzeMutation.isPending) {
       return;
     }
 
     try {
-      const response = await analyzeMutation.mutateAsync(request);
+      const sessionVersion = useSessionStore.getState().sessionVersion;
+      const response = await analyzeMutation.mutateAsync({ body: request, sessionVersion });
+      if (!isCurrentRequest()) return;
       setResult(response);
       setErrorMessage(null);
     } catch (error) {
       const message = await getApiErrorMessage(error, "성분 분석 결과를 불러오지 못했습니다.");
-      setErrorMessage(message);
+      if (isCurrentRequest()) setErrorMessage(message);
     }
-  }, [analyzeMutation, request]);
+  }, [analyzeMutation, isCurrentRequest, request]);
 
   useEffect(() => {
     if (!request && !shouldIgnoreMissingRequestAlertRef.current) {
@@ -59,8 +67,10 @@ export function useIngredientAnalysisViewModel(): IngredientAnalysisViewModel {
   }, [clearRequest]);
 
   const handlePressCancel = useCallback(() => {
+    shouldIgnoreMissingRequestAlertRef.current = true;
+    clearRequest();
     router.back();
-  }, []);
+  }, [clearRequest]);
 
   const handlePressRetryAnalysis = useCallback(async () => {
     if (!request) {
@@ -73,12 +83,17 @@ export function useIngredientAnalysisViewModel(): IngredientAnalysisViewModel {
   }, [request, runIngredientAnalysis]);
 
   const handlePressConfirm = useCallback(async () => {
-    if (!request) {
+    if (!request || !isCurrentRequest()) {
       return;
     }
 
     try {
-      const response = await createMutation.mutateAsync({ ...request, isDoctorApproved: true });
+      const sessionVersion = useSessionStore.getState().sessionVersion;
+      const response = await createMutation.mutateAsync({
+        body: { ...request, isDoctorApproved: true },
+        sessionVersion,
+      });
+      if (!isCurrentRequest()) return;
       const allergyWarnings = response.allergyWarnings ?? [];
       const hasAllergyConflict = response.hasAllergyConflict ?? false;
       const warningMessages = allergyWarnings.map((item) => item.warningMessage).join("\n");
@@ -90,6 +105,7 @@ export function useIngredientAnalysisViewModel(): IngredientAnalysisViewModel {
         {
           text: "확인",
           onPress: () => {
+            if (!isCurrentRequest()) return;
             shouldIgnoreMissingRequestAlertRef.current = true;
             clearRequest();
             clearDraftResult();
@@ -102,14 +118,14 @@ export function useIngredientAnalysisViewModel(): IngredientAnalysisViewModel {
         error,
         "복약 등록에 실패했습니다. 잠시 후 다시 시도해주세요.",
       );
-      Alert.alert("복약 등록 실패", message);
+      if (isCurrentRequest()) Alert.alert("복약 등록 실패", message);
     }
-  }, [clearDraftResult, clearRequest, createMutation, request]);
+  }, [clearDraftResult, clearRequest, createMutation, isCurrentRequest, request]);
 
   return useMemo(
     () => ({
       request,
-      result,
+      result: request ? result : null,
       isAnalyzing: analyzeMutation.isPending || (!!request && !result && !errorMessage),
       isSubmitting: createMutation.isPending,
       errorMessage,

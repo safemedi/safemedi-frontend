@@ -159,13 +159,16 @@ describe("api/endpoints core modules", () => {
       .mockReturnValueOnce({ json: jest.fn(async () => ({ id: "me" })) });
     mockApiPatch.mockReturnValueOnce({ json: jest.fn(async () => ({ id: "me" })) });
 
-    await createPrescriptionByScan({} as never);
+    await createPrescriptionByScan({} as never, 0);
     await postTutorialRegistration({} as never);
     await fetchUserProfile();
     await fetchUserProfileWithAccessToken("token-123");
     await patchUserProfile({} as never);
 
-    expect(mockApiPost).toHaveBeenNthCalledWith(1, apiPaths.prescriptions, { json: {} });
+    expect(mockApiPost).toHaveBeenNthCalledWith(1, apiPaths.prescriptions, {
+      json: {},
+      context: { requiredSessionVersion: 0 },
+    });
     expect(mockApiPost).toHaveBeenNthCalledWith(2, apiPaths.usersMeTutorial, { json: {} });
     expect(mockApiGet).toHaveBeenNthCalledWith(1, apiPaths.usersMe);
     expect(mockApiGet).toHaveBeenNthCalledWith(2, apiPaths.usersMe, {

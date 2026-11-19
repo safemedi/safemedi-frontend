@@ -5,8 +5,14 @@ import type { ExtractPrescriptionResponse } from "@/api/types/prescription-scan"
 
 export async function createPrescriptionByScan(
   body: CreatePrescriptionRequest,
+  sessionVersion: number,
 ): Promise<CreatePrescriptionResponse> {
-  return api.post(apiPaths.prescriptions, { json: body }).json<CreatePrescriptionResponse>();
+  return api
+    .post(apiPaths.prescriptions, {
+      json: body,
+      context: { requiredSessionVersion: sessionVersion },
+    })
+    .json<CreatePrescriptionResponse>();
 }
 
 /** JPEG 정규화는 촬영 계층에서 수행한다. RN FormData는 로컬 파일 URI를 지원한다. */

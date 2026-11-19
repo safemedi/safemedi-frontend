@@ -6,6 +6,12 @@ import type { AnalyzeIngredientsRequest } from "@/api/types";
 export function useAnalyzeIngredientsMutation() {
   return useMutation({
     mutationKey: queryKeys.scan.analyzeIngredients,
-    mutationFn: (body: AnalyzeIngredientsRequest) => analyzePrescriptionIngredients(body),
+    mutationFn: ({
+      body,
+      sessionVersion,
+    }: {
+      body: AnalyzeIngredientsRequest;
+      sessionVersion: number;
+    }) => analyzePrescriptionIngredients(body, sessionVersion),
   });
 }

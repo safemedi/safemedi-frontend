@@ -86,16 +86,19 @@ jest.mock("../../prescription-scan/usePrescriptionDraftStore", () => ({
 }));
 
 jest.mock("../useIngredientAnalysisStore", () => ({
-  useIngredientAnalysisStore: (
-    selector: (state: {
-      request: AnalyzeIngredientsRequest | null;
-      clearRequest: () => void;
-    }) => unknown,
-  ) =>
-    selector({
-      request: mockRequest,
-      clearRequest: mockClearRequest,
-    }),
+  useIngredientAnalysisStore: Object.assign(
+    (
+      selector: (state: {
+        request: AnalyzeIngredientsRequest | null;
+        clearRequest: () => void;
+      }) => unknown,
+    ) =>
+      selector({
+        request: mockRequest,
+        clearRequest: mockClearRequest,
+      }),
+    { getState: () => ({ request: mockRequest }) },
+  ),
 }));
 
 describe("useIngredientAnalysisViewModel", () => {
@@ -149,7 +152,7 @@ describe("useIngredientAnalysisViewModel", () => {
     mockAnalyzeMutateAsync.mockReturnValueOnce(deferred.promise);
 
     const { result } = renderHook(() => useIngredientAnalysisViewModel());
-    expect(mockAnalyzeMutateAsync).toHaveBeenCalledWith(BASE_REQUEST);
+    expect(mockAnalyzeMutateAsync).toHaveBeenCalledWith({ body: BASE_REQUEST, sessionVersion: 0 });
 
     await act(async () => {
       deferred.resolve(BASE_ANALYSIS_RESPONSE);
@@ -167,7 +170,7 @@ describe("useIngredientAnalysisViewModel", () => {
     mockAnalyzeMutateAsync.mockReturnValueOnce(deferred.promise);
 
     const { result } = renderHook(() => useIngredientAnalysisViewModel());
-    expect(mockAnalyzeMutateAsync).toHaveBeenCalledWith(BASE_REQUEST);
+    expect(mockAnalyzeMutateAsync).toHaveBeenCalledWith({ body: BASE_REQUEST, sessionVersion: 0 });
 
     await act(async () => {
       deferred.reject(new Error("network down"));

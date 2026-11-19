@@ -1,5 +1,6 @@
 import { act, renderHook } from "@testing-library/react-native";
 import { router } from "expo-router";
+import { useSessionStore } from "@/stores/sessionStore";
 import { usePrescriptionScanViewModel } from "../usePrescriptionScanViewModel";
 
 const mockPickImage = jest.fn();
@@ -46,7 +47,10 @@ describe("usePrescriptionScanViewModel", () => {
     await act(async () => {
       await result.current.extractFromGallery();
     });
-    expect(mockExtract).toHaveBeenCalledWith("file://prescription.jpg");
+    expect(mockExtract).toHaveBeenCalledWith({
+      imageUri: "file://prescription.jpg",
+      sessionVersion: 0,
+    });
     expect(mockSetResult).toHaveBeenCalledWith({
       imageUri: "file://prescription.jpg",
       draft: {
@@ -97,6 +101,25 @@ describe("usePrescriptionScanViewModel", () => {
       await Promise.all([result.current.extractFromCamera(), result.current.extractFromGallery()]);
     });
     expect(mockExtract).toHaveBeenCalledTimes(1);
+  });
+  it("사진 선택 도중 계정이 바뀌면 이전 사진을 업로드하지 않는다", async () => {
+    const previousVersion = useSessionStore.getState().sessionVersion;
+    mockPickImage.mockImplementationOnce(async () => {
+      useSessionStore.getState().clearSession();
+      return "file://old-account.jpg";
+    });
+    const { result } = renderHook(usePrescriptionScanViewModel);
+    try {
+      await act(async () => {
+        await result.current.extractFromGallery();
+      });
+      expect(mockExtract).not.toHaveBeenCalled();
+      expect(result.current.selectedImageUri).toBeNull();
+    } finally {
+      await act(async () => {
+        useSessionStore.setState({ sessionVersion: previousVersion });
+      });
+    }
   });
   it("화면을 떠난 뒤 도착한 응답으로 이동하지 않는다", async () => {
     let resolveResponse: (value: typeof response) => void = () => {};

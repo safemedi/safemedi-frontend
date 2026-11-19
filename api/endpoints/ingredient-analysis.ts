@@ -198,10 +198,14 @@ function createMockResponse(body: AnalyzeIngredientsRequest): AnalyzeIngredients
 
 export async function analyzePrescriptionIngredients(
   body: AnalyzeIngredientsRequest,
+  sessionVersion?: number,
 ): Promise<AnalyzeIngredientsResponse> {
   try {
     const response = await api
       .post(apiPaths.prescriptionsAnalysis, {
+        ...(sessionVersion === undefined
+          ? {}
+          : { context: { requiredSessionVersion: sessionVersion } }),
         json: {
           medications: body.medications.map((item) => ({ drugCode: item.drugCode })),
         },

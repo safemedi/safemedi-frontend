@@ -9,7 +9,7 @@ const mockSearchDrugs = jest.fn<Promise<unknown>, [unknown]>(async () => ({
   size: 10,
   isLast: true,
 }));
-const mockCreatePrescriptionByScan = jest.fn<Promise<unknown>, [unknown]>(async () => ({}));
+const mockCreatePrescriptionByScan = jest.fn<Promise<unknown>, [unknown, number]>(async () => ({}));
 const mockUseInfiniteQuery = jest.fn();
 const mockInvalidateQueries = jest.fn(async () => undefined);
 
@@ -27,7 +27,8 @@ jest.mock("@/api/endpoints/drugs", () => ({
 }));
 
 jest.mock("@/api/endpoints/prescription-scan", () => ({
-  createPrescriptionByScan: (body: unknown) => mockCreatePrescriptionByScan(body),
+  createPrescriptionByScan: (body: unknown, sessionVersion: number) =>
+    mockCreatePrescriptionByScan(body, sessionVersion),
 }));
 
 describe("api/queries scan modules", () => {
@@ -83,8 +84,8 @@ describe("api/queries scan modules", () => {
     };
 
     expect(mutation.mutationKey).toEqual(queryKeys.scan.createPrescription);
-    await mutation.mutationFn({ title: "처방전" });
-    expect(mockCreatePrescriptionByScan).toHaveBeenCalledWith({ title: "처방전" });
+    await mutation.mutationFn({ body: { title: "처방전" }, sessionVersion: 3 });
+    expect(mockCreatePrescriptionByScan).toHaveBeenCalledWith({ title: "처방전" }, 3);
   });
 
   it("처방전 생성 성공 시 대시보드 관련 쿼리를 무효화한다", async () => {
