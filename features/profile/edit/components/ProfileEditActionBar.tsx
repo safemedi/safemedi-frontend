@@ -17,7 +17,12 @@ export function ProfileEditActionBar({
 }: ProfileEditActionBarProps) {
   return (
     <View style={styles.row}>
-      <Pressable onPress={onCancel} style={styles.cancelButton} testID="profile-edit-cancel-button">
+      <Pressable
+        onPress={onCancel}
+        disabled={isSubmitting}
+        style={[styles.cancelButton, isSubmitting && styles.disabled]}
+        testID="profile-edit-cancel-button"
+      >
         <Text style={styles.cancelText}>취소</Text>
       </Pressable>
       <Pressable onPress={onSubmit} disabled={isSubmitting} style={styles.submitPressable}>

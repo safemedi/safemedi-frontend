@@ -53,13 +53,13 @@ beforeEach(() => {
   jest.clearAllMocks();
   useUserStore.getState().clearUser();
 });
-it("프로필 전체 입력을 캐시와 스토어에 먼저 반영하고 화면이 사라져도 실패하면 복구한다", async () => {
+it("프로필 저장 실패 시 캐시와 스토어의 기존 값을 유지한다", async () => {
   const { client, wrapper } = setup();
   client.setQueryData(queryKeys.user.me, profile);
   useUserStore.getState().setUser(profileToUser(profile));
   const request = deferred<unknown>();
   mockPatchProfile.mockReturnValue(request.promise);
-  const { result, unmount } = renderHook(() => useUpdateUserProfileMutation(), { wrapper });
+  const { result } = renderHook(() => useUpdateUserProfileMutation(), { wrapper });
   let pending!: Promise<unknown>;
   await act(async () => {
     pending = result.current
@@ -74,20 +74,9 @@ it("프로필 전체 입력을 캐시와 스토어에 먼저 반영하고 화면
       })
       .catch(() => undefined);
   });
-  expect(client.getQueryData<UserProfile>(queryKeys.user.me)).toMatchObject({
-    displayName: "새 이름",
-    gender: "F",
-    bloodType: "AB-",
-    diseases: [{ code: "G43", name: "편두통" }],
-    allergies: [{ code: "우유", name: "우유" }],
-  });
-  expect(useUserStore.getState().user).toMatchObject({
-    displayName: "새 이름",
-    chronicConditions: ["편두통"],
-    allergies: ["우유"],
-  });
+  expect(client.getQueryData<UserProfile>(queryKeys.user.me)).toEqual(profile);
+  expect(useUserStore.getState().user).toEqual(profileToUser(profile));
   expect(mockPatchProfile.mock.calls[0][0]).not.toHaveProperty("diseaseNames");
-  unmount();
   await act(async () => {
     request.reject(new Error("실패"));
     await pending;

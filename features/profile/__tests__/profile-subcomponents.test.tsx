@@ -36,8 +36,12 @@ describe("profile subcomponents", () => {
     expect(onCancel).toHaveBeenCalledTimes(1);
     expect(onSubmit).toHaveBeenCalledTimes(1);
 
-    rerender(<ProfileEditActionBar isSubmitting />);
+    rerender(<ProfileEditActionBar onCancel={onCancel} onSubmit={onSubmit} isSubmitting />);
     expect(getByText("저장 중...")).toBeTruthy();
+    fireEvent.press(getByText("취소"));
+    fireEvent.press(getByText("저장 중..."));
+    expect(onCancel).toHaveBeenCalledTimes(1);
+    expect(onSubmit).toHaveBeenCalledTimes(1);
   });
 
   it("ProfileEditActionBar는 로그아웃 버튼 수준의 높이를 확보한다", () => {

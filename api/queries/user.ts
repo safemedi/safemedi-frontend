@@ -7,11 +7,7 @@ import {
   fetchUserProfileWithAccessToken,
   patchUserProfile,
 } from "@/api/endpoints/user";
-import {
-  applyOptimisticUserProfile,
-  getProfileFromUser,
-  type UpdateUserProfileVariables,
-} from "@/api/queries/optimisticUserProfile";
+import type { UpdateUserProfileVariables } from "@/api/queries/optimisticUserProfile";
 import { queryKeys } from "@/api/query-keys";
 import type { TutorialRegistrationBody } from "@/api/types/tutorial";
 import type { UserProfile } from "@/api/types/user";
@@ -97,7 +93,7 @@ export function useUpdateUserProfileMutation() {
     mutationKey: queryKeys.user.updateProfile,
     mutationFn: ({ diseaseNames: _diseaseNames, ...body }: UpdateUserProfileVariables) =>
       patchUserProfile(body),
-    onMutate: async (body) => {
+    onMutate: async () => {
       if (queryClient.isMutating({ mutationKey: queryKeys.user.updateProfile }) > 1) {
         throw new Error("프로필 저장 중입니다. 잠시 후 다시 시도해주세요.");
       }
@@ -106,21 +102,7 @@ export function useUpdateUserProfileMutation() {
       if (useSessionStore.getState().sessionVersion !== sessionVersion) {
         throw new Error("로그인 상태가 변경되었습니다.");
       }
-      const previousUser = useUserStore.getState().user;
-      const previous =
-        queryClient.getQueryData<UserProfile>(queryKeys.user.me) ??
-        (previousUser ? getProfileFromUser(previousUser) : undefined);
-      if (previous) {
-        const optimistic = applyOptimisticUserProfile(previous, body);
-        queryClient.setQueryData(queryKeys.user.me, optimistic);
-        useUserStore.getState().setUser(profileToUser(optimistic));
-      }
-      return { previous, previousUser, sessionVersion };
-    },
-    onError: (_error, _body, context) => {
-      if (!context || useSessionStore.getState().sessionVersion !== context.sessionVersion) return;
-      if (context.previous) queryClient.setQueryData(queryKeys.user.me, context.previous);
-      useUserStore.getState().setUser(context.previousUser);
+      return { sessionVersion };
     },
     onSuccess: (updatedProfile, _body, context) => {
       if (!context || useSessionStore.getState().sessionVersion !== context.sessionVersion) return;

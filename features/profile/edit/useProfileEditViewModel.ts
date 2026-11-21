@@ -1,12 +1,13 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { router } from "expo-router";
+import { usePreventRemove } from "@react-navigation/native";
+import { router, useNavigation } from "expo-router";
 import { type BaseSyntheticEvent, useEffect, useMemo, useRef, useState } from "react";
 import { type Control, useForm, useWatch } from "react-hook-form";
 import { Alert } from "react-native";
 
 import { getApiErrorMessage } from "@/api/error";
 import type { UpdateUserProfileVariables } from "@/api/queries/optimisticUserProfile";
-import { useUpdateUserProfileMutation, useUserProfile } from "@/api/queries/user";
+import { useUpdateUserProfileMutation } from "@/api/queries/user";
 import type { UserProfilePatchAllergyItem } from "@/api/types/user";
 import {
   chronicConditionOptions,
@@ -21,7 +22,6 @@ import {
   buildUserAllergyEditState,
   chronicConditionLabelsToDiseaseCodes,
   profileAllergyLabelsToPatchItems,
-  profileToUser,
 } from "@/utils/user-mapper";
 import type { ProfileTagSearchResult } from "./components/ProfileTagEditorCard";
 import { type ProfileEditFormValues, profileEditSchema } from "./schema";
@@ -63,6 +63,8 @@ export interface ProfileEditViewModel {
   readonly handleLoadMoreChronicResults: () => void;
 }
 
+const SAVE_BACK_MARKER = Symbol("profile-save-back");
+
 function createUniqueItems(items: readonly string[]): string[] {
   const seen = new Set<string>();
   const next: string[] = [];
@@ -94,9 +96,21 @@ function createInitialChronicConditionCodes(
 export function useProfileEditViewModel(): ProfileEditViewModel {
   const user = useUserStore((s) => s.user);
   const saveMutation = useUpdateUserProfileMutation();
-  const profileQuery = useUserProfile();
-  const setUser = useUserStore((state) => state.setUser);
+  const navigation = useNavigation();
   const isSavingRef = useRef(false);
+  const saveBackTokenRef = useRef<symbol | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+
+  usePreventRemove(isSaving || saveMutation.isPending, ({ data }) => {
+    const action = data.action as typeof data.action & { [SAVE_BACK_MARKER]?: symbol };
+    if (
+      saveBackTokenRef.current !== null &&
+      action[SAVE_BACK_MARKER] === saveBackTokenRef.current
+    ) {
+      saveBackTokenRef.current = null;
+      navigation.dispatch(data.action);
+    }
+  });
   const { labels: initialAllergies, mappings: initialAllergyMappings } = useMemo(
     () => buildUserAllergyEditState(user?.allergies ?? [], user?.allergyMappings ?? {}),
     [user?.allergies, user?.allergyMappings],
@@ -260,50 +274,34 @@ export function useProfileEditViewModel(): ProfileEditViewModel {
       ),
       allergies: profileAllergyLabelsToPatchItems(values.allergies, selectedAllergyItems),
     };
-    const handleSave = () => {
-      if (isSavingRef.current || useSessionStore.getState().sessionVersion !== sessionVersion)
-        return;
-      isSavingRef.current = true;
-      void saveMutation
-        .mutateAsync(body)
-        .catch(async (error) => {
-          if (useSessionStore.getState().sessionVersion !== sessionVersion) return;
-          const message = await getApiErrorMessage(
-            error,
-            "프로필 저장에 실패해 이전 정보로 되돌렸습니다.",
-          );
-          if (useSessionStore.getState().sessionVersion !== sessionVersion) return;
-          Alert.alert("저장 실패", message, [
-            { text: "닫기", style: "cancel" },
-            {
-              text: "다시 편집",
-              onPress: async () => {
-                if (useSessionStore.getState().sessionVersion !== sessionVersion) return;
-                try {
-                  const { data: latest } = await profileQuery.refetch({ throwOnError: true });
-                  if (useSessionStore.getState().sessionVersion !== sessionVersion || !latest)
-                    return;
-                  setUser(profileToUser(latest));
-                  router.navigate("/profile/edit");
-                } catch (error) {
-                  if (useSessionStore.getState().sessionVersion !== sessionVersion) return;
-                  const message = await getApiErrorMessage(
-                    error,
-                    "최신 프로필을 불러오지 못했습니다. 다시 시도해주세요.",
-                  );
-                  if (useSessionStore.getState().sessionVersion !== sessionVersion) return;
-                  Alert.alert("조회 실패", message);
-                }
-              },
-            },
-          ]);
-        })
-        .finally(() => {
+    isSavingRef.current = true;
+    saveBackTokenRef.current = null;
+    setIsSaving(true);
+    let didNavigate = false;
+    void saveMutation
+      .mutateAsync(body)
+      .then(() => {
+        if (useSessionStore.getState().sessionVersion === sessionVersion) {
+          didNavigate = true;
+          const token = Symbol("profile-save-navigation");
+          saveBackTokenRef.current = token;
+          const saveBackAction = { type: "GO_BACK", [SAVE_BACK_MARKER]: token };
+          navigation.dispatch(saveBackAction);
+        }
+      })
+      .catch(async (error) => {
+        if (useSessionStore.getState().sessionVersion !== sessionVersion) return;
+        const message = await getApiErrorMessage(error, "프로필 저장에 실패했습니다.");
+        if (useSessionStore.getState().sessionVersion === sessionVersion) {
+          Alert.alert("저장 실패", message);
+        }
+      })
+      .finally(() => {
+        if (!didNavigate) {
           isSavingRef.current = false;
-        });
-    };
-    handleSave();
-    router.back();
+          setIsSaving(false);
+        }
+      });
   };
 
   const onInvalid = () => {
@@ -319,8 +317,10 @@ export function useProfileEditViewModel(): ProfileEditViewModel {
     allergies,
     chronicInput,
     chronicConditions,
-    isSubmitting: saveMutation.isPending,
-    handleBack: () => router.back(),
+    isSubmitting: isSaving || saveMutation.isPending,
+    handleBack: () => {
+      if (!isSavingRef.current) router.back();
+    },
     handleGenderChange: (value: GenderOptionValue) =>
       setValue("gender", value, { shouldDirty: true }),
     handleBloodTypeChange: (value: ProfileEditFormValues["bloodType"]) =>

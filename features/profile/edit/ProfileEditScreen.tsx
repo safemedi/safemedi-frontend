@@ -1,5 +1,6 @@
+import { useEffect } from "react";
 import { Controller } from "react-hook-form";
-import { ScrollView, StyleSheet } from "react-native";
+import { BackHandler, ScrollView, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { YStack } from "tamagui";
 
@@ -17,6 +18,12 @@ export function ProfileEditScreen() {
   const bottomPadding = useScreenBottomPadding(16);
   const viewModel = useProfileEditViewModel();
 
+  useEffect(() => {
+    if (!viewModel.isSubmitting) return;
+    const subscription = BackHandler.addEventListener("hardwareBackPress", () => true);
+    return () => subscription.remove();
+  }, [viewModel.isSubmitting]);
+
   return (
     <ScrollView
       style={styles.scroll}
@@ -28,7 +35,7 @@ export function ProfileEditScreen() {
       showsVerticalScrollIndicator={false}
     >
       <YStack gap={14}>
-        <ProfileEditHeader onBack={viewModel.handleBack} />
+        <ProfileEditHeader onBack={viewModel.handleBack} isDisabled={viewModel.isSubmitting} />
         <Controller
           control={viewModel.control}
           name="displayName"
