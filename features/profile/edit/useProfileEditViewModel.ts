@@ -35,6 +35,7 @@ export interface ProfileEditViewModel {
   readonly chronicInput: string;
   readonly chronicConditions: readonly string[];
   readonly isSubmitting: boolean;
+  readonly consumeSaveNavigation: () => boolean;
   readonly handleBack: () => void;
   readonly handleGenderChange: (value: GenderOptionValue) => void;
   readonly handleBloodTypeChange: (value: ProfileEditFormValues["bloodType"]) => void;
@@ -94,6 +95,8 @@ export function useProfileEditViewModel(): ProfileEditViewModel {
   const user = useUserStore((s) => s.user);
   const saveMutation = useUpdateUserProfileMutation();
   const isSavingRef = useRef(false);
+  const canLeaveAfterSaveRef = useRef(false);
+  const [isSaving, setIsSaving] = useState(false);
   const { labels: initialAllergies, mappings: initialAllergyMappings } = useMemo(
     () => buildUserAllergyEditState(user?.allergies ?? [], user?.allergyMappings ?? {}),
     [user?.allergies, user?.allergyMappings],
@@ -258,10 +261,17 @@ export function useProfileEditViewModel(): ProfileEditViewModel {
       allergies: profileAllergyLabelsToPatchItems(values.allergies, selectedAllergyItems),
     };
     isSavingRef.current = true;
+    canLeaveAfterSaveRef.current = false;
+    setIsSaving(true);
+    let didNavigate = false;
     void saveMutation
       .mutateAsync(body)
       .then(() => {
-        if (useSessionStore.getState().sessionVersion === sessionVersion) router.back();
+        if (useSessionStore.getState().sessionVersion === sessionVersion) {
+          didNavigate = true;
+          canLeaveAfterSaveRef.current = true;
+          router.back();
+        }
       })
       .catch(async (error) => {
         if (useSessionStore.getState().sessionVersion !== sessionVersion) return;
@@ -271,7 +281,10 @@ export function useProfileEditViewModel(): ProfileEditViewModel {
         }
       })
       .finally(() => {
-        isSavingRef.current = false;
+        if (!didNavigate) {
+          isSavingRef.current = false;
+          setIsSaving(false);
+        }
       });
   };
 
@@ -288,8 +301,15 @@ export function useProfileEditViewModel(): ProfileEditViewModel {
     allergies,
     chronicInput,
     chronicConditions,
-    isSubmitting: saveMutation.isPending,
-    handleBack: () => router.back(),
+    isSubmitting: isSaving || saveMutation.isPending,
+    consumeSaveNavigation: () => {
+      if (!canLeaveAfterSaveRef.current) return false;
+      canLeaveAfterSaveRef.current = false;
+      return true;
+    },
+    handleBack: () => {
+      if (!isSavingRef.current) router.back();
+    },
     handleGenderChange: (value: GenderOptionValue) =>
       setValue("gender", value, { shouldDirty: true }),
     handleBloodTypeChange: (value: ProfileEditFormValues["bloodType"]) =>

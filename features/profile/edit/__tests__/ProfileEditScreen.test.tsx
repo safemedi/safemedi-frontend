@@ -1,5 +1,5 @@
 import { fireEvent, render, waitFor } from "@testing-library/react-native";
-import { Alert, StyleSheet } from "react-native";
+import { Alert, BackHandler, StyleSheet } from "react-native";
 import type {
   useSearchDiseasesQuery,
   useSearchDrugAllergiesQuery,
@@ -8,6 +8,8 @@ import type { User } from "@/stores/userStore";
 import { ProfileEditScreen } from "../ProfileEditScreen";
 
 const mockBack = jest.fn();
+const mockDispatch = jest.fn();
+const mockPreventRemove = jest.fn();
 const mockNavigate = jest.fn();
 const mockSetUser = jest.fn();
 const mockRefetchProfile = jest.fn(async () => ({
@@ -46,10 +48,15 @@ const mockUser: User = {
 let mockActiveUser: User | null = mockUser;
 
 jest.mock("expo-router", () => ({
+  useNavigation: () => ({ dispatch: mockDispatch }),
   router: {
     back: () => mockBack(),
     navigate: (path: string) => mockNavigate(path),
   },
+}));
+
+jest.mock("@react-navigation/native", () => ({
+  usePreventRemove: (...args: unknown[]) => mockPreventRemove(...args),
 }));
 
 jest.mock("react-native-safe-area-context", () => ({
@@ -318,6 +325,7 @@ describe("프로필 수정 화면", () => {
   });
 
   it("저장이 성공한 뒤에만 편집 화면에서 돌아간다", async () => {
+    const backHandlerSpy = jest.spyOn(BackHandler, "addEventListener");
     let resolveSave!: (value: object) => void;
     mockMutate.mockImplementationOnce(
       () =>
@@ -330,8 +338,25 @@ describe("프로필 수정 화면", () => {
     fireEvent.press(getByLabelText("저장"));
     await waitFor(() => expect(mockMutate).toHaveBeenCalledTimes(1));
     expect(mockBack).not.toHaveBeenCalled();
+    expect(mockPreventRemove).toHaveBeenLastCalledWith(true, expect.any(Function));
+    const preventRemove = mockPreventRemove.mock.calls.at(-1)?.[1];
+    preventRemove?.({ data: { action: { type: "GO_BACK" } } });
+    expect(mockDispatch).not.toHaveBeenCalled();
+    fireEvent.press(getByLabelText("뒤로가기"));
+    fireEvent.press(getByLabelText("취소"));
+    expect(mockBack).not.toHaveBeenCalled();
+    await waitFor(() =>
+      expect(backHandlerSpy).toHaveBeenCalledWith("hardwareBackPress", expect.any(Function)),
+    );
+    const hardwareBack = backHandlerSpy.mock.calls.at(-1)?.[1];
+    expect(hardwareBack?.()).toBe(true);
     resolveSave({});
     await waitFor(() => expect(mockBack).toHaveBeenCalledTimes(1));
+    preventRemove?.({ data: { action: { type: "GO_BACK" } } });
+    expect(mockDispatch).toHaveBeenCalledTimes(1);
+    preventRemove?.({ data: { action: { type: "GO_BACK" } } });
+    expect(mockDispatch).toHaveBeenCalledTimes(1);
+    backHandlerSpy.mockRestore();
   });
 
   it("검색으로 선택한 기저질환은 diseaseCode로 저장한다", async () => {
