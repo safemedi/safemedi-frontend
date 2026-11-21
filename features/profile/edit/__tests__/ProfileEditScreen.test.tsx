@@ -324,7 +324,7 @@ describe("프로필 수정 화면", () => {
     });
   });
 
-  it("저장이 성공한 뒤에만 편집 화면에서 돌아간다", async () => {
+  it("저장 성공 전후의 다른 제거 액션을 막고 저장용 이동만 한 번 허용한다", async () => {
     const backHandlerSpy = jest.spyOn(BackHandler, "addEventListener");
     let resolveSave!: (value: object) => void;
     mockMutate.mockImplementationOnce(
@@ -340,7 +340,8 @@ describe("프로필 수정 화면", () => {
     expect(mockBack).not.toHaveBeenCalled();
     expect(mockPreventRemove).toHaveBeenLastCalledWith(true, expect.any(Function));
     const preventRemove = mockPreventRemove.mock.calls.at(-1)?.[1];
-    preventRemove?.({ data: { action: { type: "GO_BACK" } } });
+    const unrelatedBack = { type: "GO_BACK" };
+    preventRemove?.({ data: { action: unrelatedBack } });
     expect(mockDispatch).not.toHaveBeenCalled();
     fireEvent.press(getByLabelText("뒤로가기"));
     fireEvent.press(getByLabelText("취소"));
@@ -351,11 +352,16 @@ describe("프로필 수정 화면", () => {
     const hardwareBack = backHandlerSpy.mock.calls.at(-1)?.[1];
     expect(hardwareBack?.()).toBe(true);
     resolveSave({});
-    await waitFor(() => expect(mockBack).toHaveBeenCalledTimes(1));
-    preventRemove?.({ data: { action: { type: "GO_BACK" } } });
+    await waitFor(() => expect(mockDispatch).toHaveBeenCalledTimes(1));
+    const saveBackAction = mockDispatch.mock.calls[0][0];
+    preventRemove?.({ data: { action: unrelatedBack } });
     expect(mockDispatch).toHaveBeenCalledTimes(1);
-    preventRemove?.({ data: { action: { type: "GO_BACK" } } });
-    expect(mockDispatch).toHaveBeenCalledTimes(1);
+    preventRemove?.({ data: { action: saveBackAction } });
+    expect(mockDispatch).toHaveBeenCalledTimes(2);
+    expect(mockDispatch.mock.calls[1][0]).toEqual(saveBackAction);
+    preventRemove?.({ data: { action: saveBackAction } });
+    expect(mockDispatch).toHaveBeenCalledTimes(2);
+    expect(mockBack).not.toHaveBeenCalled();
     backHandlerSpy.mockRestore();
   });
 
@@ -396,6 +402,7 @@ describe("프로필 수정 화면", () => {
     fireEvent.press(getByLabelText("저장"));
     await waitFor(() => expect(alert).toHaveBeenCalled());
     expect(mockBack).not.toHaveBeenCalled();
+    expect(mockDispatch).not.toHaveBeenCalled();
     expect(getByPlaceholderText("닉네임").props.value).toBe("수정한 이름");
     expect(mockMutate).toHaveBeenCalledTimes(1);
     alert.mockRestore();

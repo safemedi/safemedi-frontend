@@ -1,5 +1,3 @@
-import { usePreventRemove } from "@react-navigation/native";
-import { useNavigation } from "expo-router";
 import { useEffect } from "react";
 import { Controller } from "react-hook-form";
 import { BackHandler, ScrollView, StyleSheet } from "react-native";
@@ -19,11 +17,6 @@ export function ProfileEditScreen() {
   const insets = useSafeAreaInsets();
   const bottomPadding = useScreenBottomPadding(16);
   const viewModel = useProfileEditViewModel();
-  const navigation = useNavigation();
-
-  usePreventRemove(viewModel.isSubmitting, ({ data }) => {
-    if (viewModel.consumeSaveNavigation()) navigation.dispatch(data.action);
-  });
 
   useEffect(() => {
     if (!viewModel.isSubmitting) return;

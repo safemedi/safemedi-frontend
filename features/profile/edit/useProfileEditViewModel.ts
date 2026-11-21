@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { router } from "expo-router";
+import { usePreventRemove } from "@react-navigation/native";
+import { router, useNavigation } from "expo-router";
 import { type BaseSyntheticEvent, useEffect, useMemo, useRef, useState } from "react";
 import { type Control, useForm, useWatch } from "react-hook-form";
 import { Alert } from "react-native";
@@ -35,7 +36,6 @@ export interface ProfileEditViewModel {
   readonly chronicInput: string;
   readonly chronicConditions: readonly string[];
   readonly isSubmitting: boolean;
-  readonly consumeSaveNavigation: () => boolean;
   readonly handleBack: () => void;
   readonly handleGenderChange: (value: GenderOptionValue) => void;
   readonly handleBloodTypeChange: (value: ProfileEditFormValues["bloodType"]) => void;
@@ -62,6 +62,8 @@ export interface ProfileEditViewModel {
   readonly hasMoreChronicResults: boolean;
   readonly handleLoadMoreChronicResults: () => void;
 }
+
+const SAVE_BACK_MARKER = Symbol("profile-save-back");
 
 function createUniqueItems(items: readonly string[]): string[] {
   const seen = new Set<string>();
@@ -94,9 +96,21 @@ function createInitialChronicConditionCodes(
 export function useProfileEditViewModel(): ProfileEditViewModel {
   const user = useUserStore((s) => s.user);
   const saveMutation = useUpdateUserProfileMutation();
+  const navigation = useNavigation();
   const isSavingRef = useRef(false);
-  const canLeaveAfterSaveRef = useRef(false);
+  const saveBackTokenRef = useRef<symbol | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+
+  usePreventRemove(isSaving || saveMutation.isPending, ({ data }) => {
+    const action = data.action as typeof data.action & { [SAVE_BACK_MARKER]?: symbol };
+    if (
+      saveBackTokenRef.current !== null &&
+      action[SAVE_BACK_MARKER] === saveBackTokenRef.current
+    ) {
+      saveBackTokenRef.current = null;
+      navigation.dispatch(data.action);
+    }
+  });
   const { labels: initialAllergies, mappings: initialAllergyMappings } = useMemo(
     () => buildUserAllergyEditState(user?.allergies ?? [], user?.allergyMappings ?? {}),
     [user?.allergies, user?.allergyMappings],
@@ -261,7 +275,7 @@ export function useProfileEditViewModel(): ProfileEditViewModel {
       allergies: profileAllergyLabelsToPatchItems(values.allergies, selectedAllergyItems),
     };
     isSavingRef.current = true;
-    canLeaveAfterSaveRef.current = false;
+    saveBackTokenRef.current = null;
     setIsSaving(true);
     let didNavigate = false;
     void saveMutation
@@ -269,8 +283,10 @@ export function useProfileEditViewModel(): ProfileEditViewModel {
       .then(() => {
         if (useSessionStore.getState().sessionVersion === sessionVersion) {
           didNavigate = true;
-          canLeaveAfterSaveRef.current = true;
-          router.back();
+          const token = Symbol("profile-save-navigation");
+          saveBackTokenRef.current = token;
+          const saveBackAction = { type: "GO_BACK", [SAVE_BACK_MARKER]: token };
+          navigation.dispatch(saveBackAction);
         }
       })
       .catch(async (error) => {
@@ -302,11 +318,6 @@ export function useProfileEditViewModel(): ProfileEditViewModel {
     chronicInput,
     chronicConditions,
     isSubmitting: isSaving || saveMutation.isPending,
-    consumeSaveNavigation: () => {
-      if (!canLeaveAfterSaveRef.current) return false;
-      canLeaveAfterSaveRef.current = false;
-      return true;
-    },
     handleBack: () => {
       if (!isSavingRef.current) router.back();
     },
