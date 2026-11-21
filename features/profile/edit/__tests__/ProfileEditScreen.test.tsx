@@ -317,6 +317,23 @@ describe("프로필 수정 화면", () => {
     });
   });
 
+  it("저장이 성공한 뒤에만 편집 화면에서 돌아간다", async () => {
+    let resolveSave!: (value: object) => void;
+    mockMutate.mockImplementationOnce(
+      () =>
+        new Promise<object>((resolve) => {
+          resolveSave = resolve;
+        }),
+    );
+    const { getByLabelText } = render(<ProfileEditScreen />);
+
+    fireEvent.press(getByLabelText("저장"));
+    await waitFor(() => expect(mockMutate).toHaveBeenCalledTimes(1));
+    expect(mockBack).not.toHaveBeenCalled();
+    resolveSave({});
+    await waitFor(() => expect(mockBack).toHaveBeenCalledTimes(1));
+  });
+
   it("검색으로 선택한 기저질환은 diseaseCode로 저장한다", async () => {
     mockUseSearchDiseasesQuery.mockReturnValue({
       items: [{ diseaseCode: "G43", diseaseName: "편두통" }],
@@ -346,22 +363,15 @@ describe("프로필 수정 화면", () => {
       );
     });
   });
-  it("저장 실패 후에는 오래된 요청을 재전송하지 않고 최신 정보 편집 화면을 연다", async () => {
+  it("저장 실패 시 편집 화면에 남고 입력값을 유지한다", async () => {
     const alert = jest.spyOn(Alert, "alert").mockImplementation(() => {});
     mockMutate.mockRejectedValueOnce(new Error("저장 실패"));
-    const { getByLabelText } = render(<ProfileEditScreen />);
+    const { getByLabelText, getByPlaceholderText } = render(<ProfileEditScreen />);
+    fireEvent.changeText(getByPlaceholderText("닉네임"), "수정한 이름");
     fireEvent.press(getByLabelText("저장"));
     await waitFor(() => expect(alert).toHaveBeenCalled());
-    mockActiveUser = { ...mockUser, displayName: "다른 화면에서 수정한 이름" };
-    const buttons = alert.mock.calls.at(-1)?.[2];
-    const edit = buttons?.find((button) => button.text === "다시 편집");
-    expect(edit).toBeDefined();
-    await edit?.onPress?.();
-    expect(mockRefetchProfile).toHaveBeenCalledWith({ throwOnError: true });
-    expect(mockSetUser).toHaveBeenCalledWith(
-      expect.objectContaining({ displayName: "서버 최신 이름" }),
-    );
-    expect(mockNavigate).toHaveBeenCalledWith("/profile/edit");
+    expect(mockBack).not.toHaveBeenCalled();
+    expect(getByPlaceholderText("닉네임").props.value).toBe("수정한 이름");
     expect(mockMutate).toHaveBeenCalledTimes(1);
     alert.mockRestore();
   });
