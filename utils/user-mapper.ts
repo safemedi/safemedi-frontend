@@ -337,6 +337,7 @@ export function profileToUser(profile: UserProfile): User {
     height: profile.height,
     weight: profile.weight,
     gender,
+    isPregnant: gender === "female" && profile.isPregnant,
     bloodType: supportedBloodType,
     ...allergyFields,
     ...diseaseFields,
@@ -360,6 +361,7 @@ export function userToTutorialRegistrationBody(user: User): TutorialRegistration
   return {
     birthDate: user.birthDate,
     gender: user.gender === "female" ? "FEMALE" : "MALE",
+    isPregnant: user.gender === "female" && user.isPregnant === true,
     height: user.height != null ? Math.round(user.height) : undefined,
     weight: user.weight != null ? Math.round(user.weight) : undefined,
     bloodType: tutorialBloodType,

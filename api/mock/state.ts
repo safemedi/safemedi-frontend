@@ -32,6 +32,7 @@ export const mockState: MockOnlyState & {
     displayName: "홍길동",
     birthDate: "2000-01-01",
     gender: "M",
+    isPregnant: false,
     height: 180,
     weight: 75,
     bloodType: "O",

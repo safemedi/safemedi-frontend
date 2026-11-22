@@ -17,6 +17,7 @@ export type TutorialAllergyItem = {
 export type TutorialRegistrationBody = {
   birthDate: string;
   gender: TutorialGender;
+  isPregnant: boolean;
   height?: number;
   weight?: number;
   bloodType?: TutorialBloodType;

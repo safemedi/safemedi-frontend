@@ -5,6 +5,7 @@ type RawUserMeResponse = {
   nickname?: string | null;
   birthDate?: string | null;
   gender?: string | null;
+  isPregnant?: boolean;
   height?: number | null;
   weight?: number | null;
   bloodType?: string | null;
@@ -115,6 +116,7 @@ export function normalizeUserProfile(raw: RawUserMeResponse): UserProfile {
     displayName: raw.displayName ?? raw.nickname ?? null,
     birthDate: raw.birthDate ?? null,
     gender: normalizeGender(raw.gender),
+    isPregnant: normalizeGender(raw.gender) === "F" && raw.isPregnant === true,
     height: raw.height ?? null,
     weight: raw.weight ?? null,
     bloodType: combineBloodTypeFromApi(raw.bloodType, raw.rhType),
