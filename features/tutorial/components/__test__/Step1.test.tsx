@@ -37,11 +37,14 @@ describe("튜토리얼 Step1", () => {
     const ref = createRef<StepHandle>();
     const { getByPlaceholderText, getByLabelText } = render(<Step1 ref={ref} />);
 
+    expect(getByLabelText("Rh-").props.accessibilityState).toEqual({ checked: false });
+
     fireEvent.changeText(getByPlaceholderText("ex) 950101"), "000315");
     fireEvent.changeText(getByPlaceholderText("예: 170"), "171.5");
     fireEvent.changeText(getByPlaceholderText("예: 65"), "66.3");
     fireEvent.press(getByLabelText("AB형"));
     fireEvent.press(getByLabelText("Rh-"));
+    expect(getByLabelText("Rh-").props.accessibilityState).toEqual({ checked: true });
     fireEvent.press(getByLabelText("여성"));
 
     let submitted = false;
@@ -56,6 +59,7 @@ describe("튜토리얼 Step1", () => {
       weight: 66,
       bloodType: "AB-",
       gender: "female",
+      isPregnant: false,
     });
   });
 
@@ -64,6 +68,30 @@ describe("튜토리얼 Step1", () => {
     const { getByDisplayValue } = render(<Step1 />);
 
     expect(getByDisplayValue("990101")).toBeTruthy();
+  });
+
+  it("여성에게만 임산부 체크박스를 보여주고 남성으로 변경하면 false로 저장한다", async () => {
+    setMockUser(baseUser);
+    const ref = createRef<StepHandle>();
+    const screen = render(<Step1 ref={ref} />);
+
+    expect(screen.queryByLabelText("임산부")).toBeNull();
+    fireEvent.press(screen.getByLabelText("여성"));
+    expect(screen.getByLabelText("임산부").props.accessibilityState).toEqual({ checked: false });
+    fireEvent.press(screen.getByLabelText("임산부"));
+    expect(screen.getByLabelText("임산부").props.accessibilityState).toEqual({ checked: true });
+
+    await act(async () => {
+      await ref.current?.submit();
+    });
+    expect(mockUpdateUser).toHaveBeenLastCalledWith(expect.objectContaining({ isPregnant: true }));
+
+    fireEvent.press(screen.getByLabelText("남성"));
+    expect(screen.queryByLabelText("임산부")).toBeNull();
+    await act(async () => {
+      await ref.current?.submit();
+    });
+    expect(mockUpdateUser).toHaveBeenLastCalledWith(expect.objectContaining({ isPregnant: false }));
   });
 
   it("필수값이 없으면 submit이 실패하고 사용자 정보를 업데이트하지 않는다", async () => {

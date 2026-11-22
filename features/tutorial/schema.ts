@@ -6,6 +6,7 @@ export const tutorialBasicInfoSchema = z.object({
   bloodType: z.enum(BLOOD_TYPES, { message: "혈액형을 선택해 주세요" }),
   rhFactor: z.enum(RH_FACTORS, { message: "Rh 타입을 선택해 주세요" }),
   gender: z.enum(GENDERS, { message: "성별을 선택해 주세요" }),
+  isPregnant: z.boolean(),
 });
 
 const birthDateSchema = z
