@@ -312,6 +312,7 @@ describe("프로필 수정 화면", () => {
         diseaseNames: { COND010: "천식" },
         nickname: "홍길동",
         gender: "FEMALE",
+        isPregnant: false,
         bloodType: "AB",
         rhType: "MINUS",
         diseaseCodes: ["COND010"],

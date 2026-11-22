@@ -59,9 +59,11 @@ describe("profile more components", () => {
     const onGenderChange = jest.fn();
     const onBloodTypeChange = jest.fn();
     const onRhFactorChange = jest.fn();
-    const { getByText } = render(
+    const { getByText, getByLabelText } = render(
       <ProfileBasicInfoCard
         gender="female"
+        isPregnant={false}
+        onPregnancyChange={jest.fn()}
         bloodType="A"
         rhFactor="positive"
         onGenderChange={onGenderChange}
@@ -72,10 +74,32 @@ describe("profile more components", () => {
 
     fireEvent.press(getByText("남성"));
     fireEvent.press(getByText("B형"));
-    fireEvent.press(getByText("Rh-"));
+    expect(getByLabelText("Rh-").props.accessibilityState).toEqual({ checked: false });
+    fireEvent.press(getByLabelText("Rh-"));
     expect(onGenderChange).toHaveBeenCalled();
     expect(onBloodTypeChange).toHaveBeenCalled();
-    expect(onRhFactorChange).toHaveBeenCalled();
+    expect(onRhFactorChange).toHaveBeenCalledWith("negative");
+  });
+
+  it("여성에게만 임산부 체크박스를 보여주고 선택을 전환한다", () => {
+    const onPregnancyChange = jest.fn();
+    const props = {
+      isPregnant: false,
+      bloodType: "A" as const,
+      rhFactor: "positive" as const,
+      onPregnancyChange,
+      onGenderChange: jest.fn(),
+      onBloodTypeChange: jest.fn(),
+      onRhFactorChange: jest.fn(),
+    };
+    const screen = render(<ProfileBasicInfoCard {...props} gender="female" />);
+
+    expect(screen.getByLabelText("임산부").props.accessibilityState).toEqual({ checked: false });
+    fireEvent.press(screen.getByLabelText("임산부"));
+    expect(onPregnancyChange).toHaveBeenCalledWith(true);
+
+    screen.rerender(<ProfileBasicInfoCard {...props} gender="male" />);
+    expect(screen.queryByLabelText("임산부")).toBeNull();
   });
 
   it("ProfileTagEditorCard 입력/추가/삭제 이벤트 전달", () => {

@@ -45,9 +45,11 @@ export function ProfileEditScreen() {
         />
         <ProfileBasicInfoCard
           gender={viewModel.gender}
+          isPregnant={viewModel.isPregnant}
           bloodType={viewModel.bloodType}
           rhFactor={viewModel.rhFactor}
           onGenderChange={viewModel.handleGenderChange}
+          onPregnancyChange={viewModel.handlePregnancyChange}
           onBloodTypeChange={viewModel.handleBloodTypeChange}
           onRhFactorChange={viewModel.handleRhFactorChange}
         />
