@@ -10,6 +10,7 @@ export type User = {
   height: number | null;
   weight: number | null;
   gender: "male" | "female" | null;
+  isPregnant?: boolean;
   bloodType:
     | "A"
     | "B"

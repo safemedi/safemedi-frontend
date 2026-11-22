@@ -28,6 +28,7 @@ const profile: UserProfile = {
   displayName: "기존 이름",
   birthDate: "1990-01-01",
   gender: "M",
+  isPregnant: false,
   bloodType: "A+",
   height: 170,
   weight: 60,

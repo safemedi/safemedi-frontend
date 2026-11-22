@@ -153,14 +153,16 @@ export function registerSaf26Mocks(registry: MockRegistry): void {
           { status: 400 },
         );
       }
-      const body = ctx.jsonBody as { gender?: string } | undefined;
-      if (body.gender !== "MALE" && body.gender !== "FEMALE") {
+      const body = ctx.jsonBody as { gender?: string; isPregnant?: boolean } | undefined;
+      if (!body || (body.gender !== "MALE" && body.gender !== "FEMALE")) {
         return Response.json(
           { code: "VAL_001", message: "성별 값이 올바르지 않습니다. (MALE, FEMALE만 허용)" },
           { status: 400 },
         );
       }
       mockState.profile.isTutorialCompleted = true;
+      mockState.profile.gender = body.gender === "FEMALE" ? "F" : "M";
+      mockState.profile.isPregnant = body.gender === "FEMALE" && body.isPregnant === true;
       mockState.tutorialCompleted = true;
       return {
         message: "튜토리얼 정보가 성공적으로 등록되었습니다.",
@@ -191,6 +193,8 @@ export function registerSaf26Mocks(registry: MockRegistry): void {
     if (patch.gender !== undefined) {
       mockState.profile.gender = patch.gender === "FEMALE" ? "F" : "M";
     }
+    mockState.profile.isPregnant =
+      mockState.profile.gender === "F" && (patch.isPregnant ?? mockState.profile.isPregnant);
     if (patch.bloodType !== undefined || patch.rhType !== undefined) {
       const abo = patch.bloodType ?? extractAboBloodType(mockState.profile.bloodType);
       const rhSign = patch.rhType === "MINUS" ? "-" : "+";
@@ -316,6 +320,7 @@ export function registerSaf26Mocks(registry: MockRegistry): void {
           familyId: accepted.familyId,
           name: accepted.name,
           relation: accepted.relation,
+          isPregnant: false,
         });
       }
       return accepted;

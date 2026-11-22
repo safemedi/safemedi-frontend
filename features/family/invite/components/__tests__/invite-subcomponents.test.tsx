@@ -45,8 +45,8 @@ describe("family invite subcomponents", () => {
 
   it("FamilyMembersSection은 구성원 수와 카드 목록을 렌더링한다", () => {
     const members = [
-      { familyId: 1, name: "엄마", relation: "가족" },
-      { familyId: 2, name: "아빠", relation: "가족" },
+      { familyId: 1, name: "엄마", relation: "가족", isPregnant: false },
+      { familyId: 2, name: "아빠", relation: "가족", isPregnant: false },
     ];
     const { getByText } = render(<FamilyMembersSection members={members} {...baseSectionProps} />);
 
@@ -58,8 +58,8 @@ describe("family invite subcomponents", () => {
 
   it("FamilyMembersSection은 편집 중인 familyId에만 편집 모드를 전달한다", () => {
     const members = [
-      { familyId: 1, name: "엄마", relation: "가족" },
-      { familyId: 2, name: "아빠", relation: "아빠" },
+      { familyId: 1, name: "엄마", relation: "가족", isPregnant: false },
+      { familyId: 2, name: "아빠", relation: "아빠", isPregnant: false },
     ];
     const onStartEdit = jest.fn();
     const { getByLabelText } = render(

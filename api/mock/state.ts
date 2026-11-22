@@ -32,6 +32,7 @@ export const mockState: MockOnlyState & {
     displayName: "홍길동",
     birthDate: "2000-01-01",
     gender: "M",
+    isPregnant: false,
     height: 180,
     weight: 75,
     bloodType: "O",
@@ -52,16 +53,19 @@ export const mockState: MockOnlyState & {
       familyId: null,
       name: "홍길동",
       relation: "본인",
+      isPregnant: false,
     },
     {
       familyId: 1,
       name: "김영희",
       relation: "어머니",
+      isPregnant: false,
     },
     {
       familyId: 2,
       name: "김민수",
       relation: "아버지",
+      isPregnant: false,
     },
   ],
 

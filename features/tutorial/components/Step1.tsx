@@ -1,11 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { forwardRef, useImperativeHandle } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { ScrollView } from "react-native";
+import { Controller, useForm, useWatch } from "react-hook-form";
+import { Pressable, ScrollView, StyleSheet } from "react-native";
 import { Input, Text, XStack, YStack } from "tamagui";
 import { SelectChip } from "@/components/ui/SelectChip";
 import { palette } from "@/constants/design-tokens";
-import { bloodOptions, genderOptions, rhOptions } from "@/constants/health-profile-options";
+import { bloodOptions, genderOptions } from "@/constants/health-profile-options";
 import { type TutorialStep1FormValues, tutorialStep1Schema } from "@/features/tutorial/schema";
 import type { StepHandle } from "@/features/tutorial/types";
 import { useUserStore } from "@/stores/userStore";
@@ -28,8 +28,10 @@ export const Step1 = forwardRef<StepHandle>(function Step1(_props, ref) {
       bloodType: defaultBloodType ?? "A",
       rhFactor: defaultRhFactor ?? "positive",
       gender: user?.gender ?? "male",
+      isPregnant: user?.gender === "female" && user.isPregnant === true,
     },
   });
+  const gender = useWatch({ control, name: "gender" });
 
   useImperativeHandle(
     ref,
@@ -50,6 +52,7 @@ export const Step1 = forwardRef<StepHandle>(function Step1(_props, ref) {
                 weight: Math.round(Number(data.weight.replace(",", "."))),
                 bloodType: combineBloodTypeWithRh(data.bloodType, data.rhFactor),
                 gender: data.gender,
+                isPregnant: data.gender === "female" && data.isPregnant,
               });
               resolve(true);
             },
@@ -172,7 +175,7 @@ export const Step1 = forwardRef<StepHandle>(function Step1(_props, ref) {
             name="bloodType"
             render={({ field: { onChange, value }, fieldState: { error } }) => (
               <>
-                <XStack gap={8} flexWrap="wrap">
+                <XStack gap={8} items="center">
                   {bloodOptions.map((opt) => {
                     const selected = value === opt.value;
                     return (
@@ -182,41 +185,37 @@ export const Step1 = forwardRef<StepHandle>(function Step1(_props, ref) {
                         label={opt.label}
                         selected={selected}
                         accessibilityLabel={opt.label}
+                        flex={1}
+                        px={8}
                       />
                     );
                   })}
+                  <Controller
+                    control={control}
+                    name="rhFactor"
+                    render={({ field: { onChange, value } }) => (
+                      <Pressable
+                        accessibilityRole="checkbox"
+                        accessibilityLabel="Rh-"
+                        accessibilityState={{ checked: value === "negative" }}
+                        onPress={() => onChange(value === "negative" ? "positive" : "negative")}
+                        style={styles.rhCheckboxRow}
+                      >
+                        <Text fontSize={14} fontWeight="700" color={palette.black}>
+                          Rh-
+                        </Text>
+                        <Text
+                          style={[styles.checkbox, value === "negative" && styles.checkboxChecked]}
+                        >
+                          {value === "negative" ? "✓" : ""}
+                        </Text>
+                      </Pressable>
+                    )}
+                  />
                 </XStack>
                 {error ? (
                   <Text fontSize={12} style={{ color: palette.red }}>
                     {error.message}
-                  </Text>
-                ) : null}
-              </>
-            )}
-          />
-          <Controller
-            control={control}
-            name="rhFactor"
-            render={({
-              field: { onChange: onRhFactorChange, value: rhValue },
-              fieldState: { error: rhError },
-            }) => (
-              <>
-                <XStack gap={10}>
-                  {rhOptions.map((opt) => (
-                    <SelectChip
-                      key={opt.value}
-                      onPress={() => onRhFactorChange(opt.value)}
-                      label={opt.label}
-                      selected={rhValue === opt.value}
-                      accessibilityLabel={opt.label}
-                      flex={1}
-                    />
-                  ))}
-                </XStack>
-                {rhError ? (
-                  <Text fontSize={12} style={{ color: palette.red }}>
-                    {rhError.message}
                   </Text>
                 ) : null}
               </>
@@ -255,6 +254,26 @@ export const Step1 = forwardRef<StepHandle>(function Step1(_props, ref) {
             )}
           />
         </YStack>
+        {gender === "female" ? (
+          <Controller
+            control={control}
+            name="isPregnant"
+            render={({ field: { onChange, value } }) => (
+              <Pressable
+                accessibilityRole="checkbox"
+                accessibilityLabel="임산부"
+                accessibilityState={{ checked: value }}
+                onPress={() => onChange(!value)}
+                style={styles.pregnancyRow}
+              >
+                <FieldLabel>임산부</FieldLabel>
+                <Text style={[styles.checkbox, value && styles.checkboxChecked]}>
+                  {value ? "✓" : ""}
+                </Text>
+              </Pressable>
+            )}
+          />
+        ) : null}
       </YStack>
     </ScrollView>
   );
@@ -267,3 +286,34 @@ function FieldLabel({ children }: { children: string }) {
     </Text>
   );
 }
+
+const styles = StyleSheet.create({
+  rhCheckboxRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    minHeight: 44,
+  },
+  pregnancyRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    minHeight: 44,
+  },
+  checkbox: {
+    width: 22,
+    height: 22,
+    backgroundColor: palette.white,
+    borderWidth: 1,
+    borderRadius: 4,
+    borderColor: palette.dark_gray,
+    textAlign: "center",
+    color: palette.white,
+    fontSize: 17,
+    lineHeight: 20,
+  },
+  checkboxChecked: {
+    backgroundColor: palette.black,
+    borderColor: palette.black,
+  },
+});

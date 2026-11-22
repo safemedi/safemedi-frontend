@@ -29,6 +29,7 @@ import { type ProfileEditFormValues, profileEditSchema } from "./schema";
 export interface ProfileEditViewModel {
   readonly control: Control<ProfileEditFormValues>;
   readonly gender: ProfileEditFormValues["gender"];
+  readonly isPregnant: boolean;
   readonly bloodType: ProfileEditFormValues["bloodType"];
   readonly rhFactor: ProfileEditFormValues["rhFactor"];
   readonly allergyInput: string;
@@ -38,6 +39,7 @@ export interface ProfileEditViewModel {
   readonly isSubmitting: boolean;
   readonly handleBack: () => void;
   readonly handleGenderChange: (value: GenderOptionValue) => void;
+  readonly handlePregnancyChange: (value: boolean) => void;
   readonly handleBloodTypeChange: (value: ProfileEditFormValues["bloodType"]) => void;
   readonly handleRhFactorChange: (value: ProfileEditFormValues["rhFactor"]) => void;
   readonly handleAllergyInputChange: (value: string) => void;
@@ -146,6 +148,7 @@ export function useProfileEditViewModel(): ProfileEditViewModel {
     defaultValues: {
       displayName: initialName,
       gender: initialGender,
+      isPregnant: initialGender === "female" && user?.isPregnant === true,
       bloodType: initialBloodType,
       rhFactor: initialRhFactor,
       allergies: initialAllergies,
@@ -156,6 +159,7 @@ export function useProfileEditViewModel(): ProfileEditViewModel {
   });
   const { control, reset, setValue, getValues, handleSubmit } = form;
   const gender = useWatch({ control, name: "gender" });
+  const isPregnant = useWatch({ control, name: "isPregnant" });
   const bloodType = useWatch({ control, name: "bloodType" });
   const rhFactor = useWatch({ control, name: "rhFactor" });
   const allergyInput = useWatch({ control, name: "allergyInput" });
@@ -208,6 +212,7 @@ export function useProfileEditViewModel(): ProfileEditViewModel {
     reset({
       displayName: initialName,
       gender: initialGender,
+      isPregnant: initialGender === "female" && user?.isPregnant === true,
       bloodType: initialBloodType,
       rhFactor: initialRhFactor,
       allergies: initialAllergies,
@@ -229,6 +234,7 @@ export function useProfileEditViewModel(): ProfileEditViewModel {
     initialRhFactor,
     reset,
     user?.chronicConditionMappings,
+    user?.isPregnant,
   ]);
 
   const addItem = (
@@ -266,6 +272,7 @@ export function useProfileEditViewModel(): ProfileEditViewModel {
       ),
       nickname: values.displayName.trim(),
       gender: values.gender === "female" ? "FEMALE" : "MALE",
+      isPregnant: values.gender === "female" && values.isPregnant,
       bloodType: values.bloodType,
       rhType: values.rhFactor === "negative" ? "MINUS" : "PLUS",
       diseaseCodes: chronicConditionLabelsToDiseaseCodes(
@@ -311,6 +318,7 @@ export function useProfileEditViewModel(): ProfileEditViewModel {
   return {
     control,
     gender,
+    isPregnant,
     bloodType,
     rhFactor,
     allergyInput,
@@ -323,6 +331,7 @@ export function useProfileEditViewModel(): ProfileEditViewModel {
     },
     handleGenderChange: (value: GenderOptionValue) =>
       setValue("gender", value, { shouldDirty: true }),
+    handlePregnancyChange: (value: boolean) => setValue("isPregnant", value, { shouldDirty: true }),
     handleBloodTypeChange: (value: ProfileEditFormValues["bloodType"]) =>
       setValue("bloodType", value, { shouldDirty: true }),
     handleRhFactorChange: (value: ProfileEditFormValues["rhFactor"]) =>

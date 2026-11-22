@@ -9,6 +9,7 @@ describe("튜토리얼 Step1 스키마", () => {
       bloodType: "AB",
       rhFactor: "positive",
       gender: "female",
+      isPregnant: false,
     });
 
     expect(result.success).toBe(true);
@@ -22,6 +23,7 @@ describe("튜토리얼 Step1 스키마", () => {
       bloodType: "A",
       rhFactor: "negative",
       gender: "male",
+      isPregnant: false,
     });
 
     expect(result.success).toBe(true);
@@ -35,6 +37,7 @@ describe("튜토리얼 Step1 스키마", () => {
       bloodType: "B",
       rhFactor: "positive",
       gender: "female",
+      isPregnant: false,
     });
 
     expect(result.success).toBe(false);
@@ -52,6 +55,7 @@ describe("튜토리얼 Step1 스키마", () => {
       bloodType: "O",
       rhFactor: "positive",
       gender: "male",
+      isPregnant: false,
     });
 
     expect(result.success).toBe(false);

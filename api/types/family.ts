@@ -3,6 +3,7 @@ export type FamilySummary = {
   familyId: number | null;
   name: string;
   relation: string;
+  isPregnant: boolean;
 };
 
 /** GET /api/v1/families 응답 */
