@@ -183,8 +183,8 @@ describe("FamilyManageScreen", () => {
     jest.clearAllMocks();
     mockUseFamilies.mockReturnValue({
       data: [
-        { familyId: null, name: "홍길동", relation: "본인" },
-        { familyId: 2, name: "김영희", relation: "어머니" },
+        { familyId: null, name: "홍길동", relation: "본인", isPregnant: false },
+        { familyId: 2, name: "김영희", relation: "어머니", isPregnant: false },
       ],
       isLoading: false,
       isError: false,

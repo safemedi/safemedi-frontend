@@ -320,6 +320,7 @@ export function registerSaf26Mocks(registry: MockRegistry): void {
           familyId: accepted.familyId,
           name: accepted.name,
           relation: accepted.relation,
+          isPregnant: false,
         });
       }
       return accepted;
