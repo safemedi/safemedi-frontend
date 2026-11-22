@@ -68,7 +68,7 @@ export function ProfileBasicInfoCard({
 
         <YStack gap={8}>
           <Text style={styles.title}>혈액형</Text>
-          <XStack gap={8} alignItems="center">
+          <XStack gap={8} items="center">
             {bloodOptions.map((option) => (
               <SelectChip
                 key={option.value}

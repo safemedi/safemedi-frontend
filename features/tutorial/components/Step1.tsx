@@ -175,7 +175,7 @@ export const Step1 = forwardRef<StepHandle>(function Step1(_props, ref) {
             name="bloodType"
             render={({ field: { onChange, value }, fieldState: { error } }) => (
               <>
-                <XStack gap={8} alignItems="center">
+                <XStack gap={8} items="center">
                   {bloodOptions.map((opt) => {
                     const selected = value === opt.value;
                     return (
