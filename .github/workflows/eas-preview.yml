@@ -59,7 +59,11 @@ jobs:
       - name: Build ${{ matrix.name }}
         id: eas_build
         run: |
-          eas build --platform ${{ matrix.platform }} --profile preview --non-interactive --json > eas-build.json
+          if [ "${{ matrix.platform }}" = "ios" ]; then
+            eas build --platform ios --profile preview --auto-submit --non-interactive --json > eas-build.json
+          else
+            eas build --platform android --profile preview --non-interactive --json > eas-build.json
+          fi
 
           node <<'NODE' >> "$GITHUB_OUTPUT"
           const fs = require("node:fs");
