@@ -1,3 +1,4 @@
+import { useIsFocused } from "@react-navigation/native";
 import { router } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { type Control, type UseFieldArrayReturn, useFieldArray, useForm } from "react-hook-form";
@@ -124,6 +125,7 @@ export interface PrescriptionScanResultViewModel {
 }
 
 export function usePrescriptionScanResultViewModel(): PrescriptionScanResultViewModel {
+  const isFocused = useIsFocused();
   const result = usePrescriptionDraftStore((state) => state.result);
   const clearResult = usePrescriptionDraftStore((state) => state.clearResult);
   const setIngredientAnalysisRequest = useIngredientAnalysisStore((state) => state.setRequest);
@@ -160,7 +162,7 @@ export function usePrescriptionScanResultViewModel(): PrescriptionScanResultView
   }, [initialValues, reset]);
 
   useEffect(() => {
-    if (result) return;
+    if (result || !isFocused) return;
     if (shouldSuppressEmptyResultAlertRef.current) return;
     Alert.alert("스캔 결과 없음", EMPTY_RESULT_ERROR, [
       {
@@ -168,7 +170,7 @@ export function usePrescriptionScanResultViewModel(): PrescriptionScanResultView
         onPress: () => router.replace("/(detail)/scan/scan"),
       },
     ]);
-  }, [result]);
+  }, [isFocused, result]);
 
   const handlePressClose = useCallback(() => {
     shouldSuppressEmptyResultAlertRef.current = true;

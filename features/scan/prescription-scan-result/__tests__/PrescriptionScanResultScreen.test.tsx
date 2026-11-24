@@ -3,6 +3,10 @@ import { Alert } from "react-native";
 import { usePrescriptionDraftStore } from "../../prescription-scan/usePrescriptionDraftStore";
 import { PrescriptionScanResultScreen } from "../PrescriptionScanResultScreen";
 
+jest.mock("@react-navigation/native", () => ({
+  useIsFocused: () => true,
+}));
+
 jest.mock("expo-router", () => ({
   __esModule: true,
   router: {

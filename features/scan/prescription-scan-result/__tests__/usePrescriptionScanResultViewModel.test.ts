@@ -8,6 +8,11 @@ import { usePrescriptionScanResultViewModel } from "../usePrescriptionScanResult
 
 const mockClearResult = jest.fn();
 const mockSetIngredientAnalysisRequest = jest.fn();
+let mockIsFocused = true;
+
+jest.mock("@react-navigation/native", () => ({
+  useIsFocused: () => mockIsFocused,
+}));
 
 let mockResult: PrescriptionDraftResult | null = {
   imageUri: "file://image.png",
@@ -61,6 +66,7 @@ describe("usePrescriptionScanResultViewModel", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockIsFocused = true;
     mockResult = {
       imageUri: "file://image.png",
       draft: {
@@ -86,6 +92,15 @@ describe("usePrescriptionScanResultViewModel", () => {
       "복약 등록 정보가 없습니다. 스캔 화면으로 이동합니다.",
       expect.any(Array),
     );
+  });
+
+  it("분석 화면 뒤에 남은 상태에서 결과가 지워져도 알림을 노출하지 않는다", () => {
+    mockIsFocused = false;
+    mockResult = null;
+
+    renderHook(() => usePrescriptionScanResultViewModel());
+
+    expect(mockAlert).not.toHaveBeenCalled();
   });
 
   it("약물 추가/수정 관련 핸들러가 폼 상태를 갱신한다", async () => {
