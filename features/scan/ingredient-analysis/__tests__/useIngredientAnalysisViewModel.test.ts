@@ -8,7 +8,7 @@ import type { AnalyzeIngredientsRequest, AnalyzeIngredientsResponse } from "@/ap
 import { useIngredientAnalysisViewModel } from "../useIngredientAnalysisViewModel";
 
 const mockClearRequest = jest.fn();
-const mockClearOcrResult = jest.fn();
+const mockClearDraftResult = jest.fn();
 const mockAnalyzeMutateAsync = jest.fn();
 const mockCreateMutateAsync = jest.fn();
 
@@ -78,24 +78,27 @@ jest.mock("@/api/queries/prescription-scan", () => ({
   useCreatePrescriptionByScanMutation: jest.fn(),
 }));
 
-jest.mock("../../prescription-scan/usePrescriptionOcrResultStore", () => ({
-  usePrescriptionOcrResultStore: (selector: (state: { clearResult: () => void }) => unknown) =>
+jest.mock("../../prescription-scan/usePrescriptionDraftStore", () => ({
+  usePrescriptionDraftStore: (selector: (state: { clearResult: () => void }) => unknown) =>
     selector({
-      clearResult: mockClearOcrResult,
+      clearResult: mockClearDraftResult,
     }),
 }));
 
 jest.mock("../useIngredientAnalysisStore", () => ({
-  useIngredientAnalysisStore: (
-    selector: (state: {
-      request: AnalyzeIngredientsRequest | null;
-      clearRequest: () => void;
-    }) => unknown,
-  ) =>
-    selector({
-      request: mockRequest,
-      clearRequest: mockClearRequest,
-    }),
+  useIngredientAnalysisStore: Object.assign(
+    (
+      selector: (state: {
+        request: AnalyzeIngredientsRequest | null;
+        clearRequest: () => void;
+      }) => unknown,
+    ) =>
+      selector({
+        request: mockRequest,
+        clearRequest: mockClearRequest,
+      }),
+    { getState: () => ({ request: mockRequest }) },
+  ),
 }));
 
 describe("useIngredientAnalysisViewModel", () => {
@@ -149,7 +152,7 @@ describe("useIngredientAnalysisViewModel", () => {
     mockAnalyzeMutateAsync.mockReturnValueOnce(deferred.promise);
 
     const { result } = renderHook(() => useIngredientAnalysisViewModel());
-    expect(mockAnalyzeMutateAsync).toHaveBeenCalledWith(BASE_REQUEST);
+    expect(mockAnalyzeMutateAsync).toHaveBeenCalledWith({ body: BASE_REQUEST, sessionVersion: 0 });
 
     await act(async () => {
       deferred.resolve(BASE_ANALYSIS_RESPONSE);
@@ -167,7 +170,7 @@ describe("useIngredientAnalysisViewModel", () => {
     mockAnalyzeMutateAsync.mockReturnValueOnce(deferred.promise);
 
     const { result } = renderHook(() => useIngredientAnalysisViewModel());
-    expect(mockAnalyzeMutateAsync).toHaveBeenCalledWith(BASE_REQUEST);
+    expect(mockAnalyzeMutateAsync).toHaveBeenCalledWith({ body: BASE_REQUEST, sessionVersion: 0 });
 
     await act(async () => {
       deferred.reject(new Error("network down"));
@@ -223,8 +226,98 @@ describe("useIngredientAnalysisViewModel", () => {
     });
 
     expect(mockClearRequest).toHaveBeenCalledTimes(1);
-    expect(mockClearOcrResult).toHaveBeenCalledTimes(1);
+    expect(mockClearDraftResult).toHaveBeenCalledTimes(1);
     expect(mockRouterReplace).toHaveBeenCalledWith("/(tabs)/dashboard");
+  });
+
+  it("의료진 확인 경고를 승인해도 저장하지 않고 다시 저장할 때 등록한다", async () => {
+    mockAnalyzeMutateAsync.mockResolvedValueOnce({
+      ...BASE_ANALYSIS_RESPONSE,
+      shouldConsultDoctor: true,
+      doctorConsultationMessage: "의사와 상담해주세요.",
+    });
+    mockCreateMutateAsync.mockResolvedValueOnce({ message: "등록 완료" });
+    const { result } = renderHook(() => useIngredientAnalysisViewModel());
+    await waitFor(() => expect(result.current.result?.shouldConsultDoctor).toBe(true));
+
+    await act(async () => {
+      await result.current.handlePressConfirm();
+    });
+    expect(mockCreateMutateAsync).not.toHaveBeenCalled();
+    expect(mockAlert).toHaveBeenLastCalledWith(
+      "의료진 확인 필요",
+      expect.stringContaining("의료진과 상담해주세요."),
+      expect.any(Array),
+    );
+
+    // 승인하지 않고 다시 저장하면 경고를 다시 표시한다.
+    await act(async () => {
+      await result.current.handlePressConfirm();
+    });
+    expect(mockAlert).toHaveBeenCalledTimes(2);
+    expect(mockCreateMutateAsync).not.toHaveBeenCalled();
+
+    act(() => {
+      mockAlert.mock.calls
+        .at(-1)?.[2]
+        ?.find((button) => button.text === "승인")
+        ?.onPress?.();
+    });
+    expect(mockCreateMutateAsync).not.toHaveBeenCalled();
+    await act(async () => {
+      await result.current.handlePressConfirm();
+    });
+    expect(result.current.hasMedicalStaffApproval).toBe(true);
+    expect(mockCreateMutateAsync).toHaveBeenCalledTimes(1);
+    expect(mockCreateMutateAsync).toHaveBeenCalledWith({
+      body: { ...BASE_REQUEST, isDoctorApproved: true },
+      sessionVersion: 0,
+    });
+  });
+
+  it("요청이 바뀌면 이전 분석 결과와 승인을 저장에 사용하지 않는다", async () => {
+    mockAnalyzeMutateAsync.mockResolvedValueOnce({
+      ...BASE_ANALYSIS_RESPONSE,
+      shouldConsultDoctor: true,
+    });
+    const { result, rerender } = renderHook(() => useIngredientAnalysisViewModel());
+    await waitFor(() => expect(result.current.result?.shouldConsultDoctor).toBe(true));
+    await act(async () => {
+      await result.current.handlePressConfirm();
+    });
+    act(() => {
+      mockAlert.mock.calls
+        .at(-1)?.[2]
+        ?.find((button) => button.text === "승인")
+        ?.onPress?.();
+    });
+    expect(result.current.hasMedicalStaffApproval).toBe(true);
+
+    mockRequest = { ...BASE_REQUEST, title: "새 처방전" };
+    const nextAnalysis = createDeferred<AnalyzeIngredientsResponse>();
+    mockAnalyzeMutateAsync.mockReturnValueOnce(nextAnalysis.promise);
+    rerender({});
+    expect(result.current.result).toBeNull();
+    expect(result.current.hasMedicalStaffApproval).toBe(false);
+    await act(async () => {
+      await result.current.handlePressConfirm();
+    });
+    expect(mockCreateMutateAsync).not.toHaveBeenCalled();
+
+    await act(async () => {
+      nextAnalysis.resolve({ ...BASE_ANALYSIS_RESPONSE, shouldConsultDoctor: true });
+      await nextAnalysis.promise;
+    });
+    await waitFor(() => expect(result.current.result).not.toBeNull());
+    await act(async () => {
+      await result.current.handlePressConfirm();
+    });
+    expect(mockCreateMutateAsync).not.toHaveBeenCalled();
+    expect(mockAlert).toHaveBeenLastCalledWith(
+      "의료진 확인 필요",
+      expect.any(String),
+      expect.any(Array),
+    );
   });
 
   it("알레르기 충돌이 있으면 경고 타이틀과 상세 메시지로 알림을 노출한다", async () => {
@@ -316,13 +409,38 @@ describe("useIngredientAnalysisViewModel", () => {
     expect(mockAnalyzeMutateAsync).not.toHaveBeenCalled();
   });
 
-  it("취소 버튼 핸들러는 back 라우팅을 호출한다", () => {
+  it("등록 요청이 끝나기 전에 취소하거나 닫아도 완료 응답을 처리한다", async () => {
+    mockAnalyzeMutateAsync.mockResolvedValueOnce(BASE_ANALYSIS_RESPONSE);
+    const confirmation = createDeferred<{ message: string }>();
+    mockCreateMutateAsync.mockReturnValueOnce(confirmation.promise);
+    const { result } = renderHook(() => useIngredientAnalysisViewModel());
+    await waitFor(() => expect(result.current.result).toEqual(BASE_ANALYSIS_RESPONSE));
+    let pending: Promise<void> | undefined;
+
+    await act(async () => {
+      pending = result.current.handlePressConfirm();
+      result.current.handlePressBack();
+      result.current.handlePressClose();
+    });
+    expect(mockClearRequest).not.toHaveBeenCalled();
+    expect(mockRouterBack).not.toHaveBeenCalled();
+    expect(mockRouterReplace).not.toHaveBeenCalled();
+
+    await act(async () => {
+      confirmation.resolve({ message: "등록 완료" });
+      await pending;
+    });
+    expect(mockAlert).toHaveBeenCalledWith("복약 등록 완료", "등록 완료", expect.any(Array));
+  });
+
+  it("이전 버튼은 분석 요청을 지우고 사용자 확인 화면으로 돌아간다", () => {
     const { result } = renderHook(() => useIngredientAnalysisViewModel());
 
     act(() => {
-      result.current.handlePressCancel();
+      result.current.handlePressBack();
     });
 
     expect(mockRouterBack).toHaveBeenCalledTimes(1);
+    expect(mockClearRequest).toHaveBeenCalledTimes(1);
   });
 });

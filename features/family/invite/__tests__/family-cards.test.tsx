@@ -91,7 +91,7 @@ describe("family cards", () => {
   it("FamilyMemberCard는 본인 항목에만 본인 뱃지를 표시하고 액션 버튼은 숨긴다", () => {
     const { getAllByText, queryByText, queryByLabelText, rerender } = render(
       <FamilyMemberCard
-        member={{ familyId: null, name: "홍길동", relation: "본인" }}
+        member={{ familyId: null, name: "홍길동", relation: "본인", isPregnant: false }}
         {...baseMemberCardProps}
       />,
     );
@@ -100,7 +100,7 @@ describe("family cards", () => {
 
     rerender(
       <FamilyMemberCard
-        member={{ familyId: 2, name: "김영희", relation: "어머니" }}
+        member={{ familyId: 2, name: "김영희", relation: "어머니", isPregnant: false }}
         {...baseMemberCardProps}
       />,
     );
@@ -112,7 +112,7 @@ describe("family cards", () => {
     const onUnlink = jest.fn();
     const { getByLabelText } = render(
       <FamilyMemberCard
-        member={{ familyId: 2, name: "김영희", relation: "어머니" }}
+        member={{ familyId: 2, name: "김영희", relation: "어머니", isPregnant: false }}
         {...baseMemberCardProps}
         onStartEdit={onStartEdit}
         onUnlink={onUnlink}
@@ -132,7 +132,7 @@ describe("family cards", () => {
     const onCancelEdit = jest.fn();
     const { getByLabelText } = render(
       <FamilyMemberCard
-        member={{ familyId: 2, name: "김영희", relation: "어머니" }}
+        member={{ familyId: 2, name: "김영희", relation: "어머니", isPregnant: false }}
         {...baseMemberCardProps}
         isEditing
         relationDraft="새 호칭"
@@ -157,7 +157,7 @@ describe("family cards", () => {
     const onSaveRelation = jest.fn();
     const { getByLabelText } = render(
       <FamilyMemberCard
-        member={{ familyId: 2, name: "김영희", relation: "어머니" }}
+        member={{ familyId: 2, name: "김영희", relation: "어머니", isPregnant: false }}
         {...baseMemberCardProps}
         isEditing
         relationDraft="어머니"

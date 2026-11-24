@@ -117,7 +117,7 @@ export const palette = {
   bg_consultation_card: ["#FAF5FF", "#FDF2F8"],
   bg_achievement_card: ["#F0FDF4", "#ECFDF5"],
 
-  // consultation tone (의사 상담 권장)
+  // consultation tone (의료진 상담 권장)
   consultation_card_border: "#E9D4FF",
   consultation_card_title: "#6E11B0",
   consultation_card_message: "#8200DB",

@@ -17,9 +17,10 @@ export interface IngredientAnalysisViewModel {
   readonly result: AnalyzeIngredientsResponse | null;
   readonly isAnalyzing: boolean;
   readonly isSubmitting: boolean;
+  readonly hasMedicalStaffApproval: boolean;
   readonly errorMessage: string | null;
   readonly handlePressClose: () => void;
-  readonly handlePressCancel: () => void;
+  readonly handlePressBack: () => void;
   readonly handlePressRetryAnalysis: () => Promise<void>;
   readonly handlePressConfirm: () => Promise<void>;
 }

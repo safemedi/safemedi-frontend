@@ -3,17 +3,18 @@ import { queryKeys } from "@/api/query-keys";
 import type { AnalyzeIngredientsRequest } from "@/api/types";
 import { useAnalyzeIngredientsMutation } from "../ingredient-analysis";
 
-const mockAnalyzePrescriptionIngredients = jest.fn<Promise<unknown>, [AnalyzeIngredientsRequest]>(
-  async () => ({}),
-);
+const mockAnalyzePrescriptionIngredients = jest.fn<
+  Promise<unknown>,
+  [AnalyzeIngredientsRequest, number]
+>(async () => ({}));
 
 jest.mock("@tanstack/react-query", () => ({
   useMutation: jest.fn((options: unknown) => options),
 }));
 
 jest.mock("@/api/endpoints/ingredient-analysis", () => ({
-  analyzePrescriptionIngredients: (body: AnalyzeIngredientsRequest) =>
-    mockAnalyzePrescriptionIngredients(body),
+  analyzePrescriptionIngredients: (body: AnalyzeIngredientsRequest, sessionVersion: number) =>
+    mockAnalyzePrescriptionIngredients(body, sessionVersion),
 }));
 
 describe("api/queries/ingredient-analysis", () => {
@@ -25,7 +26,10 @@ describe("api/queries/ingredient-analysis", () => {
     const { result } = renderHook(() => useAnalyzeIngredientsMutation());
     const mutation = result.current as unknown as {
       mutationKey: unknown;
-      mutationFn: (body: AnalyzeIngredientsRequest) => Promise<unknown>;
+      mutationFn: (input: {
+        body: AnalyzeIngredientsRequest;
+        sessionVersion: number;
+      }) => Promise<unknown>;
     };
 
     const request: AnalyzeIngredientsRequest = {
@@ -39,7 +43,7 @@ describe("api/queries/ingredient-analysis", () => {
     };
 
     expect(mutation.mutationKey).toEqual(queryKeys.scan.analyzeIngredients);
-    await mutation.mutationFn(request);
-    expect(mockAnalyzePrescriptionIngredients).toHaveBeenCalledWith(request);
+    await mutation.mutationFn({ body: request, sessionVersion: 3 });
+    expect(mockAnalyzePrescriptionIngredients).toHaveBeenCalledWith(request, 3);
   });
 });

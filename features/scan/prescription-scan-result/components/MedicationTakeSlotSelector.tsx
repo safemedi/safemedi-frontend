@@ -1,5 +1,5 @@
 import { type Control, Controller } from "react-hook-form";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, TextInput, View } from "react-native";
 import { Text, YStack } from "tamagui";
 import { palette } from "@/constants/design-tokens";
 import {
@@ -10,12 +10,16 @@ import {
 
 interface MedicationTakeSlotSelectorProps {
   readonly index: number;
+  readonly hasTakeTime: boolean;
+  readonly isAdditionalTimeInvalid: boolean;
   readonly control: Control<PrescriptionScanResultFormValues>;
   readonly onToggleMedicationTakeSlot: (index: number, slot: MedicationTakeSlot) => void;
 }
 
 export function MedicationTakeSlotSelector({
   index,
+  hasTakeTime,
+  isAdditionalTimeInvalid,
   control,
   onToggleMedicationTakeSlot,
 }: MedicationTakeSlotSelectorProps) {
@@ -55,12 +59,31 @@ export function MedicationTakeSlotSelector({
                 );
               })}
             </View>
-            {value.length === 0 ? (
+            {!hasTakeTime && !isAdditionalTimeInvalid ? (
               <Text style={styles.requiredText}>최소 1개 이상의 복약 시간을 선택해주세요.</Text>
             ) : null}
           </>
         )}
       />
+      <Text style={styles.label}>추가 복용 시간 (선택)</Text>
+      <Controller
+        control={control}
+        name={`medications.${index}.additionalTakeTimes`}
+        render={({ field: { value, onChange } }) => (
+          <TextInput
+            value={value ?? ""}
+            onChangeText={onChange}
+            accessibilityLabel="추가 복용 시간"
+            placeholder="예: 22:00, 02:00"
+            placeholderTextColor={palette.icon}
+            autoCapitalize="none"
+            style={[styles.slotButton, { color: palette.black, paddingHorizontal: 12 }]}
+          />
+        )}
+      />
+      {isAdditionalTimeInvalid ? (
+        <Text style={styles.requiredText}>복용 시간은 HH:mm 형식으로 입력해주세요.</Text>
+      ) : null}
     </YStack>
   );
 }

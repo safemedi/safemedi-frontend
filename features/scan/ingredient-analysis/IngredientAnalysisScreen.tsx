@@ -27,9 +27,9 @@ export function IngredientAnalysisScreen() {
     ? "등록 중..."
     : !viewModel.result || viewModel.errorMessage
       ? "분석 결과 필요"
-      : viewModel.result.shouldConsultDoctor
-        ? "의사 확인 필요"
-        : "복약 등록 완료";
+      : viewModel.result.shouldConsultDoctor && !viewModel.hasMedicalStaffApproval
+        ? "의료진 확인"
+        : "저장";
 
   if (viewModel.isAnalyzing) {
     return (
@@ -118,12 +118,13 @@ export function IngredientAnalysisScreen() {
         <View style={styles.bottomActionRow}>
           <PillButton
             variant="outline"
-            onPress={viewModel.handlePressCancel}
-            accessibilityLabel="분석 취소"
+            onPress={viewModel.handlePressBack}
+            accessibilityLabel="이전 단계로 이동"
+            disabled={viewModel.isSubmitting}
             borderColor={palette.border_muted}
             backgroundColor={palette.surface_subtle}
           >
-            <Text style={styles.cancelText}>취소</Text>
+            <Text style={styles.cancelText}>이전</Text>
           </PillButton>
           <PillButton
             variant="solid"

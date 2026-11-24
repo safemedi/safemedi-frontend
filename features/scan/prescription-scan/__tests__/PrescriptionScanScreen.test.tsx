@@ -2,18 +2,14 @@ import { fireEvent, render } from "@testing-library/react-native";
 import { router } from "expo-router";
 import { Alert } from "react-native";
 import { PrescriptionScanScreen } from "../PrescriptionScanScreen";
-import type { PrescriptionScanViewModel } from "../types";
+import type { PrescriptionScanViewModel } from "../usePrescriptionScanViewModel";
 
 const mockUsePrescriptionScanViewModel = jest.fn<PrescriptionScanViewModel, []>();
 const mockExtractFromGallery = jest.fn<Promise<void>, []>(async () => {});
 const mockExtractFromCamera = jest.fn<Promise<void>, []>(async () => {});
 const mockRetryExtract = jest.fn<Promise<void>, []>(async () => {});
 const mockOpenManualInput = jest.fn();
-const mockCloseManualInput = jest.fn();
-const mockUpdateManualJson = jest.fn();
-const mockApplyManualJson = jest.fn();
 const mockResetError = jest.fn();
-const mockResetSubmitFeedback = jest.fn();
 
 jest.mock("expo-router", () => ({
   __esModule: true,
@@ -113,24 +109,14 @@ function createViewModel(
   overrides?: Partial<PrescriptionScanViewModel>,
 ): PrescriptionScanViewModel {
   return {
-    draft: null,
-    draftJson: "{}",
     isExtracting: false,
-    isSubmitting: false,
-    isManualInputVisible: false,
     error: null,
-    submitFeedback: null,
     selectedImageUri: null,
     extractFromGallery: mockExtractFromGallery,
     extractFromCamera: mockExtractFromCamera,
-    submitDraft: jest.fn(async () => {}),
     retryExtract: mockRetryExtract,
     openManualInput: mockOpenManualInput,
-    closeManualInput: mockCloseManualInput,
-    updateManualJson: mockUpdateManualJson,
-    applyManualJson: mockApplyManualJson,
     resetError: mockResetError,
-    resetSubmitFeedback: mockResetSubmitFeedback,
     ...overrides,
   };
 }
@@ -167,7 +153,7 @@ describe("PrescriptionScanScreen", () => {
     const alertSpy = jest.spyOn(Alert, "alert").mockImplementation(() => {});
     mockUsePrescriptionScanViewModel.mockReturnValue(
       createViewModel({
-        error: new Error("OCR 실패"),
+        error: new Error("AI 실패"),
       }),
     );
 
@@ -175,7 +161,7 @@ describe("PrescriptionScanScreen", () => {
 
     expect(alertSpy).toHaveBeenCalledWith(
       "처방전 스캔 오류",
-      "OCR 실패",
+      "AI 실패",
       expect.arrayContaining([expect.objectContaining({ text: "확인" })]),
     );
     alertSpy.mockRestore();

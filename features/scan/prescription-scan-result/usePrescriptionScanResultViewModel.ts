@@ -1,17 +1,22 @@
+import { useIsFocused } from "@react-navigation/native";
 import { router } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { type Control, type UseFieldArrayReturn, useFieldArray, useForm } from "react-hook-form";
 import { Alert } from "react-native";
 import type {
   AnalyzeIngredientsRequest,
   CreatePrescriptionMedication,
   DrugSearchItem,
 } from "@/api/types";
-import { hasOnlyPlaceholderMedications } from "@/features/scan/prescription-scan/ocr-parser";
 import { formatDateLabel, formatDateToIso, parseIsoDate } from "@/utils/date";
-import { getPrescriptionTitleError } from "@/utils/prescription";
+import {
+  getPrescriptionTitleError,
+  hasConfirmedDrugCode,
+  hasInvalidAdditionalTakeTimes,
+  parseAdditionalTakeTimes,
+} from "@/utils/prescription";
 import { useIngredientAnalysisStore } from "../ingredient-analysis/useIngredientAnalysisStore";
-import { usePrescriptionOcrResultStore } from "../prescription-scan/usePrescriptionOcrResultStore";
+import { usePrescriptionDraftStore } from "../prescription-scan/usePrescriptionDraftStore";
 
 export type MedicationTakeSlot = "MORNING" | "LUNCH" | "DINNER";
 
@@ -33,6 +38,7 @@ export interface EditableMedicationItem {
   readonly drugCode: string;
   readonly atcCode: string;
   readonly takeSlots: MedicationTakeSlot[];
+  readonly additionalTakeTimes?: string;
 }
 
 export interface PrescriptionScanResultFormValues {
@@ -51,22 +57,17 @@ const INVALID_DATE_RANGE_ERROR = "복약 종료일은 시작일보다 빠를 수
 
 type PrescriptionDateField = "startDate" | "endDate";
 
+function defaultTakeSlots(dailyDoseCount: number | undefined): MedicationTakeSlot[] {
+  if (dailyDoseCount === 3) return ["MORNING", "LUNCH", "DINNER"];
+  if (dailyDoseCount === 2) return ["MORNING", "LUNCH"];
+  return [];
+}
+
 function convertTakeSlotsToTimes(takeSlots: readonly MedicationTakeSlot[]): string[] {
   const selected = new Set(takeSlots);
   return MEDICATION_TAKE_SLOT_OPTIONS.filter((option) => selected.has(option.slot)).map(
     (option) => option.defaultTime,
   );
-}
-
-const DAILY_DOSE_COUNT_TAKE_SLOTS: Readonly<Record<number, readonly MedicationTakeSlot[]>> = {
-  1: ["MORNING"],
-  2: ["MORNING", "DINNER"],
-  3: ["MORNING", "LUNCH", "DINNER"],
-};
-
-function takeSlotsForDailyDoseCount(dailyDoseCount: number | undefined): MedicationTakeSlot[] {
-  if (!dailyDoseCount) return [];
-  return [...(DAILY_DOSE_COUNT_TAKE_SLOTS[dailyDoseCount] ?? [])];
 }
 
 function createRequestMedications(
@@ -76,7 +77,12 @@ function createRequestMedications(
     drugCode: item.drugCode.trim(),
     atcCode: item.atcCode.trim(),
     drugName: item.drugName.trim(),
-    takeTimes: convertTakeSlotsToTimes(item.takeSlots),
+    takeTimes: [
+      ...new Set([
+        ...convertTakeSlotsToTimes(item.takeSlots),
+        ...parseAdditionalTakeTimes(item.additionalTakeTimes),
+      ]),
+    ].sort(),
   }));
 }
 
@@ -87,14 +93,41 @@ function createRequestTakeTimes(medications: readonly CreatePrescriptionMedicati
       uniqueTakeTimes.add(takeTime);
     });
   });
-  return MEDICATION_TAKE_SLOT_OPTIONS.map((option) => option.defaultTime).filter((time) =>
-    uniqueTakeTimes.has(time),
-  );
+  return [...uniqueTakeTimes].sort();
 }
 
-export function usePrescriptionScanResultViewModel() {
-  const result = usePrescriptionOcrResultStore((state) => state.result);
-  const clearResult = usePrescriptionOcrResultStore((state) => state.clearResult);
+export interface PrescriptionScanResultViewModel {
+  readonly control: Control<PrescriptionScanResultFormValues>;
+  readonly fields: UseFieldArrayReturn<PrescriptionScanResultFormValues, "medications">["fields"];
+  readonly editingMedicationIndex: number | null;
+  readonly isSubmitting: boolean;
+  readonly recognizedMedicationCount: number;
+  readonly isManualInputMode: boolean;
+  readonly hasLowConfidenceExtraction: boolean;
+  readonly startDate: string;
+  readonly endDate: string;
+  readonly startDateLabel: string;
+  readonly endDateLabel: string;
+  readonly startDateValue: Date;
+  readonly endDateValue: Date;
+  readonly isAnalyzeDisabled: boolean;
+  readonly handlePressClose: () => void;
+  readonly handlePressRetryScan: () => void;
+  readonly handlePressAddMedication: () => void;
+  readonly handlePressAnalyze: () => Promise<void>;
+  readonly handlePressEditMedication: (index: number) => void;
+  readonly handlePressCompleteMedicationEdit: () => void;
+  readonly handleChangeMedicationName: (index: number, name: string) => void;
+  readonly handleSelectMedicationDrug: (index: number, item: DrugSearchItem) => void;
+  readonly handleToggleMedicationTakeSlot: (index: number, slot: MedicationTakeSlot) => void;
+  readonly handleSelectPrescriptionDate: (field: PrescriptionDateField, date: Date) => void;
+  readonly handlePressRemoveMedication: (index: number) => void;
+}
+
+export function usePrescriptionScanResultViewModel(): PrescriptionScanResultViewModel {
+  const isFocused = useIsFocused();
+  const result = usePrescriptionDraftStore((state) => state.result);
+  const clearResult = usePrescriptionDraftStore((state) => state.clearResult);
   const setIngredientAnalysisRequest = useIngredientAnalysisStore((state) => state.setRequest);
   const shouldSuppressEmptyResultAlertRef = useRef<boolean>(false);
   const [editingMedicationIndex, setEditingMedicationIndex] = useState<number | null>(null);
@@ -109,7 +142,7 @@ export function usePrescriptionScanResultViewModel() {
         drugName: item.drugName,
         drugCode: item.drugCode ?? "",
         atcCode: item.atcCode,
-        takeSlots: takeSlotsForDailyDoseCount(item.dailyDoseCount),
+        takeSlots: defaultTakeSlots(item.dailyDoseCount),
       })),
     };
   }, [result]);
@@ -129,7 +162,7 @@ export function usePrescriptionScanResultViewModel() {
   }, [initialValues, reset]);
 
   useEffect(() => {
-    if (result) return;
+    if (result || !isFocused) return;
     if (shouldSuppressEmptyResultAlertRef.current) return;
     Alert.alert("스캔 결과 없음", EMPTY_RESULT_ERROR, [
       {
@@ -137,11 +170,13 @@ export function usePrescriptionScanResultViewModel() {
         onPress: () => router.replace("/(detail)/scan/scan"),
       },
     ]);
-  }, [result]);
+  }, [isFocused, result]);
 
   const handlePressClose = useCallback(() => {
+    shouldSuppressEmptyResultAlertRef.current = true;
+    clearResult();
     router.replace("/(tabs)/dashboard");
-  }, []);
+  }, [clearResult]);
 
   const handlePressRetryScan = useCallback(() => {
     shouldSuppressEmptyResultAlertRef.current = true;
@@ -275,16 +310,18 @@ export function usePrescriptionScanResultViewModel() {
       Alert.alert("입력 확인", "약물명을 모두 입력해주세요.");
       return;
     }
-    if (medications.some((item) => item.atcCode.length === 0)) {
-      Alert.alert("입력 확인", DRUG_NAME_NOT_SELECTED_ERROR);
-      return;
-    }
-    if (medications.some((item) => item.drugCode.length === 0)) {
+    if (medications.some((item) => !hasConfirmedDrugCode(item))) {
       Alert.alert("입력 확인", DRUG_NAME_NOT_SELECTED_ERROR);
       return;
     }
     if (medications.some((item) => (item.takeTimes?.length ?? 0) === 0)) {
       Alert.alert("입력 확인", "각 약물마다 복약 시간을 최소 1개 선택해주세요.");
+      return;
+    }
+    if (
+      values.medications.some((item) => hasInvalidAdditionalTakeTimes(item.additionalTakeTimes))
+    ) {
+      Alert.alert("입력 확인", "복용 시간은 HH:mm 형식으로 입력해주세요. 예: 22:00");
       return;
     }
     if (!takeTimes.length) {
@@ -300,13 +337,14 @@ export function usePrescriptionScanResultViewModel() {
       medications,
     };
     setIngredientAnalysisRequest(payload);
-    router.replace("/(detail)/scan/ingredient-analysis");
+    router.push("/(detail)/scan/ingredient-analysis");
   }, [getValues, result, setIngredientAnalysisRequest]);
 
   const recognizedMedicationCount = result?.draft.medications.length ?? 0;
   const isManualInputMode = result?.imageUri.startsWith(MANUAL_INPUT_IMAGE_URI_PREFIX) ?? false;
   const hasLowConfidenceExtraction = result
-    ? hasOnlyPlaceholderMedications(result.draft.medications)
+    ? recognizedMedicationCount === 0 ||
+      result.draft.medications.some((item) => !hasConfirmedDrugCode(item))
     : false;
   const startDate = form.watch("startDate");
   const endDate = form.watch("endDate");

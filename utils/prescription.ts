@@ -19,3 +19,25 @@ export function getPrescriptionTitleError(
 
   return null;
 }
+
+export function isConfirmedAtcCode(atcCode: string): boolean {
+  const code = atcCode.trim();
+  return code.length > 0 && code !== "UNKNOWN";
+}
+
+export function parseAdditionalTakeTimes(input?: string): string[] {
+  return (input ?? "")
+    .split(",")
+    .map((value) => value.trim())
+    .filter(Boolean);
+}
+
+export function hasInvalidAdditionalTakeTimes(input?: string): boolean {
+  if (!input?.trim()) return false;
+  const times = parseAdditionalTakeTimes(input);
+  return times.length === 0 || times.some((time) => !/^([01]\d|2[0-3]):[0-5]\d$/.test(time));
+}
+
+export function hasConfirmedDrugCode(item: { drugCode?: string | null; atcCode: string }): boolean {
+  return !!item.drugCode?.trim() && isConfirmedAtcCode(item.atcCode);
+}

@@ -2,6 +2,7 @@ export interface MedicalSummaryResponse {
   readonly name: string | null;
   readonly birthDate: string | null;
   readonly gender: "MALE" | "FEMALE" | null;
+  readonly isPregnant: boolean;
   readonly height: number | null;
   readonly weight: number | null;
   readonly bloodType: string | null;

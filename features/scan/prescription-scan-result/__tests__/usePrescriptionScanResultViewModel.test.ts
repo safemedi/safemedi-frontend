@@ -1,33 +1,42 @@
 import { act, renderHook } from "@testing-library/react-native";
 import { router } from "expo-router";
+import { useController } from "react-hook-form";
 import { Alert } from "react-native";
 import type { DrugSearchItem } from "@/api/types";
-import type { PrescriptionOcrResult } from "../../prescription-scan/usePrescriptionOcrResultStore";
+import type { PrescriptionDraftResult } from "../../prescription-scan/usePrescriptionDraftStore";
 import { usePrescriptionScanResultViewModel } from "../usePrescriptionScanResultViewModel";
 
 const mockClearResult = jest.fn();
 const mockSetIngredientAnalysisRequest = jest.fn();
+let mockIsFocused = true;
 
-let mockResult: PrescriptionOcrResult | null = {
+jest.mock("@react-navigation/native", () => ({
+  useIsFocused: () => mockIsFocused,
+}));
+
+let mockResult: PrescriptionDraftResult | null = {
   imageUri: "file://image.png",
   draft: {
     title: "스캔 처방전",
     startDate: "2026-05-01",
     endDate: "2026-05-07",
     medications: [{ atcCode: "A01", drugName: "타이레놀" }],
-    rawText: "타이레놀",
   },
 };
 
 jest.mock("expo-router", () => ({
   router: {
     replace: jest.fn(),
+    push: jest.fn(),
   },
 }));
 
-jest.mock("../../prescription-scan/usePrescriptionOcrResultStore", () => ({
-  usePrescriptionOcrResultStore: (
-    selector: (state: { result: PrescriptionOcrResult | null; clearResult: () => void }) => unknown,
+jest.mock("../../prescription-scan/usePrescriptionDraftStore", () => ({
+  usePrescriptionDraftStore: (
+    selector: (state: {
+      result: PrescriptionDraftResult | null;
+      clearResult: () => void;
+    }) => unknown,
   ) =>
     selector({
       result: mockResult,
@@ -52,10 +61,12 @@ jest.mock("../../ingredient-analysis/useIngredientAnalysisStore", () => ({
 
 describe("usePrescriptionScanResultViewModel", () => {
   const mockRouterReplace = router.replace as jest.MockedFunction<typeof router.replace>;
+  const mockRouterPush = router.push as jest.MockedFunction<typeof router.push>;
   const mockAlert = jest.spyOn(Alert, "alert").mockImplementation(() => {});
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockIsFocused = true;
     mockResult = {
       imageUri: "file://image.png",
       draft: {
@@ -63,7 +74,6 @@ describe("usePrescriptionScanResultViewModel", () => {
         startDate: "2026-05-01",
         endDate: "2026-05-07",
         medications: [{ atcCode: "A01", drugName: "타이레놀" }],
-        rawText: "타이레놀",
       },
     };
   });
@@ -82,6 +92,15 @@ describe("usePrescriptionScanResultViewModel", () => {
       "복약 등록 정보가 없습니다. 스캔 화면으로 이동합니다.",
       expect.any(Array),
     );
+  });
+
+  it("분석 화면 뒤에 남은 상태에서 결과가 지워져도 알림을 노출하지 않는다", () => {
+    mockIsFocused = false;
+    mockResult = null;
+
+    renderHook(() => usePrescriptionScanResultViewModel());
+
+    expect(mockAlert).not.toHaveBeenCalled();
   });
 
   it("약물 추가/수정 관련 핸들러가 폼 상태를 갱신한다", async () => {
@@ -152,7 +171,7 @@ describe("usePrescriptionScanResultViewModel", () => {
         },
       ],
     });
-    expect(mockRouterReplace).toHaveBeenCalledWith("/(detail)/scan/ingredient-analysis");
+    expect(mockRouterPush).toHaveBeenCalledWith("/(detail)/scan/ingredient-analysis");
   });
 
   it("초기 복약 기간은 빈값이며 날짜 선택 전에는 분석 버튼이 비활성화 상태다", () => {
@@ -165,7 +184,7 @@ describe("usePrescriptionScanResultViewModel", () => {
     expect(result.current.isAnalyzeDisabled).toBe(true);
   });
 
-  it("복약 기간이 신뢰 가능하면 OCR 추출 날짜를 그대로 초기값으로 사용한다", () => {
+  it("복약 기간이 신뢰 가능하면 AI 추출 날짜를 그대로 초기값으로 사용한다", () => {
     mockResult = {
       imageUri: "file://image.png",
       draft: {
@@ -173,7 +192,6 @@ describe("usePrescriptionScanResultViewModel", () => {
         startDate: "2026-07-14",
         endDate: "2026-07-19",
         medications: [{ atcCode: "A01", drugName: "타이레놀" }],
-        rawText: "타이레놀",
         isDateRangeConfident: true,
       },
     };
@@ -184,7 +202,7 @@ describe("usePrescriptionScanResultViewModel", () => {
     expect(result.current.endDate).toBe("2026-07-19");
   });
 
-  it("dailyDoseCount가 3이면 아침/점심/저녁을 자동으로 선택한다", () => {
+  it("하루 3회면 아침·점심·저녁을 기본 선택한다", () => {
     mockResult = {
       imageUri: "file://image.png",
       draft: {
@@ -192,7 +210,6 @@ describe("usePrescriptionScanResultViewModel", () => {
         startDate: "2026-05-01",
         endDate: "2026-05-07",
         medications: [{ atcCode: "A01", drugName: "타이레놀", dailyDoseCount: 3 }],
-        rawText: "타이레놀",
       },
     };
 
@@ -203,7 +220,7 @@ describe("usePrescriptionScanResultViewModel", () => {
     });
   });
 
-  it("dailyDoseCount가 2이면 아침/저녁을 자동으로 선택한다", () => {
+  it("하루 2회면 아침·점심을 기본 선택한다", () => {
     mockResult = {
       imageUri: "file://image.png",
       draft: {
@@ -211,18 +228,17 @@ describe("usePrescriptionScanResultViewModel", () => {
         startDate: "2026-05-01",
         endDate: "2026-05-07",
         medications: [{ atcCode: "A01", drugName: "타이레놀", dailyDoseCount: 2 }],
-        rawText: "타이레놀",
       },
     };
 
     const { result } = renderHook(() => usePrescriptionScanResultViewModel());
 
     expect(result.current.fields[0]).toMatchObject({
-      takeSlots: ["MORNING", "DINNER"],
+      takeSlots: ["MORNING", "LUNCH"],
     });
   });
 
-  it("dailyDoseCount가 1이면 아침만 자동으로 선택한다", () => {
+  it("하루 1회여도 복용 시간을 임의로 지정하지 않는다", () => {
     mockResult = {
       imageUri: "file://image.png",
       draft: {
@@ -230,14 +246,13 @@ describe("usePrescriptionScanResultViewModel", () => {
         startDate: "2026-05-01",
         endDate: "2026-05-07",
         medications: [{ atcCode: "A01", drugName: "타이레놀", dailyDoseCount: 1 }],
-        rawText: "타이레놀",
       },
     };
 
     const { result } = renderHook(() => usePrescriptionScanResultViewModel());
 
     expect(result.current.fields[0]).toMatchObject({
-      takeSlots: ["MORNING"],
+      takeSlots: [],
     });
   });
 
@@ -249,7 +264,6 @@ describe("usePrescriptionScanResultViewModel", () => {
         startDate: "2026-05-01",
         endDate: "2026-05-07",
         medications: [{ atcCode: "N02BE01", drugName: "타이레놀", drugCode: "D01" }],
-        rawText: "타이레놀",
       },
     };
 
@@ -315,7 +329,6 @@ describe("usePrescriptionScanResultViewModel", () => {
         startDate: "2026-05-01",
         endDate: "2026-05-07",
         medications: [{ atcCode: "A01", drugName: "타이레놀" }],
-        rawText: "타이레놀",
       },
     };
     const { result } = renderHook(() => usePrescriptionScanResultViewModel());
@@ -357,7 +370,6 @@ describe("usePrescriptionScanResultViewModel", () => {
         startDate: "",
         endDate: "",
         medications: [{ atcCode: "A01", drugName: "타이레놀" }],
-        rawText: "",
       },
     };
 
@@ -374,7 +386,6 @@ describe("usePrescriptionScanResultViewModel", () => {
         startDate: "2026-05-01",
         endDate: "2026-05-07",
         medications: [{ atcCode: "UNKNOWN", drugName: "미확인 약물" }],
-        rawText: "인식 실패",
       },
     };
 
@@ -384,6 +395,14 @@ describe("usePrescriptionScanResultViewModel", () => {
   });
 
   it("약물을 정상 인식했으면 저신뢰 결과가 아니다", () => {
+    if (!mockResult) throw new Error("테스트 초안이 필요합니다.");
+    mockResult = {
+      ...mockResult,
+      draft: {
+        ...mockResult.draft,
+        medications: [{ atcCode: "N02BE01", drugCode: "D01", drugName: "타이레놀" }],
+      },
+    };
     const { result } = renderHook(() => usePrescriptionScanResultViewModel());
 
     expect(result.current.hasLowConfidenceExtraction).toBe(false);
@@ -398,5 +417,44 @@ describe("usePrescriptionScanResultViewModel", () => {
 
     expect(mockClearResult).toHaveBeenCalledTimes(1);
     expect(mockRouterReplace).toHaveBeenCalledWith("/(detail)/scan/scan");
+  });
+  it("추가 복용 시간을 등록 요청에 포함하고 잘못된 시간은 차단한다", async () => {
+    const { result } = renderHook(() => {
+      const vm = usePrescriptionScanResultViewModel();
+      const additional = useController({
+        control: vm.control,
+        name: "medications.0.additionalTakeTimes",
+      });
+      return { vm, additional };
+    });
+    await act(async () => {
+      result.current.vm.handleSelectPrescriptionDate("startDate", new Date(2026, 4, 3));
+      result.current.vm.handleSelectPrescriptionDate("endDate", new Date(2026, 4, 10));
+      result.current.vm.handleSelectMedicationDrug(0, {
+        drugCode: "D01",
+        atcCode: "A01",
+        drugName: "약",
+      });
+      result.current.vm.handleToggleMedicationTakeSlot(0, "MORNING");
+      result.current.vm.handleToggleMedicationTakeSlot(0, "LUNCH");
+      result.current.vm.handleToggleMedicationTakeSlot(0, "DINNER");
+      result.current.additional.field.onChange("25:00");
+    });
+    await act(async () => {
+      await result.current.vm.handlePressAnalyze();
+    });
+    expect(mockSetIngredientAnalysisRequest).not.toHaveBeenCalled();
+    await act(async () => {
+      result.current.additional.field.onChange("22:00");
+    });
+    await act(async () => {
+      await result.current.vm.handlePressAnalyze();
+    });
+    expect(mockSetIngredientAnalysisRequest).toHaveBeenCalledWith(
+      expect.objectContaining({
+        takeTimes: ["08:00", "13:00", "19:00", "22:00"],
+        medications: [expect.objectContaining({ takeTimes: ["08:00", "13:00", "19:00", "22:00"] })],
+      }),
+    );
   });
 });

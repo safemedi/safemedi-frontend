@@ -80,6 +80,7 @@ export function useAcceptFamilyInvitation() {
             familyId: accepted.familyId,
             name: accepted.name,
             relation: accepted.relation,
+            isPregnant: false,
           },
         ];
       });

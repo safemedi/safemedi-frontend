@@ -3,7 +3,7 @@ import { palette } from "@/constants/design-tokens";
 import type { ClinicalAlertItem } from "./types";
 
 export const MEDICAL_GUIDE_TEXT =
-  "진료 시 이 정보를 의사에게 보여주시면 안전한 처방을 받을 수 있습니다.";
+  "진료 시 이 정보를 의료진에게 보여주시면 안전한 처방을 받을 수 있습니다.";
 
 export const ALLERGY_ITEM_DESCRIPTION = "이 성분이 포함된 약물은 처방을 피해주세요";
 export const CHRONIC_ITEM_DESCRIPTION = "복용 약물과의 상호작용을 확인해주세요";

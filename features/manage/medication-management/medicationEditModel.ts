@@ -77,33 +77,16 @@ export function convertTakeSlotsToTimes(takeSlots: readonly MedicationTakeSlot[]
   );
 }
 
+function getTakeSlot(time: string): MedicationTakeSlot | undefined {
+  return MEDICATION_TAKE_SLOT_OPTIONS.find(({ timeRange }) => {
+    const [start, end] = timeRange.split("~");
+    return time >= start && time <= end;
+  })?.slot;
+}
+
 export function convertTakeTimesToTakeSlots(takeTimes: readonly string[]): MedicationTakeSlot[] {
-  const slots = new Set<MedicationTakeSlot>();
-
-  takeTimes.forEach((takeTime) => {
-    const matchedOption = MEDICATION_TAKE_SLOT_OPTIONS.find(
-      (option) => option.defaultTime === takeTime,
-    );
-    if (matchedOption) {
-      slots.add(matchedOption.slot);
-      return;
-    }
-
-    const hour = Number.parseInt(takeTime.split(":")[0] ?? "0", 10);
-    if (hour < 11) {
-      slots.add("MORNING");
-      return;
-    }
-    if (hour < 16) {
-      slots.add("LUNCH");
-      return;
-    }
-    slots.add("DINNER");
-  });
-
-  return MEDICATION_TAKE_SLOT_OPTIONS.map((option) => option.slot).filter((slot) =>
-    slots.has(slot),
-  );
+  const slots = new Set(takeTimes.map(getTakeSlot));
+  return MEDICATION_TAKE_SLOT_OPTIONS.map(({ slot }) => slot).filter((slot) => slots.has(slot));
 }
 
 export function toggleMedicationEditTakeSlot(
@@ -131,7 +114,7 @@ export function validateMedicationEditDraft(
   if (draft.atcCode.trim().length === 0) {
     return { isValid: false, message: "약물 코드가 없는 약물은 수정할 수 없습니다." };
   }
-  if (draft.takeSlots.length === 0) {
+  if (getUpdatedTakeTimes(draft).length === 0) {
     return { isValid: false, message: "복약 시간을 최소 1개 이상 선택해주세요." };
   }
   return { isValid: true, message: null };
@@ -144,14 +127,24 @@ export function isMedicationEditDraftSavable(draft: MedicationEditDraft | null):
   return validateMedicationEditDraft(draft).isValid;
 }
 
+function getUpdatedTakeTimes(draft: MedicationEditDraft): string[] {
+  if (!draft.hasChangedTakeSlots) return [...draft.originalTakeTimes];
+
+  const originalSlots = convertTakeTimesToTakeSlots(draft.originalTakeTimes);
+  const preserved = draft.originalTakeTimes.filter((time) => {
+    const slot = getTakeSlot(time);
+    return !slot || draft.takeSlots.includes(slot);
+  });
+  const added = draft.takeSlots.filter((slot) => !originalSlots.includes(slot));
+  return [...new Set([...preserved, ...convertTakeSlotsToTimes(added)])].sort();
+}
+
 export function buildUpdatedMedicationsAfterEdit(
   prescription: PrescriptionListItem,
   medicationId: number,
   draft: MedicationEditDraft,
 ): readonly UpdatePrescriptionMedicationBody[] {
-  const takeTimes = draft.hasChangedTakeSlots
-    ? convertTakeSlotsToTimes(draft.takeSlots)
-    : [...draft.originalTakeTimes];
+  const takeTimes = getUpdatedTakeTimes(draft);
 
   return prescription.medications.map((medication) => {
     const prescriptionDrugId = medication.prescriptionDrugId ?? medication.medicationId;

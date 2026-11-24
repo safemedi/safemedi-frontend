@@ -38,8 +38,8 @@ beforeEach(() => {
 it("가족 호칭을 즉시 바꾸고 실패하면 해당 가족만 복구한다", async () => {
   const { client, wrapper } = setup();
   client.setQueryData(queryKeys.family.list, [
-    { familyId: 1, name: "가족", relation: "어머니" },
-    { familyId: 2, name: "가족2", relation: "아버지" },
+    { familyId: 1, name: "가족", relation: "어머니", isPregnant: false },
+    { familyId: 2, name: "가족2", relation: "아버지", isPregnant: false },
   ]);
   const request = deferred<unknown>();
   mockUpdateRelation.mockReturnValue(request.promise);
@@ -59,14 +59,16 @@ it("가족 호칭을 즉시 바꾸고 실패하면 해당 가족만 복구한다
     await pending;
   });
   expect(client.getQueryData<FamilySummary[]>(queryKeys.family.list)).toEqual([
-    { familyId: 1, name: "가족", relation: "어머니" },
+    { familyId: 1, name: "가족", relation: "어머니", isPregnant: false },
   ]);
   client.clear();
 });
 
 it("화면 재진입 후 같은 가족의 중복 요청을 막고 재조회가 끝나기 전에 실패를 반환한다", async () => {
   const { client, wrapper } = setup();
-  client.setQueryData(queryKeys.family.list, [{ familyId: 1, name: "가족", relation: "어머니" }]);
+  client.setQueryData(queryKeys.family.list, [
+    { familyId: 1, name: "가족", relation: "어머니", isPregnant: false },
+  ]);
   const request = deferred<unknown>();
   const refetch = deferred<void>();
   mockUpdateRelation.mockReturnValue(request.promise);

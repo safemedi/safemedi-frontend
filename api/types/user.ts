@@ -15,6 +15,7 @@ export type UserProfile = {
   displayName: string | null;
   birthDate: string | null;
   gender: "M" | "F" | null;
+  isPregnant: boolean;
   height: number | null;
   weight: number | null;
   bloodType: string | null;
@@ -44,6 +45,7 @@ export type DeleteUserAccountResponse = {
 export type UpdateUserProfileBody = Partial<{
   nickname: string;
   gender: UserProfilePatchGender;
+  isPregnant: boolean;
   bloodType: UserProfilePatchBloodType;
   rhType: UserProfilePatchRhType;
   diseaseCodes: string[];

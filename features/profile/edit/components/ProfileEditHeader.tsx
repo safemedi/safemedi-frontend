@@ -6,12 +6,13 @@ import { palette } from "@/constants/design-tokens";
 
 export type ProfileEditHeaderProps = {
   onBack?: () => void;
+  isDisabled?: boolean;
 };
 
-export function ProfileEditHeader({ onBack }: ProfileEditHeaderProps) {
+export function ProfileEditHeader({ onBack, isDisabled = false }: ProfileEditHeaderProps) {
   return (
     <XStack items="center" gap={10}>
-      <Pressable onPress={onBack} hitSlop={8} style={styles.backButton}>
+      <Pressable onPress={onBack} disabled={isDisabled} hitSlop={8} style={styles.backButton}>
         <Ionicons name="arrow-back" size={20} color={palette.black} />
       </Pressable>
       <YStack gap={2}>

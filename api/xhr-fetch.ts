@@ -56,6 +56,14 @@ async function readRequestBody(request: Request): Promise<XMLHttpRequestBodyInit
     return null;
   }
 
+  // RN의 whatwg-fetch Request는 FormData를 text()로 읽을 수 없다.
+  // clone()에도 보존되는 원본 body를 그대로 XHR로 전달한다.
+  const nativeRequest = request as Request & { readonly _bodyInit?: unknown };
+  if (nativeRequest._bodyInit instanceof FormData) return nativeRequest._bodyInit;
+  if (request.headers.get("content-type")?.startsWith("multipart/form-data")) {
+    // DOM과 React Native의 FormData 타입 선언 차이를 전송 경계에서만 변환한다.
+    return (await request.formData()) as unknown as XMLHttpRequestBodyInit;
+  }
   const text = await request.text();
   return text.length > 0 ? text : null;
 }
@@ -71,7 +79,10 @@ export function createXhrFetch(): typeof fetch {
       xhr.responseType = "text";
 
       request.headers.forEach((value, key) => {
-        if (canSetRequestHeader(key)) {
+        if (
+          canSetRequestHeader(key) &&
+          !(body instanceof FormData && key.toLowerCase() === "content-type")
+        ) {
           xhr.setRequestHeader(key, value);
         }
       });

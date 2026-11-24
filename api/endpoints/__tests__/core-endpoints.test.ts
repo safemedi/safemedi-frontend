@@ -1,3 +1,4 @@
+import { Platform } from "react-native";
 import { apiPaths } from "@/api/paths";
 import { postLogout, postReissueToken, postSocialLogin } from "../auth";
 import {
@@ -16,7 +17,7 @@ import {
   patchNotificationRead,
   patchNotificationSettings,
 } from "../notification";
-import { createPrescriptionByScan } from "../prescription-scan";
+import { createPrescriptionByScan, extractPrescription } from "../prescription-scan";
 import { postTutorialRegistration } from "../tutorial";
 import {
   deleteUserAccount,
@@ -42,6 +43,32 @@ jest.mock("@/api/client", () => ({
 describe("api/endpoints core modules", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+  });
+
+  it("웹 추출 요청은 JPEG Blob을 image 파일로 첨부한다", async () => {
+    const platform = jest.replaceProperty(Platform, "OS", "web");
+    const jpeg = new Blob(["jpeg"], { type: "image/jpeg" });
+    const fetchImage = jest
+      .spyOn(globalThis, "fetch")
+      .mockResolvedValue(new Response(jpeg, { headers: { "Content-Type": "image/jpeg" } }));
+    const append = jest.spyOn(FormData.prototype, "append");
+    mockApiPost.mockReturnValueOnce({ json: async () => ({ medications: [] }) });
+    try {
+      await extractPrescription("blob:prescription-image", 4);
+      expect(fetchImage).toHaveBeenCalledWith("blob:prescription-image");
+      expect(append).toHaveBeenCalledWith("image", expect.any(Blob), "prescription.jpg");
+      expect(mockApiPost).toHaveBeenCalledWith(
+        apiPaths.prescriptionsExtract,
+        expect.objectContaining({
+          body: expect.any(FormData),
+          context: { requiredSessionVersion: 4 },
+        }),
+      );
+    } finally {
+      append.mockRestore();
+      fetchImage.mockRestore();
+      platform.restore();
+    }
   });
 
   it("auth login endpoint를 provider/token payload로 호출한다", async () => {
@@ -159,13 +186,16 @@ describe("api/endpoints core modules", () => {
       .mockReturnValueOnce({ json: jest.fn(async () => ({ id: "me" })) });
     mockApiPatch.mockReturnValueOnce({ json: jest.fn(async () => ({ id: "me" })) });
 
-    await createPrescriptionByScan({} as never);
+    await createPrescriptionByScan({} as never, 0);
     await postTutorialRegistration({} as never);
     await fetchUserProfile();
     await fetchUserProfileWithAccessToken("token-123");
     await patchUserProfile({} as never);
 
-    expect(mockApiPost).toHaveBeenNthCalledWith(1, apiPaths.prescriptions, { json: {} });
+    expect(mockApiPost).toHaveBeenNthCalledWith(1, apiPaths.prescriptions, {
+      json: {},
+      context: { requiredSessionVersion: 0 },
+    });
     expect(mockApiPost).toHaveBeenNthCalledWith(2, apiPaths.usersMeTutorial, { json: {} });
     expect(mockApiGet).toHaveBeenNthCalledWith(1, apiPaths.usersMe);
     expect(mockApiGet).toHaveBeenNthCalledWith(2, apiPaths.usersMe, {

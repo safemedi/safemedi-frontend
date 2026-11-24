@@ -1,6 +1,7 @@
 import type { MockRegistry } from "@/api/mock/registry";
 import { mockState } from "@/api/mock/state";
 import { apiPaths } from "@/api/paths";
+import type { ExtractPrescriptionResponse } from "@/api/types/prescription-scan";
 import type { UpdateUserProfileBody } from "@/api/types/user";
 
 const SUPPORTED_PROVIDERS = new Set(["kakao", "naver"]);
@@ -152,14 +153,16 @@ export function registerSaf26Mocks(registry: MockRegistry): void {
           { status: 400 },
         );
       }
-      const body = ctx.jsonBody as { gender?: string } | undefined;
-      if (body.gender !== "MALE" && body.gender !== "FEMALE") {
+      const body = ctx.jsonBody as { gender?: string; isPregnant?: boolean } | undefined;
+      if (!body || (body.gender !== "MALE" && body.gender !== "FEMALE")) {
         return Response.json(
           { code: "VAL_001", message: "성별 값이 올바르지 않습니다. (MALE, FEMALE만 허용)" },
           { status: 400 },
         );
       }
       mockState.profile.isTutorialCompleted = true;
+      mockState.profile.gender = body.gender === "FEMALE" ? "F" : "M";
+      mockState.profile.isPregnant = body.gender === "FEMALE" && body.isPregnant === true;
       mockState.tutorialCompleted = true;
       return {
         message: "튜토리얼 정보가 성공적으로 등록되었습니다.",
@@ -190,6 +193,8 @@ export function registerSaf26Mocks(registry: MockRegistry): void {
     if (patch.gender !== undefined) {
       mockState.profile.gender = patch.gender === "FEMALE" ? "F" : "M";
     }
+    mockState.profile.isPregnant =
+      mockState.profile.gender === "F" && (patch.isPregnant ?? mockState.profile.isPregnant);
     if (patch.bloodType !== undefined || patch.rhType !== undefined) {
       const abo = patch.bloodType ?? extractAboBloodType(mockState.profile.bloodType);
       const rhSign = patch.rhType === "MINUS" ? "-" : "+";
@@ -315,6 +320,7 @@ export function registerSaf26Mocks(registry: MockRegistry): void {
           familyId: accepted.familyId,
           name: accepted.name,
           relation: accepted.relation,
+          isPregnant: false,
         });
       }
       return accepted;
@@ -477,6 +483,25 @@ export function registerSaf26Mocks(registry: MockRegistry): void {
   });
 
   // --- Prescriptions ---
+  registry.register(
+    "POST",
+    apiPaths.prescriptionsExtract,
+    () =>
+      ({
+        title: "테스트 처방전",
+        startDate: null,
+        endDate: null,
+        medications: [
+          {
+            drugCode: "202000123",
+            atcCode: "J01CA04",
+            drugName: "종근당아목시실린캡슐500mg",
+            dailyDoseCount: 3,
+            instructions: null,
+          },
+        ],
+      }) satisfies ExtractPrescriptionResponse,
+  );
   registry.register("GET", apiPaths.prescriptions, () => ({
     content: clonePrescriptions().map((prescription) => ({
       prescriptionId: prescription.prescriptionId,
@@ -572,7 +597,7 @@ export function registerSaf26Mocks(registry: MockRegistry): void {
           mainIngredient: medication.drugName,
           hasWarning,
           warningMessage: hasWarning
-            ? "알러지 충돌이 발견되었습니다. 의사와 상담 후 복용하세요."
+            ? "알러지 충돌이 발견되었습니다. 의료진과 상담 후 복용하세요."
             : null,
         };
       });

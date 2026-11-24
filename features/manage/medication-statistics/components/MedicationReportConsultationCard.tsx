@@ -29,7 +29,7 @@ export function MedicationReportConsultationCard({
           <MaterialCommunityIcons name="stethoscope" size={18} color={palette.white} />
         </LinearGradient>
         <YStack gap={4} flex={1}>
-          <Text style={styles.title}>의사 상담 권장</Text>
+          <Text style={styles.title}>의료진 상담 권장</Text>
           <Text style={styles.message}>{message}</Text>
         </YStack>
       </XStack>

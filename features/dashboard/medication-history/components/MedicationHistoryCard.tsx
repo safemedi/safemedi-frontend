@@ -66,12 +66,12 @@ export function MedicationHistoryCard({ medication, onPressApprove }: Medication
             leftElement={
               <Ionicons name="warning-outline" size={16} color={palette.red_quick_text} />
             }
-            accessibilityLabel="의사 상담 후 승인 버튼"
+            accessibilityLabel="의료진 상담 후 승인 버튼"
           >
-            <Text style={styles.approveButtonText}>의사 상담 후 승인</Text>
+            <Text style={styles.approveButtonText}>의료진 상담 후 승인</Text>
           </PillButton>
           <Text style={styles.warningFootnote}>
-            * 의사 상담 후 복용이 가능하다면 위 버튼을 눌러주세요
+            * 의료진 상담 후 복용이 가능하다면 위 버튼을 눌러주세요
           </Text>
         </View>
       ) : null}

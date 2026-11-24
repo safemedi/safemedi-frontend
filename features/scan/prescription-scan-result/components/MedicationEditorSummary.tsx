@@ -1,19 +1,21 @@
 import { StyleSheet, View } from "react-native";
 import { Text, YStack } from "tamagui";
 import { palette } from "@/constants/design-tokens";
-import { isConfirmedAtcCode } from "@/features/scan/prescription-scan/ocr-parser";
+import { isConfirmedAtcCode } from "@/utils/prescription";
 import {
   MEDICATION_TAKE_SLOT_OPTIONS,
   type MedicationTakeSlot,
 } from "../usePrescriptionScanResultViewModel";
 
 interface MedicationEditorSummaryProps {
+  readonly additionalTakeTimes?: string;
   readonly medicationName: string;
   readonly atcCode: string;
   readonly selectedTakeSlots: readonly MedicationTakeSlot[];
 }
 
 export function MedicationEditorSummary({
+  additionalTakeTimes,
   medicationName,
   atcCode,
   selectedTakeSlots,
@@ -36,7 +38,11 @@ export function MedicationEditorSummary({
       </View>
       <View style={styles.summaryRow}>
         <Text style={styles.summaryLabel}>복약 시간</Text>
-        <Text style={styles.summaryValue}>{takeSlotSummary}</Text>
+        <Text style={styles.summaryValue}>
+          {additionalTakeTimes?.trim()
+            ? `${selectedTakeSlots.length ? `${takeSlotSummary}, ` : ""}${additionalTakeTimes}`
+            : takeSlotSummary}
+        </Text>
       </View>
       <Text
         style={[styles.metaText, isAtcCodeConfirmed ? styles.verifiedText : styles.unverifiedText]}

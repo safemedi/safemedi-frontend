@@ -9,6 +9,8 @@
       "node": "22.14.0",
       "environment": "development",
       "env": {
+        "EAS_GRADLE_CACHE": "1",
+        "EAS_USE_CACHE": "1",
         "EXPO_PUBLIC_APP_ENV": "development",
         "SENTRY_ORG_SLUG": "safemedi",
         "SENTRY_PROJECT_SLUG": "react-native"
@@ -22,6 +24,8 @@
       "node": "22.14.0",
       "environment": "preview",
       "env": {
+        "EAS_GRADLE_CACHE": "1",
+        "EAS_USE_CACHE": "1",
         "EXPO_PUBLIC_APP_ENV": "preview",
         "SENTRY_ORG_SLUG": "safemedi",
         "SENTRY_PROJECT_SLUG": "react-native"
@@ -30,13 +34,17 @@
         "buildType": "apk"
       },
       "ios": {
-        "buildConfiguration": "Release"
+        "distribution": "store",
+        "buildConfiguration": "Release",
+        "autoIncrement": true
       }
     },
     "production": {
       "node": "22.14.0",
       "environment": "production",
       "env": {
+        "EAS_GRADLE_CACHE": "1",
+        "EAS_USE_CACHE": "1",
         "EXPO_PUBLIC_APP_ENV": "production"
       },
       "android": {
@@ -53,6 +61,13 @@
       "extends": "development",
       "ios": {
         "simulator": true
+      }
+    }
+  },
+  "submit": {
+    "preview": {
+      "ios": {
+        "ascAppId": "6835014729"
       }
     }
   }

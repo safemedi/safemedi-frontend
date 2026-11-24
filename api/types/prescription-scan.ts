@@ -45,7 +45,13 @@ export interface DrugSearchPage {
 
 export type AnalysisRiskLevel = "SAFE" | "CAUTION" | "DANGER";
 
-export type AnalysisWarningType = "ALLERGY" | "INTERACTION";
+export type AnalysisWarningType =
+  | "ALLERGY"
+  | "INTERACTION"
+  | "DUR_ELDERLY"
+  | "DUR_AGE"
+  | "DUR_PREGNANCY"
+  | "DUR_INTERACTION";
 
 export interface AnalyzeIngredientWarning {
   readonly type: AnalysisWarningType;
@@ -84,4 +90,19 @@ export interface AnalyzeIngredientsResponse {
   readonly medications: readonly AnalyzeIngredientMedication[];
   readonly shouldConsultDoctor: boolean;
   readonly doctorConsultationMessage: string | null;
+}
+
+export interface ExtractedPrescriptionMedication {
+  readonly drugName: string;
+  readonly drugCode: string | null;
+  readonly atcCode: string | null;
+  readonly dailyDoseCount: number | null;
+  readonly instructions: string | null;
+}
+
+export interface ExtractPrescriptionResponse {
+  readonly title: string;
+  readonly startDate: string | null;
+  readonly endDate: string | null;
+  readonly medications: readonly ExtractedPrescriptionMedication[];
 }

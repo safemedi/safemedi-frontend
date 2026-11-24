@@ -1,5 +1,5 @@
 import { fireEvent, render, waitFor } from "@testing-library/react-native";
-import { Alert, StyleSheet } from "react-native";
+import { Alert, BackHandler, StyleSheet } from "react-native";
 import type {
   useSearchDiseasesQuery,
   useSearchDrugAllergiesQuery,
@@ -8,6 +8,8 @@ import type { User } from "@/stores/userStore";
 import { ProfileEditScreen } from "../ProfileEditScreen";
 
 const mockBack = jest.fn();
+const mockDispatch = jest.fn();
+const mockPreventRemove = jest.fn();
 const mockNavigate = jest.fn();
 const mockSetUser = jest.fn();
 const mockRefetchProfile = jest.fn(async () => ({
@@ -46,10 +48,15 @@ const mockUser: User = {
 let mockActiveUser: User | null = mockUser;
 
 jest.mock("expo-router", () => ({
+  useNavigation: () => ({ dispatch: mockDispatch }),
   router: {
     back: () => mockBack(),
     navigate: (path: string) => mockNavigate(path),
   },
+}));
+
+jest.mock("@react-navigation/native", () => ({
+  usePreventRemove: (...args: unknown[]) => mockPreventRemove(...args),
 }));
 
 jest.mock("react-native-safe-area-context", () => ({
@@ -305,6 +312,7 @@ describe("프로필 수정 화면", () => {
         diseaseNames: { COND010: "천식" },
         nickname: "홍길동",
         gender: "FEMALE",
+        isPregnant: false,
         bloodType: "AB",
         rhType: "MINUS",
         diseaseCodes: ["COND010"],
@@ -315,6 +323,47 @@ describe("프로필 수정 화면", () => {
         ],
       });
     });
+  });
+
+  it("저장 성공 전후의 다른 제거 액션을 막고 저장용 이동만 한 번 허용한다", async () => {
+    const backHandlerSpy = jest.spyOn(BackHandler, "addEventListener");
+    let resolveSave!: (value: object) => void;
+    mockMutate.mockImplementationOnce(
+      () =>
+        new Promise<object>((resolve) => {
+          resolveSave = resolve;
+        }),
+    );
+    const { getByLabelText } = render(<ProfileEditScreen />);
+
+    fireEvent.press(getByLabelText("저장"));
+    await waitFor(() => expect(mockMutate).toHaveBeenCalledTimes(1));
+    expect(mockBack).not.toHaveBeenCalled();
+    expect(mockPreventRemove).toHaveBeenLastCalledWith(true, expect.any(Function));
+    const preventRemove = mockPreventRemove.mock.calls.at(-1)?.[1];
+    const unrelatedBack = { type: "GO_BACK" };
+    preventRemove?.({ data: { action: unrelatedBack } });
+    expect(mockDispatch).not.toHaveBeenCalled();
+    fireEvent.press(getByLabelText("뒤로가기"));
+    fireEvent.press(getByLabelText("취소"));
+    expect(mockBack).not.toHaveBeenCalled();
+    await waitFor(() =>
+      expect(backHandlerSpy).toHaveBeenCalledWith("hardwareBackPress", expect.any(Function)),
+    );
+    const hardwareBack = backHandlerSpy.mock.calls.at(-1)?.[1];
+    expect(hardwareBack?.()).toBe(true);
+    resolveSave({});
+    await waitFor(() => expect(mockDispatch).toHaveBeenCalledTimes(1));
+    const saveBackAction = mockDispatch.mock.calls[0][0];
+    preventRemove?.({ data: { action: unrelatedBack } });
+    expect(mockDispatch).toHaveBeenCalledTimes(1);
+    preventRemove?.({ data: { action: saveBackAction } });
+    expect(mockDispatch).toHaveBeenCalledTimes(2);
+    expect(mockDispatch.mock.calls[1][0]).toEqual(saveBackAction);
+    preventRemove?.({ data: { action: saveBackAction } });
+    expect(mockDispatch).toHaveBeenCalledTimes(2);
+    expect(mockBack).not.toHaveBeenCalled();
+    backHandlerSpy.mockRestore();
   });
 
   it("검색으로 선택한 기저질환은 diseaseCode로 저장한다", async () => {
@@ -346,22 +395,16 @@ describe("프로필 수정 화면", () => {
       );
     });
   });
-  it("저장 실패 후에는 오래된 요청을 재전송하지 않고 최신 정보 편집 화면을 연다", async () => {
+  it("저장 실패 시 편집 화면에 남고 입력값을 유지한다", async () => {
     const alert = jest.spyOn(Alert, "alert").mockImplementation(() => {});
     mockMutate.mockRejectedValueOnce(new Error("저장 실패"));
-    const { getByLabelText } = render(<ProfileEditScreen />);
+    const { getByLabelText, getByPlaceholderText } = render(<ProfileEditScreen />);
+    fireEvent.changeText(getByPlaceholderText("닉네임"), "수정한 이름");
     fireEvent.press(getByLabelText("저장"));
     await waitFor(() => expect(alert).toHaveBeenCalled());
-    mockActiveUser = { ...mockUser, displayName: "다른 화면에서 수정한 이름" };
-    const buttons = alert.mock.calls.at(-1)?.[2];
-    const edit = buttons?.find((button) => button.text === "다시 편집");
-    expect(edit).toBeDefined();
-    await edit?.onPress?.();
-    expect(mockRefetchProfile).toHaveBeenCalledWith({ throwOnError: true });
-    expect(mockSetUser).toHaveBeenCalledWith(
-      expect.objectContaining({ displayName: "서버 최신 이름" }),
-    );
-    expect(mockNavigate).toHaveBeenCalledWith("/profile/edit");
+    expect(mockBack).not.toHaveBeenCalled();
+    expect(mockDispatch).not.toHaveBeenCalled();
+    expect(getByPlaceholderText("닉네임").props.value).toBe("수정한 이름");
     expect(mockMutate).toHaveBeenCalledTimes(1);
     alert.mockRestore();
   });

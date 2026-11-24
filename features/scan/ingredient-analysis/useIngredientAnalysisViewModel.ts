@@ -5,7 +5,8 @@ import { getApiErrorMessage } from "@/api/error";
 import { useAnalyzeIngredientsMutation } from "@/api/queries/ingredient-analysis";
 import { useCreatePrescriptionByScanMutation } from "@/api/queries/prescription-scan";
 import type { AnalyzeIngredientsResponse } from "@/api/types";
-import { usePrescriptionOcrResultStore } from "../prescription-scan/usePrescriptionOcrResultStore";
+import { useSessionStore } from "@/stores/sessionStore";
+import { usePrescriptionDraftStore } from "../prescription-scan/usePrescriptionDraftStore";
 import type { IngredientAnalysisViewModel } from "./types";
 import { useIngredientAnalysisStore } from "./useIngredientAnalysisStore";
 
@@ -14,27 +15,42 @@ const EMPTY_REQUEST_ERROR = "분석할 약물 정보가 없습니다. 스캔 결
 export function useIngredientAnalysisViewModel(): IngredientAnalysisViewModel {
   const request = useIngredientAnalysisStore((state) => state.request);
   const clearRequest = useIngredientAnalysisStore((state) => state.clearRequest);
-  const clearOcrResult = usePrescriptionOcrResultStore((state) => state.clearResult);
+  const clearDraftResult = usePrescriptionDraftStore((state) => state.clearResult);
   const analyzeMutation = useAnalyzeIngredientsMutation();
   const createMutation = useCreatePrescriptionByScanMutation();
+  const isConfirmingRef = useRef(false);
+  const approvedResultRef = useRef<AnalyzeIngredientsResponse | null>(null);
+  const [approvedResult, setApprovedResult] = useState<AnalyzeIngredientsResponse | null>(null);
+  const isSubmitting = createMutation.isPending;
   const shouldIgnoreMissingRequestAlertRef = useRef<boolean>(false);
-  const [result, setResult] = useState<AnalyzeIngredientsResponse | null>(null);
+  const [analysis, setAnalysis] = useState<{
+    request: NonNullable<typeof request>;
+    result: AnalyzeIngredientsResponse;
+  } | null>(null);
+  const result = analysis?.request === request ? analysis.result : null;
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  const isCurrentRequest = useCallback(
+    () => !!request && useIngredientAnalysisStore.getState().request === request,
+    [request],
+  );
+
   const runIngredientAnalysis = useCallback(async () => {
-    if (!request || analyzeMutation.isPending) {
+    if (!request || !isCurrentRequest() || analyzeMutation.isPending) {
       return;
     }
 
     try {
-      const response = await analyzeMutation.mutateAsync(request);
-      setResult(response);
+      const sessionVersion = useSessionStore.getState().sessionVersion;
+      const response = await analyzeMutation.mutateAsync({ body: request, sessionVersion });
+      if (!isCurrentRequest()) return;
+      setAnalysis({ request, result: response });
       setErrorMessage(null);
     } catch (error) {
       const message = await getApiErrorMessage(error, "성분 분석 결과를 불러오지 못했습니다.");
-      setErrorMessage(message);
+      if (isCurrentRequest()) setErrorMessage(message);
     }
-  }, [analyzeMutation, request]);
+  }, [analyzeMutation, isCurrentRequest, request]);
 
   useEffect(() => {
     if (!request && !shouldIgnoreMissingRequestAlertRef.current) {
@@ -53,32 +69,79 @@ export function useIngredientAnalysisViewModel(): IngredientAnalysisViewModel {
   }, [analyzeMutation.isPending, errorMessage, request, result, runIngredientAnalysis]);
 
   const handlePressClose = useCallback(() => {
+    if (isSubmitting || isConfirmingRef.current) return;
     shouldIgnoreMissingRequestAlertRef.current = true;
     clearRequest();
     router.replace("/(tabs)/dashboard");
-  }, [clearRequest]);
+  }, [clearRequest, isSubmitting]);
 
-  const handlePressCancel = useCallback(() => {
+  const handlePressBack = useCallback(() => {
+    if (isSubmitting || isConfirmingRef.current) return;
+    shouldIgnoreMissingRequestAlertRef.current = true;
+    clearRequest();
     router.back();
-  }, []);
+  }, [clearRequest, isSubmitting]);
 
   const handlePressRetryAnalysis = useCallback(async () => {
     if (!request) {
       return;
     }
 
+    approvedResultRef.current = null;
+    setApprovedResult(null);
     setErrorMessage(null);
-    setResult(null);
+    setAnalysis(null);
     await runIngredientAnalysis();
   }, [request, runIngredientAnalysis]);
 
   const handlePressConfirm = useCallback(async () => {
-    if (!request) {
+    if (
+      !request ||
+      !result ||
+      errorMessage ||
+      analyzeMutation.isPending ||
+      !isCurrentRequest() ||
+      isSubmitting ||
+      isConfirmingRef.current
+    ) {
       return;
     }
 
+    if (result.shouldConsultDoctor && approvedResultRef.current !== result) {
+      Alert.alert(
+        "의료진 확인 필요",
+        `${
+          result.doctorConsultationMessage
+            ?.replace(/의사와/g, "의료진과")
+            .replace(/의사는/g, "의료진은")
+            .replace(/의사가/g, "의료진이")
+            .replace(/의사를/g, "의료진을")
+            .replace(/의사/g, "의료진") || "복약 전 의료진과 상담이 필요합니다."
+        }\n\n안내를 확인한 후 승인해주세요. 승인 후 저장 버튼을 다시 누르면 복약이 등록됩니다.`,
+        [
+          { text: "취소", style: "cancel" },
+          {
+            text: "승인",
+            onPress: () => {
+              if (isCurrentRequest()) {
+                approvedResultRef.current = result;
+                setApprovedResult(result);
+              }
+            },
+          },
+        ],
+      );
+      return;
+    }
+
+    isConfirmingRef.current = true;
     try {
-      const response = await createMutation.mutateAsync({ ...request, isDoctorApproved: true });
+      const sessionVersion = useSessionStore.getState().sessionVersion;
+      const response = await createMutation.mutateAsync({
+        body: { ...request, isDoctorApproved: true },
+        sessionVersion,
+      });
+      if (!isCurrentRequest()) return;
       const allergyWarnings = response.allergyWarnings ?? [];
       const hasAllergyConflict = response.hasAllergyConflict ?? false;
       const warningMessages = allergyWarnings.map((item) => item.warningMessage).join("\n");
@@ -90,9 +153,10 @@ export function useIngredientAnalysisViewModel(): IngredientAnalysisViewModel {
         {
           text: "확인",
           onPress: () => {
+            if (!isCurrentRequest()) return;
             shouldIgnoreMissingRequestAlertRef.current = true;
             clearRequest();
-            clearOcrResult();
+            clearDraftResult();
             router.replace("/(tabs)/dashboard");
           },
         },
@@ -102,27 +166,41 @@ export function useIngredientAnalysisViewModel(): IngredientAnalysisViewModel {
         error,
         "복약 등록에 실패했습니다. 잠시 후 다시 시도해주세요.",
       );
-      Alert.alert("복약 등록 실패", message);
+      if (isCurrentRequest()) Alert.alert("복약 등록 실패", message);
+    } finally {
+      isConfirmingRef.current = false;
     }
-  }, [clearOcrResult, clearRequest, createMutation, request]);
+  }, [
+    analyzeMutation.isPending,
+    clearDraftResult,
+    clearRequest,
+    createMutation,
+    errorMessage,
+    isCurrentRequest,
+    isSubmitting,
+    request,
+    result,
+  ]);
 
   return useMemo(
     () => ({
       request,
-      result,
+      result: request ? result : null,
       isAnalyzing: analyzeMutation.isPending || (!!request && !result && !errorMessage),
-      isSubmitting: createMutation.isPending,
+      isSubmitting,
+      hasMedicalStaffApproval: !!result && approvedResult === result,
       errorMessage,
       handlePressClose,
-      handlePressCancel,
+      handlePressBack,
       handlePressRetryAnalysis,
       handlePressConfirm,
     }),
     [
       analyzeMutation.isPending,
-      createMutation.isPending,
+      approvedResult,
+      isSubmitting,
       errorMessage,
-      handlePressCancel,
+      handlePressBack,
       handlePressClose,
       handlePressConfirm,
       handlePressRetryAnalysis,

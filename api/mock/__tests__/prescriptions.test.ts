@@ -169,7 +169,7 @@ describe("처방전 mock", () => {
         atcCode: "J01CA04",
         drugName: "아목시실린 캡슐",
         hasWarning: true,
-        warningMessage: "알러지 충돌이 발견되었습니다. 의사와 상담 후 복용하세요.",
+        warningMessage: "알러지 충돌이 발견되었습니다. 의료진과 상담 후 복용하세요.",
       }),
       expect.objectContaining({
         atcCode: "S01XA20",
