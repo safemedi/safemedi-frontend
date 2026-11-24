@@ -48,7 +48,7 @@ function createBaseViewModel(): IngredientAnalysisViewModel {
     hasMedicalStaffApproval: false,
     errorMessage: null,
     handlePressClose: mockHandlePressClose,
-    handlePressCancel: mockHandlePressCancel,
+    handlePressBack: mockHandlePressCancel,
     handlePressRetryAnalysis: mockHandlePressRetryAnalysis,
     handlePressConfirm: mockHandlePressConfirm,
   };
@@ -135,7 +135,7 @@ describe("IngredientAnalysisScreen", () => {
     const { getByText, getByLabelText } = render(<IngredientAnalysisScreen />);
 
     expect(getByText("등록 중...")).toBeTruthy();
-    expect(getByLabelText("분석 취소")).toBeDisabled();
+    expect(getByLabelText("이전 단계로 이동")).toBeDisabled();
   });
 
   it("분석 중이면 로딩 상태 문구를 노출한다", () => {
@@ -192,10 +192,10 @@ describe("IngredientAnalysisScreen", () => {
     expect(queryByText("의료진 확인")).toBeNull();
   });
 
-  it("하단 취소/확정 액션이 각 핸들러를 호출한다", () => {
+  it("하단 이전/확정 액션이 각 핸들러를 호출한다", () => {
     const { getByText } = render(<IngredientAnalysisScreen />);
 
-    fireEvent.press(getByText("취소"));
+    fireEvent.press(getByText("이전"));
     fireEvent.press(getByText("저장"));
 
     expect(mockHandlePressCancel).toHaveBeenCalledTimes(1);

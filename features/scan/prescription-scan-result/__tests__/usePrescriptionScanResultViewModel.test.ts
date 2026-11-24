@@ -22,6 +22,7 @@ let mockResult: PrescriptionDraftResult | null = {
 jest.mock("expo-router", () => ({
   router: {
     replace: jest.fn(),
+    push: jest.fn(),
   },
 }));
 
@@ -55,6 +56,7 @@ jest.mock("../../ingredient-analysis/useIngredientAnalysisStore", () => ({
 
 describe("usePrescriptionScanResultViewModel", () => {
   const mockRouterReplace = router.replace as jest.MockedFunction<typeof router.replace>;
+  const mockRouterPush = router.push as jest.MockedFunction<typeof router.push>;
   const mockAlert = jest.spyOn(Alert, "alert").mockImplementation(() => {});
 
   beforeEach(() => {
@@ -154,7 +156,7 @@ describe("usePrescriptionScanResultViewModel", () => {
         },
       ],
     });
-    expect(mockRouterReplace).toHaveBeenCalledWith("/(detail)/scan/ingredient-analysis");
+    expect(mockRouterPush).toHaveBeenCalledWith("/(detail)/scan/ingredient-analysis");
   });
 
   it("초기 복약 기간은 빈값이며 날짜 선택 전에는 분석 버튼이 비활성화 상태다", () => {

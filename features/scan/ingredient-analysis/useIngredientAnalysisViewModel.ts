@@ -75,7 +75,7 @@ export function useIngredientAnalysisViewModel(): IngredientAnalysisViewModel {
     router.replace("/(tabs)/dashboard");
   }, [clearRequest, isSubmitting]);
 
-  const handlePressCancel = useCallback(() => {
+  const handlePressBack = useCallback(() => {
     if (isSubmitting || isConfirmingRef.current) return;
     shouldIgnoreMissingRequestAlertRef.current = true;
     clearRequest();
@@ -191,7 +191,7 @@ export function useIngredientAnalysisViewModel(): IngredientAnalysisViewModel {
       hasMedicalStaffApproval: !!result && approvedResult === result,
       errorMessage,
       handlePressClose,
-      handlePressCancel,
+      handlePressBack,
       handlePressRetryAnalysis,
       handlePressConfirm,
     }),
@@ -200,7 +200,7 @@ export function useIngredientAnalysisViewModel(): IngredientAnalysisViewModel {
       approvedResult,
       isSubmitting,
       errorMessage,
-      handlePressCancel,
+      handlePressBack,
       handlePressClose,
       handlePressConfirm,
       handlePressRetryAnalysis,

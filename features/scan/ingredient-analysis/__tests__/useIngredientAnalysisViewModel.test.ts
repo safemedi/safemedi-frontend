@@ -419,7 +419,7 @@ describe("useIngredientAnalysisViewModel", () => {
 
     await act(async () => {
       pending = result.current.handlePressConfirm();
-      result.current.handlePressCancel();
+      result.current.handlePressBack();
       result.current.handlePressClose();
     });
     expect(mockClearRequest).not.toHaveBeenCalled();
@@ -433,13 +433,14 @@ describe("useIngredientAnalysisViewModel", () => {
     expect(mockAlert).toHaveBeenCalledWith("복약 등록 완료", "등록 완료", expect.any(Array));
   });
 
-  it("취소 버튼 핸들러는 back 라우팅을 호출한다", () => {
+  it("이전 버튼은 분석 요청을 지우고 사용자 확인 화면으로 돌아간다", () => {
     const { result } = renderHook(() => useIngredientAnalysisViewModel());
 
     act(() => {
-      result.current.handlePressCancel();
+      result.current.handlePressBack();
     });
 
     expect(mockRouterBack).toHaveBeenCalledTimes(1);
+    expect(mockClearRequest).toHaveBeenCalledTimes(1);
   });
 });
